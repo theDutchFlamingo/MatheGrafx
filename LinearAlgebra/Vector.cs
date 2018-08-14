@@ -211,6 +211,34 @@ namespace LinearAlgebra
 	    }
 
 		/// <summary>
+		/// The negative of this vector
+		/// </summary>
+		/// <param name="v"></param>
+		/// <returns></returns>
+	    public static Vector operator -(Vector v)
+	    {
+			double[] indices = new double[v.Dimension];
+
+		    for (int i = 0; i < indices.Length; i++)
+		    {
+			    indices[i] = -v[i];
+		    }
+
+			return new Vector(indices);
+	    }
+
+		/// <summary>
+		/// Return the left minus the right vector
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+	    public static Vector operator -(Vector left, Vector right)
+		{
+			return left + -right;
+		}
+
+		/// <summary>
 		/// Inner product of two vectors
 		/// </summary>
 		/// <param name="left"></param>

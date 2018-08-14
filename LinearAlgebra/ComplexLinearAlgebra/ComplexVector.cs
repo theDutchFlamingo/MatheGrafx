@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using LinearAlgebra.Exceptions;
 
 namespace LinearAlgebra.ComplexLinearAlgebra
 {
-	public class ComplexVector : Vector
+	public class ComplexVector : Vector, IEnumerable<Complex>
 	{
 		public new Complex[] Indices
 		{
@@ -54,6 +56,33 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		}
 
 		/// <summary>
+		/// Gets the norm of this vector
+		/// </summary>
+		/// <returns></returns>
+		public new double Norm()
+		{
+			return Math.Sqrt(this * this);
+		}
+
+		/// <summary>
+		/// Whether all elements of this vector are real
+		/// </summary>
+		/// <returns></returns>
+		public bool IsReal()
+		{
+			return this.OfType<Complex>().All(c => c.IsReal());
+		}
+
+		/// <summary>
+		/// Whether all elements of this vector are imaginary
+		/// </summary>
+		/// <returns></returns>
+		public bool IsImaginary()
+		{
+			return this.OfType<Complex>().All(c => c.IsImaginary());
+		}
+
+		/// <summary>
 		/// Gets the double at the given index i
 		/// </summary>
 		/// <param name="i"></param>
@@ -87,12 +116,40 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		}
 
 		/// <summary>
+		/// The negative of this vector
+		/// </summary>
+		/// <param name="v"></param>
+		/// <returns></returns>
+		public static ComplexVector operator -(ComplexVector v)
+		{
+			Complex[] indices = new Complex[v.Dimension];
+
+			for (int i = 0; i < indices.Length; i++)
+			{
+				indices[i] = -v[i];
+			}
+
+			return new ComplexVector(indices);
+		}
+
+		/// <summary>
+		/// Return the left minus the right vector
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static ComplexVector operator -(ComplexVector left, ComplexVector right)
+		{
+			return left + -right;
+		}
+
+		/// <summary>
 		/// Inner product of two vectors
 		/// </summary>
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Complex operator *(ComplexVector left, ComplexVector right)
+		public static double operator *(ComplexVector left, ComplexVector right)
 		{
 			if (!Comparable(left, right))
 				throw new
@@ -102,10 +159,10 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 
 			for (int i = 0; i < left.Dimension; i++)
 			{
-				result += left[i] * right[i];
+				result += left[i] * right[i].Conjugate();
 			}
 
-			return result;
+			return result.Real;
 		}
 
 		/// <summary>
@@ -146,6 +203,11 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		public static ComplexVector operator /(ComplexVector left, double right)
 		{
 			return left * (1 / right);
+		}
+
+		IEnumerator<Complex> IEnumerable<Complex>.GetEnumerator()
+		{
+			return ((IEnumerable<Complex>)Indices).GetEnumerator();
 		}
 	}
 }

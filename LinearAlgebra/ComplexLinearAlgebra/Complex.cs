@@ -8,7 +8,13 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		public double Real { get; set; }
 		public double Imaginary { get; set; }
 
+		/// <summary>
+		/// The modulus, or absolute value of this complex number
+		/// </summary>
 		public double Modulus => Math.Sqrt(Real * Real + Imaginary * Imaginary);
+		/// <summary>
+		/// The argument, or angle of this complex number with respect to the x-axis
+		/// </summary>
 		public double Argument => Math.Atan2(Imaginary, Real);
 
 		public static readonly Complex I = new Complex
@@ -271,7 +277,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 				result = ComplexMath.FromString(s);
 				return true;
 			}
-			catch (ArgumentException e)
+			catch (ArgumentException)
 			{
 				result = null;
 				return false;

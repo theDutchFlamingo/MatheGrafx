@@ -58,5 +58,17 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 			if (valid) return new Complex(real, imaginary);
 			throw new ArgumentException("Given string did not seem to contain any valid (complex) numbers.");
 		}
+
+		/// <summary>
+		/// Complex power. Especially useful when there are a lot of operators combined,
+		/// since ^ doesn't have precedence over * and +
+		/// </summary>
+		/// <param name="b"></param>
+		/// <param name="exp"></param>
+		/// <returns></returns>
+		public static Complex Pow(Complex b, Complex exp)
+		{
+			return b ^ exp;
+		}
 	}
 }

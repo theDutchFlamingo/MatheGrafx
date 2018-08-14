@@ -98,6 +98,15 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		}
 
 		/// <summary>
+		/// The transpose conjugated, or the conjugate transposed, whatever you like more
+		/// </summary>
+		/// <returns></returns>
+		public ComplexMatrix ConjugateTranspose()
+		{
+			return Conjugate().Transpose();
+		}
+
+		/// <summary>
 		/// Get the transpose of this matrix, that is, each value i,j becomes j,i
 		/// </summary>
 		/// <returns></returns>
@@ -110,6 +119,25 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 				for (int j = 0; j < Width; j++)
 				{
 					indices[j, i] = Indices[i, j];
+				}
+			}
+
+			return new ComplexMatrix(indices);
+		}
+
+		/// <summary>
+		/// Gets this matrix with all its indices conjugated
+		/// </summary>
+		/// <returns></returns>
+		public ComplexMatrix Conjugate()
+		{
+			Complex[,] indices = new Complex[Height, Width];
+
+			for (int i = 0; i < Height; i++)
+			{
+				for (int j = 0; j < Width; j++)
+				{
+					indices[i, j] = Indices[i, j].Conjugate();
 				}
 			}
 
@@ -258,6 +286,15 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		public new bool IsAntiSymmetric()
 		{
 			return this == -Transpose();
+		}
+
+		/// <summary>
+		/// Whether this matrix is Hermitian, that is, whether it's equal to the conjugate of its transpose
+		/// </summary>
+		/// <returns></returns>
+		public bool IsHermitian()
+		{
+			return this == ConjugateTranspose();
 		}
 
 		/// <summary>

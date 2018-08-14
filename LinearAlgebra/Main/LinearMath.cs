@@ -22,7 +22,17 @@ namespace LinearAlgebra.Main
 		/// </summary>
 		/// <param name="m"></param>
 		/// <returns></returns>
-		public static double[] EigenValues(this Matrix m)
+		public static Vector EigenValues(this Matrix m)
+		{
+			return null;
+		}
+
+		/// <summary>
+		/// Gets the eigenvectors of the given matrix.
+		/// </summary>
+		/// <param name="m"></param>
+		/// <returns></returns>
+		public static Vector[] EigenVectors(this Matrix m)
 		{
 			return null;
 		}
@@ -65,9 +75,9 @@ namespace LinearAlgebra.Main
 			return null;
 		}
 
-		public static bool CloseTo(this double d1, double d2)
+		public static bool CloseTo(this double d1, double d2, double tolerance = Tolerance)
 		{
-			return Math.Abs(d1 - d2) <= Tolerance;
+			return Math.Abs(d1 - d2) <= tolerance;
 		}
 
 		public static Matrix UnitMatrix(int size)
