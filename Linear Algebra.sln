@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2047
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linear Algebra", "LinearAlgebra\Linear Algebra.csproj", "{B5B408CC-286B-4083-BA38-211A22EC129D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5B408CC-286B-4083-BA38-211A22EC129D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5B408CC-286B-4083-BA38-211A22EC129D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5B408CC-286B-4083-BA38-211A22EC129D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5B408CC-286B-4083-BA38-211A22EC129D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {19C1D6EA-2746-4F55-8D4D-8A597197A986}
+	EndGlobalSection
+EndGlobal
