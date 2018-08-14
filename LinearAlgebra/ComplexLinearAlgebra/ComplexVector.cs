@@ -61,7 +61,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		/// <returns></returns>
 		public new double Norm()
 		{
-			return Math.Sqrt(this * this);
+			return Math.Sqrt((this * this).Real);
 		}
 
 		/// <summary>
@@ -149,7 +149,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static double operator *(ComplexVector left, ComplexVector right)
+		public static Complex operator *(ComplexVector left, ComplexVector right)
 		{
 			if (!Comparable(left, right))
 				throw new
@@ -162,7 +162,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 				result += left[i] * right[i].Conjugate();
 			}
 
-			return result.Real;
+			return result;
 		}
 
 		/// <summary>
