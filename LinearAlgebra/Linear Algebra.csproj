@@ -45,10 +45,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComplexLinearAlgebra\Complex.cs" />
+    <Compile Include="Fields\Complex.cs" />
     <Compile Include="ComplexLinearAlgebra\ComplexMath.cs" />
     <Compile Include="ComplexLinearAlgebra\ComplexMatrix.cs" />
     <Compile Include="ComplexLinearAlgebra\ComplexVector.cs" />
+    <Compile Include="Fields\Field.cs" />
+    <Compile Include="Fields\FieldMember.cs" />
+    <Compile Include="Fields\MatrixBase.cs" />
+    <Compile Include="Fields\Numerical.cs" />
+    <Compile Include="Fields\Real.cs" />
+    <Compile Include="Fields\RealNumber.cs" />
+    <Compile Include="Fields\VectorBase.cs" />
     <Compile Include="Numeric\Polynomial.cs" />
     <Compile Include="Numeric\RootFinder.cs" />
     <Compile Include="VectorSpaces\Basis.cs" />
@@ -71,5 +78,6 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

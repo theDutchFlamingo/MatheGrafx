@@ -1,5 +1,6 @@
 ﻿using System;
 using LinearAlgebra.ComplexLinearAlgebra;
+using LinearAlgebra.Fields;
 using LinearAlgebra.Main;
 
 namespace LinearAlgebra

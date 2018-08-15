@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using LinearAlgebra.ComplexLinearAlgebra;
 using LinearAlgebra.Exceptions;
+using LinearAlgebra.Fields;
 using LinearAlgebra.Main;
 
 namespace LinearAlgebra

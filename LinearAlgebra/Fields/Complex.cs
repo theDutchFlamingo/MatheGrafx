@@ -1,9 +1,10 @@
 ﻿using System;
+using LinearAlgebra.ComplexLinearAlgebra;
 using LinearAlgebra.Main;
 
-namespace LinearAlgebra.ComplexLinearAlgebra
+namespace LinearAlgebra.Fields
 {
-	public class Complex
+	public class Complex : FieldMember
 	{
 		public double Real { get; set; }
 		public double Imaginary { get; set; }
@@ -282,6 +283,16 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 				result = null;
 				return false;
 			}
+		}
+
+		protected override FieldMember Add(FieldMember f)
+		{
+			if (f is Complex c)
+			{
+
+			}
+
+			throw new ArgumentException("Given field was neither complex");
 		}
 	}
 }

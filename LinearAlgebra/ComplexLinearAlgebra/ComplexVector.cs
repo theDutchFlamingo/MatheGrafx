@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LinearAlgebra.Exceptions;
+using LinearAlgebra.Fields;
 
 namespace LinearAlgebra.ComplexLinearAlgebra
 {
