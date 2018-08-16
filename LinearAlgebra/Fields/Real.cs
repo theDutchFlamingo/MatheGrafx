@@ -19,5 +19,15 @@ namespace LinearAlgebra.Fields
 		{
 			Value = value;
 		}
+
+		public static implicit operator double(Real r)
+		{
+			return r.Value;
+		}
+
+		public static implicit operator Real(double r)
+		{
+			return new Real(r);
+		}
 	}
 }

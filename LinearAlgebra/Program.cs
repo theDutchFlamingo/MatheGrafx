@@ -9,7 +9,7 @@ namespace LinearAlgebra
     {
         static void Main()
         {
-			Complexity();
+			Fields();
 		}
 
 	    public static void Complexity()
@@ -32,6 +32,13 @@ namespace LinearAlgebra
 		    }
 	    }
 
+	    public static void Fields()
+	    {
+			Real r = new Real(5);
+
+			Console.WriteLine(r.ToDouble());
+	    }
+
 	    public static void LinAlg()
 	    {
 		    int[,] ints = new int[2, 5];
@@ -49,14 +56,14 @@ namespace LinearAlgebra
 
 		    Matrix n = new Matrix(5, 3)
 		    {
-			    Indices = new double[,] { { 2, 3, 7 }, { 0, 0, 0 }, { 2, 4, 6 }, { -1, 4, 5 }, { 0, 8, 3 } }
+			    Indices = new Real[,] { { 2, 3, 7 }, { 0, 0, 0 }, { 2, 4, 6 }, { -1, 4, 5 }, { 0, 8, 3 } }
 		    };
 
-		    Matrix p = m * n;
+		    Matrix p = (Matrix) (m * n);
 
 		    Matrix e = n.ToReducedEchelonForm(0);
 
-		    Matrix u = n * n.Transpose();
+		    Matrix u = (Matrix) (n * n.Transpose());
 
 		    Console.WriteLine(e.IsReducedEchelon());
 		    Console.WriteLine();

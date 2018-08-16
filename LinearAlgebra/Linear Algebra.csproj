@@ -56,6 +56,7 @@
     <Compile Include="Fields\Real.cs" />
     <Compile Include="Fields\RealNumber.cs" />
     <Compile Include="Fields\VectorBase.cs" />
+    <Compile Include="Matrix - Copy.cs" />
     <Compile Include="Numeric\Polynomial.cs" />
     <Compile Include="Numeric\RootFinder.cs" />
     <Compile Include="VectorSpaces\Basis.cs" />

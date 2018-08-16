@@ -56,5 +56,10 @@ namespace LinearAlgebra.Fields
 		{
 			return other?.Value.Value.CloseTo(Value.Value) ?? false;
 		}
+
+		public override double ToDouble()
+		{
+			return Value.Value;
+		}
 	}
 }

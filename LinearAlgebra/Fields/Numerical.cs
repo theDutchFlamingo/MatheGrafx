@@ -14,5 +14,9 @@ namespace LinearAlgebra.Fields
 		string ToString();
 
 		string ToString(string format);
+
+		INumerical Round();
+
+		INumerical Log10();
 	}
 }

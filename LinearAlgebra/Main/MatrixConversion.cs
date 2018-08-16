@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LinearAlgebra.Fields;
 
 namespace LinearAlgebra.Main
 {
@@ -93,7 +94,7 @@ namespace LinearAlgebra.Main
 						continue;
 					if (n.GetPivot(from, amountToIgnore) == n.GetPivot(to, amountToIgnore))
 					{
-						double scale = -n[to, pivot] / n[from, pivot];
+						Real scale = (Real) (-n[to, pivot] / n[from, pivot]);
 
 						RowOperation.SubstitutionOperation(from, to, scale).ActOn(n);
 					}
@@ -159,9 +160,9 @@ namespace LinearAlgebra.Main
 
 				foreach (var to in rows)
 				{
-					if (!n[to,pivot].CloseTo(0))
+					if (!n[to,pivot].IsNull)
 					{
-						double scale = -n[to, pivot] / n[from, pivot];
+						Real scale = (Real) (-n[to, pivot] / n[from, pivot]);
 
 						RowOperation.SubstitutionOperation(from, to, scale).ActOn(n);
 					}
@@ -262,8 +263,8 @@ namespace LinearAlgebra.Main
 			for (int i = 0; i < m.Height; i++)
 			{
 				if (m.GetPivot(i, amountToIgnore) != -1 &&
-				    (!m[i, VectorType.Row][m.GetPivot(i, amountToIgnore)].CloseTo(1) ||
-				    m.Transpose().GetPivot(m.GetPivot(i, amountToIgnore)) != i))
+				    (!m[i, VectorType.Row][m.GetPivot(i, amountToIgnore)].IsUnit ||
+				    ((Matrix) m.Transpose()).GetPivot(m.GetPivot(i, amountToIgnore)) != i))
 					return false;
 			}
 

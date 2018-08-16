@@ -4,7 +4,7 @@ using LinearAlgebra.Main;
 
 namespace LinearAlgebra.Fields
 {
-	public class Complex : FieldMember
+	public class Complex
 	{
 		public double Real { get; set; }
 		public double Imaginary { get; set; }
@@ -285,14 +285,14 @@ namespace LinearAlgebra.Fields
 			}
 		}
 
-		protected override FieldMember Add(FieldMember f)
-		{
-			if (f is Complex c)
-			{
+		//protected override FieldMember<Complex> Add(FieldMember<Complex> f)
+		//{
+		//	if (f is Complex c)
+		//	{
 
-			}
+		//	}
 
-			throw new ArgumentException("Given field was neither complex");
-		}
+		//	throw new ArgumentException("Given field was neither complex");
+		//}
 	}
 }

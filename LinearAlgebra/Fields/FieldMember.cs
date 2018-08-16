@@ -16,9 +16,20 @@ namespace LinearAlgebra.Fields
 
 		protected abstract FieldMember<T> Multiply(FieldMember<T> fieldMember);
 
+		/// <summary>
+		/// The type of product that is used when calculating when calculating
+		/// an inner product (with vectors); defaults to normal multiplication.
+		/// For example, with complex numbers this would be left * right.Conjugate().
+		/// </summary>
+		/// <param name="fieldMember"></param>
+		/// <returns></returns>
+		public virtual FieldMember<T> Inner(FieldMember<T> fieldMember) => Add(fieldMember);
+
 		public abstract FieldMember<T> Null();
 
 		public abstract FieldMember<T> Unit();
+
+		public abstract double ToDouble();
 
 		public T Value { get; set; }
 
@@ -98,6 +109,16 @@ namespace LinearAlgebra.Fields
 		public static FieldMember<T> operator /(FieldMember<T> left, FieldMember<T> right)
 		{
 			return left * right.MultiplicativeInverse();
+		}
+
+		/// <summary>
+		/// Gets the double version of this object; not necessarily possible for all instances.
+		/// For complex numbers, for example, only possible if the imaginary part is 0.
+		/// </summary>
+		/// <param name="fieldMember"></param>
+		public static explicit operator double (FieldMember<T> fieldMember)
+		{
+			return fieldMember.ToDouble();
 		}
 	}
 }

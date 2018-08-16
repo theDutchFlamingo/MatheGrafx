@@ -109,7 +109,7 @@ namespace LinearAlgebra.Fields
 		/// <returns></returns>
 		public double Norm()
 		{
-			return Math.Sqrt(this * this);
+			return Math.Sqrt((double) (this * this));
 		}
 
 		public override string ToString()
@@ -180,7 +180,14 @@ namespace LinearAlgebra.Fields
 		{
 			string result = "";
 
-			if (this.Select(d => Math.Log10(Math.Round(d)).ToString(CultureInfo.InvariantCulture).Length)
+			INumerical[] indices = new INumerical[Dimension];
+
+			for (int i = 0; i < Dimension; i++)
+			{
+				indices[i] = (INumerical) Indices[i];
+			}
+
+			if (indices.Select(d => d.Round().Log10().ToString().Length)
 				.Any(s => s > maxPrecision))
 				maxPrecision += 4;
 
@@ -316,7 +323,7 @@ namespace LinearAlgebra.Fields
 
 			for (int i = 0; i < indices.Length; i++)
 			{
-				indices[i] = (indices[i] * right).Value;
+				indices[i] = (indices[i].Inner(right)).Value;
 			}
 
 			return new VectorBase<T>(indices);
@@ -349,22 +356,22 @@ namespace LinearAlgebra.Fields
 			return left.Dimension == right.Dimension;
 		}
 
-		public static implicit operator T[] (VectorBase<T> v)
+		public static explicit operator T[] (VectorBase<T> v)
 		{
 			return v.Indices.ToArray();
 		}
 
-		public static implicit operator List<T>(VectorBase<T> v)
+		public static explicit operator List<T>(VectorBase<T> v)
 		{
 			return new List<T>(v.Indices);
 		}
 
-		public static implicit operator VectorBase<T>(List<T> l)
+		public static explicit operator VectorBase<T>(List<T> l)
 		{
 			return new VectorBase<T>(l.ToArray());
 		}
 
-		public static implicit operator VectorBase<T>(T[] l)
+		public static explicit operator VectorBase<T>(T[] l)
 		{
 			return new VectorBase<T>(l);
 		}
