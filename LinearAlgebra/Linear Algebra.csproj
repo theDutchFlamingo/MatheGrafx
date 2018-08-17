@@ -36,6 +36,9 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\IncorrectFieldException.cs" />
     <Compile Include="Fields\Complex.cs" />
     <Compile Include="ComplexLinearAlgebra\ComplexMath.cs" />
     <Compile Include="ComplexLinearAlgebra\ComplexMatrix.cs" />
@@ -54,7 +58,7 @@
     <Compile Include="Fields\MatrixBase.cs" />
     <Compile Include="Fields\Numerical.cs" />
     <Compile Include="Fields\Real.cs" />
-    <Compile Include="Fields\RealNumber.cs" />
+    <Compile Include="Fields\RealNumbers.cs" />
     <Compile Include="Fields\VectorBase.cs" />
     <Compile Include="Matrix - Copy.cs" />
     <Compile Include="Numeric\Polynomial.cs" />

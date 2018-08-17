@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LinearAlgebra.Fields
 {
-	public abstract class FieldMember<T> : IEquatable<FieldMember<T>>
+	public abstract class FieldMember : IEquatable<FieldMember>
 	{
-		public abstract FieldMember<T> AdditiveInverse();
+		internal abstract T Add<T>(T other) where T : FieldMember;
 
-		public abstract FieldMember<T> MultiplicativeInverse();
+		internal abstract T Negative<T>() where T : FieldMember;
 
-		protected abstract FieldMember<T> Add(FieldMember<T> fieldMember);
+		internal abstract T Multiply<T>(T other) where T : FieldMember;
 
-		protected abstract FieldMember<T> Multiply(FieldMember<T> fieldMember);
+		internal abstract T Inverse<T>() where T : FieldMember;
+
+		public abstract T Null<T>() where T : FieldMember;
+
+		public abstract T Unit<T>() where T : FieldMember;
 
 		/// <summary>
 		/// The type of product that is used when calculating when calculating
@@ -23,92 +23,36 @@ namespace LinearAlgebra.Fields
 		/// </summary>
 		/// <param name="fieldMember"></param>
 		/// <returns></returns>
-		public virtual FieldMember<T> Inner(FieldMember<T> fieldMember) => Add(fieldMember);
-
-		public abstract FieldMember<T> Null();
-
-		public abstract FieldMember<T> Unit();
+		public virtual T Inner<T>(T fieldMember) where T : FieldMember => Add(fieldMember);
 
 		public abstract double ToDouble();
 
-		public T Value { get; set; }
+		public object Value { get; set; }
 
-		protected FieldMember()
-		{
-			Value = Null().Value;
-		}
-
-		protected FieldMember(T value)
+		protected FieldMember(object value)
 		{
 			Value = value;
 		}
 
 		/// <summary>
-		/// Whether this member of the FieldMember<V> is the null member
+		/// Whether this member of the FieldMember is the null member
 		/// </summary>
 		/// <returns></returns>
-		public bool IsNull => Equals(Null());
+		public bool IsNull => Equals(Null<FieldMember>());
 
 		/// <summary>
-		/// Whether this member of the FieldMember<V> is the unit member
+		/// Whether this member of the FieldMember is the unit member
 		/// </summary>
 		/// <returns></returns>
-		public bool IsUnit => Equals(Unit());
+		public bool IsUnit => Equals(Unit<FieldMember>());
 
-		public abstract bool Equals(FieldMember<T> other);
+		public abstract bool Equals<T>(T other);
 
-		/// <summary>
-		/// Add the two together
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static FieldMember<T> operator +(FieldMember<T> left, FieldMember<T> right)
+		public virtual bool Equals(FieldMember other)
 		{
-			return left.Add(right);
-		}
+			if (GetType() != other?.GetType()) return false;
 
-		/// <summary>
-		/// Negative of this FieldMember
-		/// </summary>
-		/// <param name="fieldMember"></param>
-		/// <returns></returns>
-		public static FieldMember<T> operator -(FieldMember<T> fieldMember)
-		{
-			return fieldMember.AdditiveInverse();
-		}
-
-		/// <summary>
-		/// Subtract right from left
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static FieldMember<T> operator -(FieldMember<T> left, FieldMember<T> right)
-		{
-			return left + -right;
-		}
-
-		/// <summary>
-		/// Multiply the two together
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static FieldMember<T> operator *(FieldMember<T> left, FieldMember<T> right)
-		{
-			return left.Multiply(right);
-		}
-
-		/// <summary>
-		/// Divide one FieldMember<V> by another
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static FieldMember<T> operator /(FieldMember<T> left, FieldMember<T> right)
-		{
-			return left * right.MultiplicativeInverse();
+			return Value == other.Value;
 		}
 
 		/// <summary>
@@ -116,7 +60,7 @@ namespace LinearAlgebra.Fields
 		/// For complex numbers, for example, only possible if the imaginary part is 0.
 		/// </summary>
 		/// <param name="fieldMember"></param>
-		public static explicit operator double (FieldMember<T> fieldMember)
+		public static explicit operator double (FieldMember fieldMember)
 		{
 			return fieldMember.ToDouble();
 		}

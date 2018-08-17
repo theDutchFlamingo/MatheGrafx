@@ -2,23 +2,11 @@
 using System.Linq;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
-using LinearAlgebra.Main;
 
 namespace LinearAlgebra.ComplexLinearAlgebra
 {
-	public class ComplexMatrix : Matrix
+	public class ComplexMatrix : MatrixBase<Complex>
 	{
-		public new Complex[,] Indices
-		{
-			get => ComplexIndices;
-			set
-			{
-				ComplexIndices = value;
-				Height = value.GetLength(0);
-				Width = value.GetLength(1);
-			}
-		}
-
 		/// <summary>
 		/// Creates a complex matrix with each index
 		/// </summary>
@@ -35,11 +23,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		/// <param name="type"></param>
 		public ComplexMatrix(ComplexVector[] vectors, VectorType type) : base(vectors, type)
 		{
-			Indices = new Complex[vectors.Length, vectors[0].Dimension];
-
-			this[type] = vectors;
-
-			Type = type;
+			
 		}
 
 		/// <summary>
@@ -62,68 +46,12 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		}
 
 		/// <summary>
-		/// Find the determinant by expanding along the first row
-		/// </summary>
-		/// <returns></returns>
-		public new Complex Determinant()
-		{
-			if (!IsSquare())
-				throw new
-					IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
-
-			if (Width == 1)
-				return Indices[0, 0];
-
-			Complex result = 0;
-
-			int i = 0;
-
-			for (int j = 0; j < Width; j++)
-			{
-				result += Indices[i, j] * Cofactor(i, j);
-			}
-
-			return result;
-		}
-
-		/// <summary>
-		/// Get the inverse of the matrix, which is done by dividing the adjugate matrix by the determinant
-		/// </summary>
-		/// <returns></returns>
-		public new ComplexMatrix Inverse()
-		{
-			if (!IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Inverse);
-
-			return Adjugate() / Determinant();
-		}
-
-		/// <summary>
 		/// The transpose conjugated, or the conjugate transposed, whatever you like more
 		/// </summary>
 		/// <returns></returns>
 		public ComplexMatrix ConjugateTranspose()
 		{
-			return Conjugate().Transpose();
-		}
-
-		/// <summary>
-		/// Get the transpose of this matrix, that is, each value i,j becomes j,i
-		/// </summary>
-		/// <returns></returns>
-		public new ComplexMatrix Transpose()
-		{
-			Complex[,] indices = new Complex[Width, Height];
-
-			for (int i = 0; i < Height; i++)
-			{
-				for (int j = 0; j < Width; j++)
-				{
-					indices[j, i] = Indices[i, j];
-				}
-			}
-
-			return new ComplexMatrix(indices);
+			return (ComplexMatrix) Conjugate().Transpose();
 		}
 
 		/// <summary>
@@ -146,150 +74,6 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		}
 
 		/// <summary>
-		/// Returns the submatrix obtained by excluding row m and column n
-		/// </summary>
-		/// <param name="m"></param>
-		/// <param name="n"></param>
-		/// <returns></returns>
-		public new ComplexMatrix SubMatrix(int m, int n)
-		{
-			Complex[,] indices = new Complex[Height - 1, Width - 1];
-
-			if (m >= Height || n >= Width)
-				throw new IndexOutOfRangeException();
-
-			for (int i = 0; i < Height; i++)
-			{
-				if (i == m)
-					continue;
-
-				for (int j = 0; j < Width; j++)
-				{
-					if (j == n)
-						continue;
-
-					indices[i > m ? i - 1 : i, j > n ? j - 1 : j] = Indices[i, j];
-				}
-			}
-
-			return new ComplexMatrix(indices);
-		}
-
-		/// <summary>
-		/// Gets the m,n minor, that is, the determinant of the m,n submatrix
-		/// </summary>
-		/// <param name="m"></param>
-		/// <param name="n"></param>
-		/// <returns></returns>
-		public new Complex Minor(int m, int n)
-		{
-			if (!IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
-
-			return SubMatrix(m, n).Determinant();
-		}
-
-		/// <summary>
-		/// Gets the matrix of minors, which replaces every index its corresponding minor
-		/// </summary>
-		/// <returns></returns>
-		public new ComplexMatrix MatrixOfMinors()
-		{
-			if (!IsSquare())
-				throw new
-					IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
-
-			Complex[,] indices = Indices;
-
-			for (int i = 0; i < Height; i++)
-			{
-				for (int j = 0; j < Width; j++)
-				{
-					indices[i, j] = Minor(i, j);
-				}
-			}
-
-			return new ComplexMatrix(indices);
-		}
-
-		/// <summary>
-		/// Gets the i,j-th cofactor of this matrix
-		/// </summary>
-		/// <param name="i"></param>
-		/// <param name="j"></param>
-		/// <returns></returns>
-		public new Complex Cofactor(int i, int j)
-		{
-			if (!IsSquare())
-				throw new
-					IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
-
-			return Math.Pow(-1, i + j) * Minor(i, j);
-		}
-
-		/// <summary>
-		/// Gets the cofactor matrix, which is the matrix of minors where every index
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		public new ComplexMatrix CofactorMatrix()
-		{
-			if (!IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
-
-			Complex[,] indices = Indices;
-
-			for (int i = 0; i < Height; i++)
-			{
-				for (int j = 0; j < Width; j++)
-				{
-					indices[i, j] = Cofactor(i, j);
-				}
-			}
-
-			return new ComplexMatrix(indices);
-		}
-
-		/// <summary>
-		/// Gets the adjugate matrix, which is the transpose of the cofactor matrix
-		/// </summary>
-		/// <returns></returns>
-		public new ComplexMatrix Adjugate()
-		{
-			if (!IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
-
-			return CofactorMatrix().Transpose();
-		}
-
-		/// <summary>
-		/// Whether this is an n-by-n matrix
-		/// </summary>
-		/// <returns></returns>
-		public new bool IsSquare()
-		{
-			return Width == Height;
-		}
-
-		/// <summary>
-		/// Whether this matrix A is symmetric, that is A = Aᵀ
-		/// </summary>
-		/// <returns></returns>
-		public new bool IsSymmetric()
-		{
-			return this == Transpose();
-		}
-
-		/// <summary>
-		/// Whether this matrix A is antisymmetric, that is A = -Aᵀ
-		/// </summary>
-		/// <returns></returns>
-		public new bool IsAntiSymmetric()
-		{
-			return this == -Transpose();
-		}
-
-		/// <summary>
 		/// Whether this matrix is Hermitian, that is, whether it's equal to the conjugate of its transpose
 		/// </summary>
 		/// <returns></returns>
@@ -299,105 +83,13 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		}
 
 		/// <summary>
-		/// Turn this Matrix into an array of vectors (the type parameter determines
-		/// whether the columns or rows will be returned).
+		/// Whether this matrix is anti-Hermitian, or skew-Hermitian, that is, whether it's equal to
+		/// the negative of the conjugate of its transpose
 		/// </summary>
-		/// <param name="type"></param>
 		/// <returns></returns>
-		public new ComplexVector[] this[VectorType type]
+		public bool IsAntiHermitian()
 		{
-			get
-			{
-				ComplexVector[] result;
-
-				switch (type)
-				{
-					case VectorType.Column:
-						result = new ComplexVector[Width];
-
-						for (int j = 0; j < result.Length; j++)
-						{
-							result[j] = new ComplexVector(Height);
-						}
-
-						for (int i = 0; i < Height; i++)
-						{
-							for (int j = 0; j < Width; j++)
-							{
-								result[j][i] = Indices[i, j];
-							}
-						}
-						return result;
-					case VectorType.Row:
-						result = new ComplexVector[Height];
-
-						for (int i = 0; i < result.Length; i++)
-						{
-							result[i] = new ComplexVector(Width);
-						}
-
-						for (int i = 0; i < Height; i++)
-						{
-							for (int j = 0; j < Width; j++)
-							{
-								result[i][j] = Indices[i, j];
-							}
-						}
-						return result;
-					default:
-						throw new ArgumentException("Given argument was not a vectortype");
-				}
-			}
-			set
-			{
-				switch (type)
-				{
-					case VectorType.Column:
-						Indices = new Complex[value[0].Dimension, value.Length];
-
-						for (int j = 0; j < value.Length; j++)
-						{
-							for (int i = 0; i < value[0].Dimension; i++)
-							{
-								Indices[i, j] = value[j][i];
-							}
-						}
-						break;
-					case VectorType.Row:
-						Indices = new Complex[value.Length, value[0].Dimension];
-
-						for (int i = 0; i < value.Length; i++)
-						{
-							for (int j = 0; j < value[0].Dimension; j++)
-							{
-								Indices[i, j] = value[i][j];
-							}
-						}
-						break;
-				}
-			}
-		}
-
-		protected bool Equals(ComplexMatrix other)
-		{
-			return Equals(ComplexIndices, other.ComplexIndices);
-		}
-
-		public override bool Equals(object obj)
-		{
-			if (ReferenceEquals(null, obj))
-				return false;
-			if (ReferenceEquals(this, obj))
-				return true;
-			if (obj.GetType() != GetType())
-				return false;
-			return Equals((ComplexMatrix)obj);
-		}
-
-		public override int GetHashCode()
-		{
-			var hashCode = Indices != null ? Indices.GetHashCode() : 0;
-			return hashCode;
+			return this == -ConjugateTranspose();
 		}
 
 		/// <summary>
@@ -418,7 +110,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 
 			for (int k = 0; k < left.Height * left.Width; k++)
 			{
-				if (!left.GetIndices().ToList()[k].CloseTo(right.GetIndices().ToList()[k]))
+				if (!left.GetIndices().ToList()[k].Equals(right.GetIndices().ToList()[k]))
 					return false;
 			}
 

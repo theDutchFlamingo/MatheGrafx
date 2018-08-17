@@ -10,20 +10,20 @@ using LinearAlgebra.Main;
 
 namespace LinearAlgebra.Fields
 {
-	public class VectorBase<T> : IEnumerable<T> where T : FieldMember<T>, new()
+	public class VectorBase<T> : IEnumerable<T> where T : FieldMember, new()
 	{
-		private FieldMember<T>[] _indices;
+		private FieldMember[] _indices;
 
 		public T[] Indices
 		{
-			get => _indices.Select(t => new T()).ToArray();
+			get => _indices.Cast<T>().ToArray();
 			set
 			{
-				_indices = new FieldMember<T>[value.Length];
+				_indices = new FieldMember[value.Length];
 
 				for (int i = 0; i < value.Length; i++)
 				{
-					_indices[i] = new T{Value = value[i]};
+					_indices[i] = value[i];
 				}
 
 				Dimension = value.Length;
@@ -71,7 +71,7 @@ namespace LinearAlgebra.Fields
 				Indices[i] = new T();
 			}
 
-			Indices[n] = new T().Unit().Value;
+			Indices[n] = new T().Unit<T>();
 		}
 
 		///<summary>Creates a null vector of given dimension</summary>
@@ -256,7 +256,7 @@ namespace LinearAlgebra.Fields
 
 			for (int i = 0; i < indices.Length; i++)
 			{
-				indices[i] = (indices[i] + right[i]).Value;
+				indices[i] = indices[i].Add(right[i]);
 			}
 
 			return new VectorBase<T>(indices);
@@ -273,7 +273,7 @@ namespace LinearAlgebra.Fields
 
 			for (int i = 0; i < indices.Length; i++)
 			{
-				indices[i] = (-v[i]).Value;
+				indices[i] = v[i].Negative<T>();
 			}
 
 			return new VectorBase<T>(indices);
@@ -305,7 +305,7 @@ namespace LinearAlgebra.Fields
 
 			for (int i = 0; i < left.Dimension; i++)
 			{
-				result = (result + left[i] * right[i]).Value;
+				result = result.Add(left[i].Multiply(right[i]));
 			}
 
 			return result;
@@ -316,14 +316,14 @@ namespace LinearAlgebra.Fields
 		/// </summary>
 		/// <param name="left"></param>
 		/// <param name="right"></param>
-		/// <returns></VectorBase<T>>
+		/// <returns>&lt;T&gt;</returns>
 		public static VectorBase<T> operator *(VectorBase<T> left, T right)
 		{
 			T[] indices = left.Indices;
 
 			for (int i = 0; i < indices.Length; i++)
 			{
-				indices[i] = (indices[i].Inner(right)).Value;
+				indices[i] = indices[i].Inner(right);
 			}
 
 			return new VectorBase<T>(indices);
@@ -348,7 +348,7 @@ namespace LinearAlgebra.Fields
 		/// <returns></returns>
 		public static VectorBase<T> operator /(VectorBase<T> left, T right)
 		{
-			return left * right.MultiplicativeInverse().Value;
+			return left * right.Inverse<T>();
 		}
 
 		protected static bool Comparable(VectorBase<T> left, VectorBase<T> right)

@@ -1,11 +1,14 @@
 ﻿using System;
 using LinearAlgebra.ComplexLinearAlgebra;
+using LinearAlgebra.Exceptions;
 using LinearAlgebra.Main;
 
 namespace LinearAlgebra.Fields
 {
-	public class Complex
+	public class Complex : FieldMember
 	{
+		#region Properties
+
 		public double Real { get; set; }
 		public double Imaginary { get; set; }
 
@@ -18,25 +21,37 @@ namespace LinearAlgebra.Fields
 		/// </summary>
 		public double Argument => Math.Atan2(Imaginary, Real);
 
+		#endregion
+
+		#region Constants
+
 		public static readonly Complex I = new Complex
 		{
 			Real = 0,
 			Imaginary = 1
 		};
 
+		#endregion
+
+		#region Constructors
+
 		/// <summary>
 		/// Complex constructor without arguments
 		/// </summary>
-		public Complex()
+		public Complex() : base(new { Real = 0, Imaginary = 0 })
 		{
-
+			
 		}
 
-		public Complex(double real, double imaginary)
+		public Complex(double real, double imaginary) : base(new { Real = real, Imaginary = imaginary })
 		{
 			Real = real;
 			Imaginary = imaginary;
 		}
+
+		#endregion
+
+		#region Complex-specific Methods
 
 		/// <summary>
 		/// Whether this complex number is purely real, that is, Im(this) == 0
@@ -65,6 +80,10 @@ namespace LinearAlgebra.Fields
 			return new Complex(Real, -Imaginary);
 		}
 
+		#endregion
+
+		#region Strings
+
 		/// <summary>
 		/// String representation of the complex number
 		/// </summary>
@@ -84,6 +103,10 @@ namespace LinearAlgebra.Fields
 			if (exponential) return $"{Modulus}*e^({Argument}i)";
 			return $"{Real} + {Imaginary}i";
 		}
+
+		#endregion
+
+		#region Operators
 
 		/// <summary>
 		/// Add the complex to the real
@@ -262,6 +285,10 @@ namespace LinearAlgebra.Fields
 			       (Math.E ^ (b.Argument * (exp.Real * I - exp.Imaginary)));
 		}
 
+		#endregion
+
+		#region Conversions
+
 		/// <summary>
 		/// Convert implicitly from double to Complex
 		/// </summary>
@@ -285,14 +312,60 @@ namespace LinearAlgebra.Fields
 			}
 		}
 
-		//protected override FieldMember<Complex> Add(FieldMember<Complex> f)
-		//{
-		//	if (f is Complex c)
-		//	{
+		#endregion
 
-		//	}
+		#region Override Methods
 
-		//	throw new ArgumentException("Given field was neither complex");
-		//}
+		internal override T Add<T>(T other)
+		{
+			if (other is Complex c)
+				return (T) (FieldMember) (this + c);
+			throw new IncorrectFieldException(GetType(), "added", other.GetType());
+		}
+
+		internal override T Negative<T>()
+		{
+			return (T) (FieldMember) (-this);
+		}
+
+		internal override T Multiply<T>(T other)
+		{
+			if (other is Complex c)
+				return (T)(FieldMember)(this * c);
+			throw new IncorrectFieldException(GetType(), "added", other.GetType());
+		}
+
+		internal override T Inverse<T>()
+		{
+			return (T) (FieldMember) (1 / this);
+		}
+
+		public override T Null<T>()
+		{
+			if (typeof(T) == GetType())
+				return (T) (FieldMember) new Complex(0, 0);
+			throw new IncorrectFieldException(this, "null", typeof(T));
+		}
+
+		public override T Unit<T>()
+		{
+			if (typeof(T) == GetType())
+				return (T)(FieldMember)new Complex(1, 0);
+			throw new IncorrectFieldException(this, "unit", typeof(T));
+		}
+
+		public override double ToDouble()
+		{
+			return Real;
+		}
+
+		public override bool Equals<T>(T other)
+		{
+			if (other is Complex c)
+				return ComplexMath.Equals(this, c);
+			return false;
+		}
+
+		#endregion
 	}
 }

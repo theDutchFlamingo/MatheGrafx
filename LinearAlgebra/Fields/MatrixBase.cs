@@ -9,11 +9,11 @@ using LinearAlgebra.Main;
 
 namespace LinearAlgebra.Fields
 {
-	public class MatrixBase<T> : IEnumerable<VectorBase<T>>, IEnumerable<T> where T : FieldMember<T>, new()
+	public class MatrixBase<T> : IEnumerable<VectorBase<T>>, IEnumerable<T> where T : FieldMember, new()
 	{
 		public static VectorType DefaultVectorType { get; set; } = VectorType.Column;
 
-		private FieldMember<T>[,] _indices;
+		private FieldMember[,] _indices;
 
 		public T[,] Indices
 		{
@@ -25,7 +25,7 @@ namespace LinearAlgebra.Fields
 				{
 					for (int j = 0; j < Width; j++)
 					{
-						indices[i, j] = _indices[i, j].Value;
+						indices[i, j] = (T) _indices[i, j];
 					}
 				}
 
@@ -36,13 +36,13 @@ namespace LinearAlgebra.Fields
 				Height = value.GetLength(0);
 				Width = value.GetLength(1);
 
-				var indices = new FieldMember<T>[Height, Width];
+				var indices = new FieldMember[Height, Width];
 
 				for (int i = 0; i < Height; i++)
 				{
 					for (int j = 0; j < Width; j++)
 					{
-						indices[i, j] = new T{Value = value[i, j]};
+						indices[i, j] = value[i, j];
 					}
 				}
 
@@ -150,7 +150,7 @@ namespace LinearAlgebra.Fields
 
 			for (int k = 0; k < size; k++)
 			{
-				Indices[k, k] = new T().Unit().Value;
+				Indices[k, k] = new T().Unit<T>();
 			}
 		}
 
@@ -184,16 +184,16 @@ namespace LinearAlgebra.Fields
 			if (Width == 1)
 				return Indices[0, 0];
 
-			FieldMember<T> result = new T();
+			T result = new T();
 
 			int i = 0;
 
 			for (int j = 0; j < Width; j++)
 			{
-				result += Indices[i, j] * Cofactor(i, j);
+				result = result.Add(Indices[i, j].Multiply(Cofactor(i, j)));
 			}
 
-			return result.Value;
+			return result;
 		}
 
 		/// <summary>
@@ -304,7 +304,7 @@ namespace LinearAlgebra.Fields
 			if (!IsSquare())
 				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
 
-			return ((i + j) % 2 == 0 ? Minor(i, j) : -Minor(i, j)).Value;
+			return (i + j) % 2 == 0 ? Minor(i, j) : Minor(i, j).Negative<T>();
 		}
 
 		/// <summary>
@@ -684,7 +684,7 @@ namespace LinearAlgebra.Fields
 				{
 					for (int j = 0; j < left.Height; j++)
 					{
-						indices[i, j] = (left.Indices[i, j] + right.Indices[i, j]).Value;
+						indices[i, j] = left.Indices[i, j].Add(right.Indices[i, j]);
 					}
 				}
 
@@ -706,7 +706,7 @@ namespace LinearAlgebra.Fields
 			{
 				for (int j = 0; j < m.Height; j++)
 				{
-					indices[i, j] = (-m.Indices[i, j]).Value;
+					indices[i, j] = m.Indices[i, j].Negative<T>();
 				}
 			}
 
@@ -746,7 +746,7 @@ namespace LinearAlgebra.Fields
 			{
 				for (int j = 0; j < right.Width; j++)
 				{
-					indices[i, j] = (left[i, VectorType.Row] * right[j, VectorType.Column]).Value;
+					indices[i, j] = left[i, VectorType.Row] * right[j, VectorType.Column];
 				}
 			}
 
@@ -794,7 +794,7 @@ namespace LinearAlgebra.Fields
 			{
 				for (int j = 0; j < left.Width; j++)
 				{
-					indices[i, j] = (indices[i, j] * right.Value).Value;
+					indices[i, j] = indices[i, j].Multiply(right);
 				}
 			}
 
@@ -820,7 +820,7 @@ namespace LinearAlgebra.Fields
 		/// <returns></returns>
 		public static MatrixBase<T> operator /(MatrixBase<T> left, T right)
 		{
-			return left * right.MultiplicativeInverse().Value;
+			return left * right.Inverse<T>();
 		}
 
 		/// <summary>

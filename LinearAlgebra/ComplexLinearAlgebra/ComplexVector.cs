@@ -6,13 +6,9 @@ using LinearAlgebra.Fields;
 
 namespace LinearAlgebra.ComplexLinearAlgebra
 {
-	public class ComplexVector : Vector, IEnumerable<Complex>
+	public class ComplexVector : VectorBase<Complex>
 	{
-		public new Complex[] Indices
-		{
-			get => ComplexIndices;
-			set => ComplexIndices = value;
-		}
+		#region Constructors
 
 		public ComplexVector(Complex[] indices) : base(indices)
 		{
@@ -23,47 +19,39 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		/// Create a vector with a double array
 		/// </summary>
 		/// <param name="indices"></param>
-		public ComplexVector(double[] indices) : base(indices)
+		public ComplexVector(double[] indices) : base(indices.Length)
 		{
-			
+			for (int i = 0; i < Dimension; i++)
+			{
+				Indices[i] = indices[i];
+			}
 		}
 
 		/// <summary>
 		/// Create a vector from another vector
 		/// </summary>
 		/// <param name="v"></param>
-		public ComplexVector(ComplexVector v) : base((Vector) v)
+		public ComplexVector(ComplexVector v) : base(v)
 		{
-			Indices = new Complex[v.Indices.Length];
 
-			for (int i = 0; i < Dimension; i++)
-			{
-				Indices[i] = v.Indices[i];
-			}
 		}
 
 		/// <summary>Creates the (n+1)ᵗʰ unit vector of the given dimension,
 		/// a.k.a. the 1 is at position n</summary>
-
 		public ComplexVector(int dimension, int n) : base(dimension, n)
 		{
-			
+
 		}
 
 		///<summary>Creates a null vector of given dimension</summary>
 		public ComplexVector(int dimension) : base(dimension)
 		{
-			
+
 		}
 
-		/// <summary>
-		/// Gets the norm of this vector
-		/// </summary>
-		/// <returns></returns>
-		public new double Norm()
-		{
-			return Math.Sqrt((this * this).Real);
-		}
+		#endregion
+
+		#region Complex-specific Methods
 
 		/// <summary>
 		/// Whether all elements of this vector are real
@@ -71,7 +59,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		/// <returns></returns>
 		public bool IsReal()
 		{
-			return this.OfType<Complex>().All(c => c.IsReal());
+			return this.All(c => c.IsReal());
 		}
 
 		/// <summary>
@@ -80,19 +68,12 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		/// <returns></returns>
 		public bool IsImaginary()
 		{
-			return this.OfType<Complex>().All(c => c.IsImaginary());
+			return this.All(c => c.IsImaginary());
 		}
 
-		/// <summary>
-		/// Gets the double at the given index i
-		/// </summary>
-		/// <param name="i"></param>
-		/// <returns></returns>
-		public new Complex this[int i]
-		{
-			get => Indices[i];
-			set => Indices[i] = value;
-		}
+		#endregion
+
+		#region Operators
 
 		/// <summary>
 		/// Add the two vectors together
@@ -206,9 +187,6 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 			return left * (1 / right);
 		}
 
-		IEnumerator<Complex> IEnumerable<Complex>.GetEnumerator()
-		{
-			return ((IEnumerable<Complex>)Indices).GetEnumerator();
-		}
+			#endregion
 	}
 }

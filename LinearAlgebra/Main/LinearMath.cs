@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LinearAlgebra.Exceptions;
+using LinearAlgebra.Fields;
 using LinearAlgebra.VectorSpaces;
 
 namespace LinearAlgebra.Main
@@ -76,6 +77,11 @@ namespace LinearAlgebra.Main
 		}
 
 		public static bool CloseTo(this double d1, double d2, double tolerance = Tolerance)
+		{
+			return Math.Abs(d1 - d2) <= tolerance;
+		}
+
+		public static bool CloseTo(this Real d1, Real d2, double tolerance = Tolerance)
 		{
 			return Math.Abs(d1 - d2) <= tolerance;
 		}

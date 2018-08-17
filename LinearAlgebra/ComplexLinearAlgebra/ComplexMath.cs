@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LinearAlgebra.Fields;
+using LinearAlgebra.Main;
 
 namespace LinearAlgebra.ComplexLinearAlgebra
 {
@@ -70,6 +71,11 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		public static Complex Pow(Complex b, Complex exp)
 		{
 			return b ^ exp;
+		}
+
+		public static bool Equals(this Complex left, Complex right)
+		{
+			return left.Real.CloseTo(right.Real) && left.Imaginary.CloseTo(right.Imaginary);
 		}
 	}
 }

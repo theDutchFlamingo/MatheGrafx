@@ -9,18 +9,18 @@ namespace LinearAlgebra.Fields
 	/// <summary>
 	/// Represents a set of mathematical objects that obey certain properties
 	/// </summary>
-	/// <typeparam name="V"></typeparam>
-	public abstract class Field<V>
+	/// <typeparam name="T"></typeparam>
+	public abstract class Field<T>
 	{
-		public abstract FieldMember<V> Unit();
+		public abstract T Unit();
 
-		public abstract FieldMember<V> Null();
+		public abstract T Null();
 
-		public abstract FieldMember<V> Create(object value);
+		public abstract T Create(object value);
 
-		public bool Contains(FieldMember<object> m)
+		public bool Contains(T m)
 		{
-			return m is V;
+			return m?.GetType() == typeof(T);
 		}
 	}
 }
