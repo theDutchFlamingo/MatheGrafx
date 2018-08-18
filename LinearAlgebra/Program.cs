@@ -7,14 +7,15 @@ namespace LinearAlgebra
 {
     public static class Program
     {
-        static void Main()
+	    static void Main()
         {
+//	        Complexity();
 			Test();
 		}
 
 	    private static void Test()
 	    {
-			MatrixBase<Real> m = new MatrixBase<Real>(4, 4)
+			Matrix m = new Matrix(4, 4)
 			{
 				Indices = new Real[,] { { 1, 1, 1, 1 }, { 1, 1, 1, 2 }, { 1, 1, 2, 3 }, { 1, 1, 3, 4} }
 			};
