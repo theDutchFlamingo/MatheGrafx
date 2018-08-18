@@ -2,18 +2,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LinearAlgebra.Exceptions;
-using LinearAlgebra.Main;
 
 namespace LinearAlgebra.Fields
 {
+	/// <summary>
+	/// A class for matrices of any type. The generic parameter must be a subclass of
+	/// FieldMember to ensure 
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	public class MatrixBase<T> : IEnumerable<VectorBase<T>>, IEnumerable<T> where T : FieldMember, new()
 	{
+		#region Static
+		/// <summary>
+		/// When no explicit VectorType is given, this default will be selected
+		/// </summary>
+		// ReSharper disable once StaticMemberInGenericType
 		public static VectorType DefaultVectorType { get; set; } = VectorType.Column;
 
-		private FieldMember[,] _indices;
+		#endregion
+
+		/**
+		 * All fields and properties: the indices of the matrix, the height and width,
+		 * and the vector type that this matrix is described by.
+		 */
+		#region Fields & Properties
+
+		private T[,] _indices;
 
 		public T[,] Indices
 		{
@@ -25,7 +40,7 @@ namespace LinearAlgebra.Fields
 				{
 					for (int j = 0; j < Width; j++)
 					{
-						indices[i, j] = (T) _indices[i, j];
+						indices[i, j] = _indices[i, j];
 					}
 				}
 
@@ -36,7 +51,7 @@ namespace LinearAlgebra.Fields
 				Height = value.GetLength(0);
 				Width = value.GetLength(1);
 
-				var indices = new FieldMember[Height, Width];
+				var indices = new T[Height, Width];
 
 				for (int i = 0; i < Height; i++)
 				{
@@ -56,12 +71,19 @@ namespace LinearAlgebra.Fields
 
 		public VectorType Type { get; set; } = DefaultVectorType;
 
+		#endregion
+
+		/**
+		 * The constructors; two for general matrices with all indices filled,
+		 * two for diagonal matrices, one for unit matrices and one for null matrices.
+		 */
+		#region Constructors
 
 		/// <summary>
 		/// Constructor of a MatrixBase
 		/// </summary>
 		/// <param name="indices"></param>
-		protected MatrixBase(T[,] indices)
+		public MatrixBase(T[,] indices)
 		{
 			Indices = indices;
 		}
@@ -80,7 +102,7 @@ namespace LinearAlgebra.Fields
 			{
 				for (int j = 0; j < m.Width; j++)
 				{
-					Indices[i, j] = m.Indices[i, j];
+					_indices[i, j] = m.Indices[i, j];
 				}
 			}
 		}
@@ -167,10 +189,18 @@ namespace LinearAlgebra.Fields
 			{
 				for (int j = 0; j < width; j++)
 				{
-					Indices[i, j] = new T();
+					_indices[i, j] = new T();
 				}
 			}
 		}
+
+		#endregion
+
+		/**
+		 * This is where the biggest part of the MatrixBase class is, with the Determinant(),
+		 * the Inverse(), and all the intermediate steps
+		 */
+		#region Main Functionality
 
 		/// <summary>
 		/// Find the determinant by expanding along the first row
@@ -202,7 +232,7 @@ namespace LinearAlgebra.Fields
 		/// <returns></returns>
 		public MatrixBase<T> Inverse()
 		{
-			if (!IsSquare())
+			if (!IsSquare() || Determinant().IsNull())
 				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Inverse);
 
 			return Adjugate() / Determinant();
@@ -342,6 +372,14 @@ namespace LinearAlgebra.Fields
 			return CofactorMatrix().Transpose();
 		}
 
+		#endregion
+
+		/**
+		 * Find out if a matrix is square, symmetric or anti-symmetric,
+		 * and if it can be added or multiplied to another matrix.
+		 */
+		#region Tests
+
 		/// <summary>
 		/// Whether this is an n-by-n matrix
 		/// </summary>
@@ -370,7 +408,35 @@ namespace LinearAlgebra.Fields
 		}
 
 		/// <summary>
-		/// Get the index at position index, based on whether the 
+		/// Find out whether the two matrices can be added
+		/// </summary>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		protected bool Addable(MatrixBase<T> right)
+		{
+			return Width == right.Width && Height == right.Height;
+		}
+
+		/// <summary>
+		/// Find out whether the two matrices can be multiplied
+		/// </summary>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		protected bool Multipliable(MatrixBase<T> right)
+		{
+			return Width == right.Height;
+		}
+
+		#endregion
+
+		/**
+		 * Indexing of the matrix. You can index by vectors, by 2D-indexes, or a 1D-indexer.
+		 */
+		#region Indexing
+
+		/// <summary>
+		/// Get the index at position index, based on whether the VectorType type is set to column or row.
+		/// In case of Column, it goes up to down, left to right, and vice versa in case of Row.
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
@@ -438,7 +504,7 @@ namespace LinearAlgebra.Fields
 							throw new IndexOutOfRangeException($"Index was {n}, max is {Width - 1}");
 						if (value.Dimension != Height)
 							throw new ArgumentException("Vector does not have the correct size" +
-														$", should be: {Height}");
+							                            $", should be: {Height}");
 
 						j = n;
 
@@ -541,6 +607,14 @@ namespace LinearAlgebra.Fields
 			}
 		}
 
+		#endregion
+
+		/**
+		 * When you need to convert a Matrix to a string. Can be formatted in the style of a 2D array
+		 * or as a table with or without determinant signs around it.
+		 */
+		#region String Conversions
+
 		/// <summary>
 		/// Format the matrix as a string, written the same way you'd write a 2d array
 		/// (Like { { 0, 1}, {2, 3} })
@@ -601,7 +675,7 @@ namespace LinearAlgebra.Fields
 			foreach (var vector in this[VectorType.Row])
 			{
 				result += "| " + vector.ToTable(precision, VectorType.Row, padding) +
-						  (i == middle && addResult ? $" | = {Determinant()}\n" : " |\n");
+				          (i == middle && addResult ? $" | = {Determinant()}\n" : " |\n");
 				i++;
 			}
 
@@ -609,6 +683,13 @@ namespace LinearAlgebra.Fields
 
 			return result;
 		}
+
+		#endregion
+
+		/**
+		 * Equality tests
+		 */
+		#region Equality Methods
 
 		protected bool Equals(Matrix other)
 		{
@@ -632,6 +713,13 @@ namespace LinearAlgebra.Fields
 			return hashCode;
 		}
 
+		#endregion
+
+		/**
+		 * All operators. Matrices support addition, multiplication, powers, and negation.
+		 */
+		#region Operators
+
 		/// <summary>
 		/// Equality comparison for matrices
 		/// </summary>
@@ -645,7 +733,7 @@ namespace LinearAlgebra.Fields
 				return true;
 			if (left?.Width == null || right?.Width == null)
 				return false;
-			if (!Addable(left, right))
+			if (!left.Addable(right))
 				return false;
 
 			for (int k = 0; k < left.Height * left.Width; k++)
@@ -676,7 +764,7 @@ namespace LinearAlgebra.Fields
 		/// <returns></returns>
 		public static MatrixBase<T> operator +(MatrixBase<T> left, MatrixBase<T> right)
 		{
-			if (Addable(left, right))
+			if (left.Addable(right))
 			{
 				T[,] indices = new T[left.Width, left.Height];
 
@@ -721,7 +809,7 @@ namespace LinearAlgebra.Fields
 		/// <returns></returns>
 		public static MatrixBase<T> operator -(MatrixBase<T> left, MatrixBase<T> right)
 		{
-			if (Addable(left, right))
+			if (left.Addable(right))
 			{
 				return left + -right;
 			}
@@ -737,7 +825,7 @@ namespace LinearAlgebra.Fields
 		/// <returns></returns>
 		public static MatrixBase<T> operator *(MatrixBase<T> left, MatrixBase<T> right)
 		{
-			if (!Multipliable(left, right))
+			if (!left.Multipliable(right))
 				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Multiplication);
 
 			T[,] indices = new T[left.Height, right.Width];
@@ -823,27 +911,13 @@ namespace LinearAlgebra.Fields
 			return left * right.Inverse<T>();
 		}
 
-		/// <summary>
-		/// Find out whether the two matrices can be added
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		protected static bool Addable(MatrixBase<T> left, MatrixBase<T> right)
-		{
-			return left.Width == right.Width && left.Height == right.Height;
-		}
+		#endregion
 
-		/// <summary>
-		/// Find out whether the two matrices can be multiplied
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		protected static bool Multipliable(MatrixBase<T> left, MatrixBase<T> right)
-		{
-			return left.Width == right.Height;
-		}
+		/**
+		 * All the implementations of the IEnumerable interface. Also contains a specific
+		 * method to get the list of rows or columns
+		 */
+		#region Enumerables and Enumerators
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
@@ -922,5 +996,7 @@ namespace LinearAlgebra.Fields
 		{
 			return GetVectors(VectorType.Column).ToList();
 		}
+
+		#endregion
 	}
 }

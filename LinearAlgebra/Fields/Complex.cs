@@ -354,6 +354,10 @@ namespace LinearAlgebra.Fields
 			throw new IncorrectFieldException(this, "unit", typeof(T));
 		}
 
+		public override bool IsNull() => Equals(Null<Complex>());
+
+		public override bool IsUnit() => Equals(Unit<Complex>());
+
 		public override double ToDouble()
 		{
 			return Real;

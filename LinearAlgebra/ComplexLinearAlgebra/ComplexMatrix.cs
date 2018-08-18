@@ -5,8 +5,14 @@ using LinearAlgebra.Fields;
 
 namespace LinearAlgebra.ComplexLinearAlgebra
 {
+	/// <summary>
+	/// Specific implementation of MatrixBase&lt;Complex&gt; because ComplexMatrices are still pretty common.
+	/// Also adds some specific complex methods.
+	/// </summary>
 	public class ComplexMatrix : MatrixBase<Complex>
 	{
+		#region Constructors
+
 		/// <summary>
 		/// Creates a complex matrix with each index
 		/// </summary>
@@ -44,6 +50,10 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		{
 
 		}
+
+		#endregion
+
+		#region Complex-specific Methods
 
 		/// <summary>
 		/// The transpose conjugated, or the conjugate transposed, whatever you like more
@@ -92,41 +102,9 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 			return this == -ConjugateTranspose();
 		}
 
-		/// <summary>
-		/// Equality comparison for matrices
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static bool operator ==(ComplexMatrix left, ComplexMatrix right)
-		{
-			// If the property width is null, the matrix must also be null
-			if (left?.Width == null && right?.Width == null)
-				return true;
-			if (left?.Width == null || right?.Width == null)
-				return false;
-			if (!Addable(left, right))
-				return false;
+		#endregion
 
-			for (int k = 0; k < left.Height * left.Width; k++)
-			{
-				if (!left.GetIndices().ToList()[k].Equals(right.GetIndices().ToList()[k]))
-					return false;
-			}
-
-			return true;
-		}
-
-		/// <summary>
-		/// Inequality for matrices
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static bool operator !=(ComplexMatrix left, ComplexMatrix right)
-		{
-			return !(left == right);
-		}
+		#region Operators
 
 		/// <summary>
 		/// Add two matrices together
@@ -136,7 +114,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		/// <returns></returns>
 		public static ComplexMatrix operator +(ComplexMatrix left, ComplexMatrix right)
 		{
-			if (Addable(left, right))
+			if (left.Addable(right))
 			{
 				Complex[,] indices = new Complex[left.Width, left.Height];
 
@@ -181,7 +159,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		/// <returns></returns>
 		public static ComplexMatrix operator -(ComplexMatrix left, ComplexMatrix right)
 		{
-			if (Addable(left, right))
+			if (left.Addable(right))
 			{
 				return left + -right;
 			}
@@ -197,7 +175,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		/// <returns></returns>
 		public static ComplexMatrix operator *(ComplexMatrix left, ComplexMatrix right)
 		{
-			if (!Multipliable(left, right))
+			if (!left.Multipliable(right))
 				throw new
 					IncompatibleOperationException(IncompatibleMatrixOperationType.Multiplication);
 
@@ -230,7 +208,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 				return new ComplexMatrix(left.Width);
 
 			if (right < 0)
-				return left.Inverse() ^ (-right);
+				return (ComplexMatrix) left.Inverse() ^ (-right);
 
 			ComplexMatrix m = left;
 
@@ -311,5 +289,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		{
 			return left * (1 / right);
 		}
+
+		#endregion
 	}
 }

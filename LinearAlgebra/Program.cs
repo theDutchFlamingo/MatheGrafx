@@ -5,18 +5,32 @@ using LinearAlgebra.Main;
 
 namespace LinearAlgebra
 {
-    public class Program
+    public static class Program
     {
         static void Main()
         {
-			Fields();
+			Test();
 		}
 
-	    public static void Complexity()
+	    private static void Test()
+	    {
+			MatrixBase<Real> m = new MatrixBase<Real>(4, 4)
+			{
+				Indices = new Real[,] { { 1, 1, 1, 1 }, { 1, 1, 1, 2 }, { 1, 1, 2, 3 }, { 1, 1, 3, 4} }
+			};
+
+		    m = m.Transpose();
+
+			Console.WriteLine(m.Inverse().ToDeterminant(3, true));
+	    }
+
+	    private static void Complexity()
 	    {
 		    Complex result = Complex.I ^ (Complex.I + 3);
 
 		    Complex x = ComplexMath.Exponential(1, Math.PI / 3);
+
+			Console.WriteLine(x);
 
 			Console.WriteLine(result);
 
@@ -32,14 +46,14 @@ namespace LinearAlgebra
 		    }
 	    }
 
-	    public static void Fields()
+	    private static void Fields()
 	    {
 			Real r = new Real(5);
 
 			Console.WriteLine(r.ToDouble());
 	    }
 
-	    public static void LinAlg()
+	    private static void LinAlg()
 	    {
 		    int[,] ints = new int[2, 5];
 
@@ -59,9 +73,11 @@ namespace LinearAlgebra
 			    Indices = new Real[,] { { 2, 3, 7 }, { 0, 0, 0 }, { 2, 4, 6 }, { -1, 4, 5 }, { 0, 8, 3 } }
 		    };
 
-		    Matrix p = (Matrix) (m * n);
+		    Matrix p = m * n;
 
-		    Matrix e = n.ToReducedEchelonForm(0);
+			Console.WriteLine(p[VectorType.Column]);
+
+		    Matrix e = (Matrix) n.ToReducedEchelonForm();
 
 		    Matrix u = (Matrix) (n * n.Transpose());
 

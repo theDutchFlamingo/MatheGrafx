@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Main;
 
@@ -12,14 +9,16 @@ namespace LinearAlgebra.Fields
 {
 	public class VectorBase<T> : IEnumerable<T> where T : FieldMember, new()
 	{
-		private FieldMember[] _indices;
+		#region Fields & Properties
+
+		private T[] _indices;
 
 		public T[] Indices
 		{
-			get => _indices.Cast<T>().ToArray();
+			get => _indices;
 			set
 			{
-				_indices = new FieldMember[value.Length];
+				_indices = new T[value.Length];
 
 				for (int i = 0; i < value.Length; i++)
 				{
@@ -31,6 +30,10 @@ namespace LinearAlgebra.Fields
 		}
 
 		public int Dimension { get; protected set; }
+
+		#endregion
+
+		#region Constructors
 
 		/// <summary>
 		/// Create a vector with a double array
@@ -62,7 +65,7 @@ namespace LinearAlgebra.Fields
 		{
 			if (n >= dimension)
 				throw new ArgumentException("The index which contains the 1" +
-											"must not be greater than the dimension.");
+				                            "must not be greater than the dimension.");
 
 			Indices = new T[dimension];
 
@@ -85,13 +88,17 @@ namespace LinearAlgebra.Fields
 			}
 		}
 
+		#endregion
+
+		#region Tests
+
 		/// <summary>
 		/// Whether this is a null vector
 		/// </summary>
 		/// <returns></returns>
 		public bool IsNull()
 		{
-			return this.All(d => d.IsNull);
+			return this.All(d => d.IsNull());
 		}
 
 		/// <summary>
@@ -103,6 +110,15 @@ namespace LinearAlgebra.Fields
 			return Norm().CloseTo(1);
 		}
 
+		protected bool Comparable(VectorBase<T> right)
+		{
+			return Dimension == right.Dimension;
+		}
+
+		#endregion
+
+		#region Norm
+
 		/// <summary>
 		/// The length of this vector
 		/// </summary>
@@ -111,6 +127,10 @@ namespace LinearAlgebra.Fields
 		{
 			return Math.Sqrt((double) (this * this));
 		}
+
+		#endregion
+
+		#region String Conversion
 
 		public override string ToString()
 		{
@@ -230,6 +250,10 @@ namespace LinearAlgebra.Fields
 			return wanted > maxPrecision ? maxPrecision : wanted;
 		}
 
+		#endregion
+
+		#region Indexing
+
 		/// <summary>
 		/// Gets the double at the given index i
 		/// </summary>
@@ -241,6 +265,10 @@ namespace LinearAlgebra.Fields
 			set => Indices[i] = value;
 		}
 
+		#endregion
+
+		#region Operators
+
 		/// <summary>
 		/// Add the two vectors together
 		/// </summary>
@@ -249,7 +277,7 @@ namespace LinearAlgebra.Fields
 		/// <returns></returns>
 		public static VectorBase<T> operator +(VectorBase<T> left, VectorBase<T> right)
 		{
-			if (!Comparable(left, right))
+			if (!left.Comparable(right))
 				throw new IncompatibleOperationException(IncompatibleVectorOperationType.Addition);
 
 			T[] indices = left.Indices;
@@ -298,7 +326,7 @@ namespace LinearAlgebra.Fields
 		/// <returns></returns>
 		public static T operator *(VectorBase<T> left, VectorBase<T> right)
 		{
-			if (!Comparable(left, right))
+			if (!left.Comparable(right))
 				throw new IncompatibleOperationException(IncompatibleVectorOperationType.Inner);
 
 			T result = new T();
@@ -351,10 +379,9 @@ namespace LinearAlgebra.Fields
 			return left * right.Inverse<T>();
 		}
 
-		protected static bool Comparable(VectorBase<T> left, VectorBase<T> right)
-		{
-			return left.Dimension == right.Dimension;
-		}
+		#endregion
+
+		#region Cast Operators
 
 		public static explicit operator T[] (VectorBase<T> v)
 		{
@@ -376,6 +403,10 @@ namespace LinearAlgebra.Fields
 			return new VectorBase<T>(l);
 		}
 
+		#endregion
+
+		#region Override Methods
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -395,5 +426,7 @@ namespace LinearAlgebra.Fields
 		{
 			return Indices.GetEnumerator();
 		}
+
+		#endregion
 	}
 }

@@ -6,6 +6,10 @@ using LinearAlgebra.Fields;
 
 namespace LinearAlgebra.ComplexLinearAlgebra
 {
+	/// <summary>
+	/// Specific implementation of VectorBase&lt;Complex&gt; because ComplexVectors are still pretty common.
+	/// Also adds some specific complex methods.
+	/// </summary>
 	public class ComplexVector : VectorBase<Complex>
 	{
 		#region Constructors
@@ -83,7 +87,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		/// <returns></returns>
 		public static ComplexVector operator +(ComplexVector left, ComplexVector right)
 		{
-			if (!Comparable(left, right))
+			if (!left.Comparable(right))
 				throw new
 					IncompatibleOperationException(IncompatibleVectorOperationType.Addition);
 
@@ -133,7 +137,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		/// <returns></returns>
 		public static Complex operator *(ComplexVector left, ComplexVector right)
 		{
-			if (!Comparable(left, right))
+			if (!left.Comparable(right))
 				throw new
 					IncompatibleOperationException(IncompatibleVectorOperationType.Inner);
 
@@ -187,6 +191,6 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 			return left * (1 / right);
 		}
 
-			#endregion
+		#endregion
 	}
 }

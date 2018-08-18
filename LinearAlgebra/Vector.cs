@@ -1,50 +1,184 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using LinearAlgebra.ComplexLinearAlgebra;
-using LinearAlgebra.Exceptions;
+﻿using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
-using LinearAlgebra.Main;
 
 namespace LinearAlgebra
 {
-    public class Vector : VectorBase<Real>
+	/// <summary>
+	/// Specific implementation of VectorBase&lt;Real&gt; because real vectors are by far the most common ones
+	/// </summary>
+	public class Vector : VectorBase<Real>
     {
-	    /// <summary>
-		/// Create a vector with a double array
-		/// </summary>
-		/// <param name="indices"></param>
-        public Vector(double[] indices) : base(indices.Length)
-        {
-	        for (int i = 0; i < Dimension; i++)
-	        {
-		        Indices[i] = indices[i];
-			}
-		}
+	    #region Constructors
 
-		/// <summary>
-		/// Create a vector from another vector
-		/// </summary>
-		/// <param name="v"></param>
-		public Vector(Vector v) : base(v)
+	    /// <summary>
+	    /// Create a vector with a double array
+	    /// </summary>
+	    /// <param name="indices"></param>
+	    public Vector(Real[] indices) : base(indices)
 	    {
 		    
 	    }
 
-		/// <summary>Creates the (n+1)ᵗʰ unit vector of the given dimension,
-		/// a.k.a. the 1 is at position n</summary>
+	    /// <summary>
+	    /// Create a vector with a double array
+	    /// </summary>
+	    /// <param name="indices"></param>
+	    public Vector(double[] indices) : base(indices.Length)
+	    {
+		    for (int i = 0; i < Dimension; i++)
+		    {
+			    Indices[i] = indices[i];
+		    }
+	    }
 
-		public Vector(int dimension, int n) : base(dimension, n)
+		/// <summary>
+		/// Create a vector from a VectorBase&lt;Real&gt; object.
+		/// </summary>
+		/// <param name="vector"></param>
+	    public Vector(VectorBase<Real> vector) : base(vector)
+	    {
+
+	    }
+
+	    /// <summary>
+	    /// Create a vector from another vector
+	    /// </summary>
+	    /// <param name="v"></param>
+	    public Vector(Vector v) : base(v)
+	    {
+		    
+	    }
+
+	    /// <summary>Creates the (n+1)ᵗʰ unit vector of the given dimension,
+	    /// a.k.a. the 1 is at position n</summary>
+
+	    public Vector(int dimension, int n) : base(dimension, n)
 	    {
 			
 	    }
 
-		///<summary>Creates a null vector of given dimension</summary>
-		public Vector(int dimension) : base(dimension)
+	    ///<summary>Creates a null vector of given dimension</summary>
+	    public Vector(int dimension) : base(dimension)
 	    {
 
 	    }
+
+	    #endregion
+
+		#region Operators
+
+		/// <summary>
+		/// Add the two vectors together
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static Vector operator +(Vector left, Vector right)
+		{
+			if (!left.Comparable(right))
+				throw new
+					IncompatibleOperationException(IncompatibleVectorOperationType.Addition);
+
+			Real[] indices = left.Indices;
+
+			for (int i = 0; i < indices.Length; i++)
+			{
+				indices[i] += right[i];
+			}
+
+			return new Vector(indices);
+		}
+
+		/// <summary>
+		/// The negative of this vector
+		/// </summary>
+		/// <param name="v"></param>
+		/// <returns></returns>
+		public static Vector operator -(Vector v)
+		{
+			Real[] indices = new Real[v.Dimension];
+
+			for (int i = 0; i < indices.Length; i++)
+			{
+				indices[i] = -v[i];
+			}
+
+			return new Vector(indices);
+		}
+
+		/// <summary>
+		/// Return the left minus the right vector
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static Vector operator -(Vector left, Vector right)
+		{
+			return left + -right;
+		}
+
+		/// <summary>
+		/// Inner product of two vectors
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static double operator *(Vector left, Vector right)
+		{
+			if (!left.Comparable(right))
+				throw new
+					IncompatibleOperationException(IncompatibleVectorOperationType.Inner);
+
+			double result = 0;
+
+			for (int i = 0; i < left.Dimension; i++)
+			{
+				result += left[i] * right[i];
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Scalar multiplication with the scalar on the right
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static Vector operator *(Vector left, double right)
+		{
+			Real[] indices = left.Indices;
+
+			for (int i = 0; i < indices.Length; i++)
+			{
+				indices[i] *= right;
+			}
+
+			return new Vector(indices);
+		}
+
+		/// <summary>
+		/// Scalar multiplication with the scalar on the left
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static Vector operator *(double left, Vector right)
+		{
+			return right * left;
+		}
+
+		/// <summary>
+		/// Scalar division
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static Vector operator /(Vector left, double right)
+		{
+			return left * (1 / right);
+		}
+
+		#endregion
 	}
 }

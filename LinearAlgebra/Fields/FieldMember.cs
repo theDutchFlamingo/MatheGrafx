@@ -23,7 +23,7 @@ namespace LinearAlgebra.Fields
 		/// </summary>
 		/// <param name="fieldMember"></param>
 		/// <returns></returns>
-		public virtual T Inner<T>(T fieldMember) where T : FieldMember => Add(fieldMember);
+		public virtual T Inner<T>(T fieldMember) where T : FieldMember => Multiply(fieldMember);
 
 		public abstract double ToDouble();
 
@@ -35,16 +35,20 @@ namespace LinearAlgebra.Fields
 		}
 
 		/// <summary>
-		/// Whether this member of the FieldMember is the null member
+		/// Whether this member of the FieldMember is the null member.
+		/// Is abstract because the subtype needs to test Equals(Null&lt;Type&gt;)
+		/// with Type the Type corresponding to the inheriting class.
 		/// </summary>
 		/// <returns></returns>
-		public bool IsNull => Equals(Null<FieldMember>());
+		public abstract bool IsNull();
 
 		/// <summary>
-		/// Whether this member of the FieldMember is the unit member
+		/// Whether this member of the FieldMember is the unit member.
+		/// Is abstract because the subtype needs to test Equals(Null&lt;Type&gt;)
+		/// with Type the Type corresponding to the inheriting class.
 		/// </summary>
 		/// <returns></returns>
-		public bool IsUnit => Equals(Unit<FieldMember>());
+		public abstract bool IsUnit();
 
 		public abstract bool Equals<T>(T other);
 

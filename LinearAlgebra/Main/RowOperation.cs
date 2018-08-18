@@ -1,9 +1,10 @@
 ﻿using System;
 using LinearAlgebra.Exceptions;
+using LinearAlgebra.Fields;
 
 namespace LinearAlgebra.Main
 {
-	public class RowOperation
+	public class RowOperation<T> where T : FieldMember, new()
 	{
 		public enum RowOperationType
 		{
@@ -13,7 +14,7 @@ namespace LinearAlgebra.Main
 		/// <summary>
 		/// For substitution and scaling, how much to scale the row vector by
 		/// </summary>
-		private double Scale { get; }
+		private T Scale { get; }
 		/// <summary>
 		/// For substitution and switching, the row to take the vector from
 		/// </summary>
@@ -25,7 +26,7 @@ namespace LinearAlgebra.Main
 
 		private RowOperationType Type { get; }
 
-		public RowOperation(RowOperationType type, int from = -1, int onto = -1, double scale = 1)
+		public RowOperation(RowOperationType type, int from = -1, int onto = -1, T scale = null)
 		{
 			Type = type;
 			From = from;
@@ -35,11 +36,11 @@ namespace LinearAlgebra.Main
 			switch (type)
 			{
 				case RowOperationType.Scaling:
-					if (scale.CloseTo(0)) throw new
+					if (scale.Equals(0)) throw new
 						InvalidRowOperationException(InvalidRowOperationType.ScaleZero);
 					break;
 				case RowOperationType.Substitution:
-					if (scale.CloseTo(0)) throw new
+					if (scale.Equals(0)) throw new
 						InvalidRowOperationException(InvalidRowOperationType.ScaleZero);
 					if (from == onto) throw new
 						InvalidRowOperationException(InvalidRowOperationType.SameRow);
@@ -64,7 +65,7 @@ namespace LinearAlgebra.Main
 		/// </summary>
 		/// <param name="m"></param>
 		/// <returns></returns>
-		public Matrix ActOn(Matrix m)
+		public MatrixBase<T> ActOn(MatrixBase<T> m)
 		{
 			switch (Type)
 			{
@@ -87,8 +88,8 @@ namespace LinearAlgebra.Main
 						throw new IncompatibleRowOperationException(
 						"Index of one of the rows was was greater than or equal to the height of the matrix.");
 
-					Vector from = m[From, VectorType.Row];
-					Vector onto = m[Onto, VectorType.Row];
+					VectorBase<T> from = m[From, VectorType.Row];
+					VectorBase<T> onto = m[Onto, VectorType.Row];
 
 					m[Onto, VectorType.Row] = from;
 					m[From, VectorType.Row] = onto;
@@ -102,7 +103,7 @@ namespace LinearAlgebra.Main
 		/// Returns the elementary matrix which corresponds to this operation
 		/// </summary>
 		/// <returns></returns>
-		public Matrix ElementaryMatrix(int size)
+		public MatrixBase<T> ElementaryMatrix(int size)
 		{
 			switch (Type)
 			{
@@ -123,7 +124,7 @@ namespace LinearAlgebra.Main
 					break;
 			}
 
-			return ActOn(Main.LinearMath.UnitMatrix(size));
+			return ActOn(LinearMath.UnitMatrix<T>(size));
 		}
 
 		/// <summary>
@@ -132,9 +133,9 @@ namespace LinearAlgebra.Main
 		/// <param name="onto"></param>
 		/// <param name="scale"></param>
 		/// <returns></returns>
-		public static RowOperation ScaleOperation(int onto, double scale)
+		public static RowOperation<T> ScaleOperation(int onto, T scale)
 		{
-			return new RowOperation(RowOperationType.Scaling, onto:onto, scale:scale);
+			return new RowOperation<T>(RowOperationType.Scaling, onto:onto, scale:scale);
 		}
 
 		/// <summary>
@@ -144,9 +145,9 @@ namespace LinearAlgebra.Main
 		/// <param name="onto"></param>
 		/// <param name="scale"></param>
 		/// <returns></returns>
-		public static RowOperation SubstitutionOperation(int from, int onto, double scale)
+		public static RowOperation<T> SubstitutionOperation(int from, int onto, T scale)
 		{
-			return new RowOperation(RowOperationType.Substitution, from, onto, scale);
+			return new RowOperation<T>(RowOperationType.Substitution, from, onto, scale);
 		}
 
 		/// <summary>
@@ -155,9 +156,9 @@ namespace LinearAlgebra.Main
 		/// <param name="from"></param>
 		/// <param name="onto"></param>
 		/// <returns></returns>
-		public static RowOperation SwitchingOperation(int from, int onto)
+		public static RowOperation<T> SwitchingOperation(int from, int onto)
 		{
-			return new RowOperation(RowOperationType.Switching, from, onto);
+			return new RowOperation<T>(RowOperationType.Switching, from, onto);
 		}
 	}
 }

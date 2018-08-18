@@ -91,6 +91,11 @@ namespace LinearAlgebra.Main
 			return new Matrix(size);
 		}
 
+		public static MatrixBase<T> UnitMatrix<T>(int size) where T : FieldMember, new()
+		{
+			return new MatrixBase<T>(size);
+		}
+
 		public static Matrix NullMatrix(int height, int width)
 		{
 			return new Matrix(height, width);

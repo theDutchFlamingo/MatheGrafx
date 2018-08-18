@@ -49,7 +49,7 @@ namespace LinearAlgebra.Exceptions
 				case IncompatibleMatrixOperationType.Eigenvector:
 					return "Only square matrices have eigenvectors.";
 				case IncompatibleMatrixOperationType.Inverse:
-					return "Only square matrices have an inverse.";
+					return "Only square matrices with non-zero determinant have an inverse.";
 				case IncompatibleMatrixOperationType.Multiplication:
 					return "The two matrices could not be multiplied, the width of the first" +
 					       "should be equal to the height of the second.";

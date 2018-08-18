@@ -24,7 +24,7 @@ namespace LinearAlgebra.Numeric
 		public static List<Complex> DurandKerner(Polynomial p)
 		{
 			// According to Wikipedia, radius of initial condition should be 1 + max(|a_1|,|a_2|,...,|a_n-1|)
-			ComplexVector current = InitialCondition(p.Degree, 1 + p.Coefficients.Select(Math.Abs).Max());
+			ComplexVector current = InitialCondition(p.Degree, 1 + p.Coefficients.Select(d => Math.Abs(d)).Max());
 
 			ComplexVector Iterate(ComplexVector v)
 			{
@@ -57,17 +57,6 @@ namespace LinearAlgebra.Numeric
 		/// <returns></returns>
 		public static bool CloseTo(this Vector a, Vector b, double tolerance = LinearMath.Tolerance)
 		{
-			if (a is ComplexVector newA && b is ComplexVector newB)
-			{
-				return newA.CloseTo(newB);
-			}
-
-			// If either is complex and the other isn't, the answer is false
-			if (a is ComplexVector na && !na.IsReal() || b is ComplexVector nb && !nb.IsReal())
-			{
-				return false;
-			}
-
 			return (a - b).Norm().CloseTo(0, tolerance);
 		}
 

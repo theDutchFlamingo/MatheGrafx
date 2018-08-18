@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Main;
 
@@ -9,8 +10,8 @@ namespace LinearAlgebra.Fields
 	/// </summary>
 	public class Real : FieldMember, INumerical
 	{
-		/*
-		 * Contains the 
+		/**
+		 * Contains the double value of this real number
 		 */
 		#region Properties
 		public new double Value { get; set; }
@@ -40,34 +41,38 @@ namespace LinearAlgebra.Fields
 
 		internal override T Negative<T>()
 		{
-			return (T)(FieldMember)(-this);
+			return (T)(FieldMember)new Real(-Value);
 		}
 
 		internal override T Multiply<T>(T other)
 		{
-			if (other is Complex c)
-				return (T)(FieldMember)(this * c);
+			if (other is Real c)
+				return (T)(FieldMember)new Real(Value * c.Value);
 			throw new IncorrectFieldException(GetType(), "added", other.GetType());
 		}
 
 		internal override T Inverse<T>()
 		{
-			return (T)(FieldMember)(1 / this);
+			return (T)(FieldMember)new Real(1 / Value);
 		}
 
 		public override T Null<T>()
 		{
 			if (typeof(T) == GetType())
-				return (T)(FieldMember)new Complex(0, 0);
+				return (T)(FieldMember) new Real(0);
 			throw new IncorrectFieldException(this, "null", typeof(T));
 		}
 
 		public override T Unit<T>()
 		{
 			if (typeof(T) == GetType())
-				return (T)(FieldMember)new Complex(1, 0);
+				return (T)(FieldMember)new Real(1);
 			throw new IncorrectFieldException(this, "unit", typeof(T));
 		}
+
+		public override bool IsNull() => Value.CloseTo(0);
+
+		public override bool IsUnit() => Value.CloseTo(1);
 
 		public override double ToDouble()
 		{
@@ -161,9 +166,14 @@ namespace LinearAlgebra.Fields
 			return new Real(r);
 		}
 
+		public override string ToString()
+		{
+			return Value.ToString(CultureInfo.InvariantCulture);
+		}
+
 		public string ToString(string format)
 		{
-			throw new NotImplementedException();
+			return Value.ToString(format);
 		}
 		#endregion
 	}
