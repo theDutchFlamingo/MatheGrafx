@@ -9,20 +9,21 @@ namespace LinearAlgebra
     {
 	    static void Main()
         {
-//	        Complexity();
-			Test();
+			//Complexity();
+			//Test();
+			LinAlg();
 		}
 
 	    private static void Test()
 	    {
 			Matrix m = new Matrix(4, 4)
 			{
-				Indices = new Real[,] { { 1, 1, 1, 1 }, { 1, 1, 1, 2 }, { 1, 1, 2, 3 }, { 1, 1, 3, 4} }
+				Indices = new Real[,] { { 1, 1, 1, 1 }, { 1, 1, 1, 2 }, { 1, 1, 2, 3 }, { 1, 2, 3, 4} }
 			};
 
-		    m = m.Transpose();
+		    m[0, VectorType.Row] = m[1, VectorType.Row];
 
-			Console.WriteLine(m.Inverse().ToDeterminant(3, true));
+			Console.WriteLine(m.ToDeterminant(3, true));
 	    }
 
 	    private static void Complexity()
@@ -78,9 +79,9 @@ namespace LinearAlgebra
 
 			Console.WriteLine(p[VectorType.Column]);
 
-		    Matrix e = (Matrix) n.ToReducedEchelonForm();
+		    Matrix e = n.ToReducedEchelonForm().ToRealMatrix();
 
-		    Matrix u = (Matrix) (n * n.Transpose());
+		    Matrix u = n * n.Transpose().ToRealMatrix();
 
 		    Console.WriteLine(e.IsReducedEchelon());
 		    Console.WriteLine();
@@ -89,10 +90,10 @@ namespace LinearAlgebra
 		    Console.WriteLine(u.Transpose().ToTable(3));
 		    Console.WriteLine(u.IsSymmetric());
 		    Console.WriteLine();
-		    Console.WriteLine(e);
+		    Console.WriteLine("The matrix e, in all its glory: \n" + e.ToTable(3));
 		    Console.WriteLine(n);
 		    Console.WriteLine();
-		    Console.WriteLine(LinearMath.NullMatrix(5, 9));
+		    Console.WriteLine(LinearMath.NullMatrix(5, 9).ToDeterminant(3));
 		}
     }
 }

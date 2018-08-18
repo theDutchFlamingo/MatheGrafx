@@ -82,7 +82,7 @@ namespace LinearAlgebra.Fields
 		public override bool Equals<T>(T other)
 		{
 			if (other is Real r)
-				return LinearMath.Equals(this, r);
+				return this.CloseTo(r);
 			return false;
 		}
 

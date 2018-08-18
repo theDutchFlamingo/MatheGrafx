@@ -259,7 +259,7 @@ namespace LinearAlgebra.Fields
 		/// <returns></returns>
 		public static Complex operator ^(Complex b, double exp)
 		{
-			return ComplexMath.Exponential(b.Modulus * exp, b.Argument);
+			return ComplexMath.Exponential(Math.Pow(b.Modulus, exp), b.Argument * exp);
 		}
 
 		/// <summary>

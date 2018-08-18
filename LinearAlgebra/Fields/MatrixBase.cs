@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using LinearAlgebra.ComplexLinearAlgebra;
 using LinearAlgebra.Exceptions;
 
 namespace LinearAlgebra.Fields
@@ -478,8 +479,8 @@ namespace LinearAlgebra.Fields
 		/// <returns></returns>
 		public T this[int i, int j]
 		{
-			get => Indices[i, j];
-			set => Indices[i, j] = value;
+			get => _indices[i, j];
+			set => _indices[i, j] = value;
 		}
 
 		/// <summary>
@@ -510,7 +511,7 @@ namespace LinearAlgebra.Fields
 
 						for (i = 0; i < value.Dimension; i++)
 						{
-							Indices[i, j] = value[i];
+							_indices[i, j] = value[i];
 						}
 
 						break;
@@ -519,7 +520,7 @@ namespace LinearAlgebra.Fields
 
 						for (j = 0; j < value.Dimension; j++)
 						{
-							Indices[i, j] = value[j];
+							_indices[i, j] = value[j];
 						}
 
 						break;
@@ -995,6 +996,30 @@ namespace LinearAlgebra.Fields
 		public List<VectorBase<T>> GetColumns()
 		{
 			return GetVectors(VectorType.Column).ToList();
+		}
+
+		#endregion
+
+		#region SubTypes
+
+		public Matrix ToRealMatrix()
+		{
+			if (_indices is Real[,] indices)
+			{
+				return new Matrix(indices);
+			}
+			
+			throw new InvalidOperationException("Can't convert this matrix to a real matrix");
+		}
+
+		public ComplexMatrix ToComplexMatrix()
+		{
+			if (_indices is Complex[,] complexIndices)
+			{
+				return new ComplexMatrix(complexIndices);
+			}
+			
+			throw new InvalidOperationException("Can't convert this matrix to a complex matrix");
 		}
 
 		#endregion

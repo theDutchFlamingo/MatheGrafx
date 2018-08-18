@@ -153,7 +153,7 @@ namespace LinearAlgebra
 
 						for (i = 0; i < value.Dimension; i++)
 						{
-							Indices[i, j] = value[i];
+							this[i, j] = value[i];
 						}
 
 						break;
@@ -162,7 +162,7 @@ namespace LinearAlgebra
 
 						for (j = 0; j < value.Dimension; j++)
 						{
-							Indices[i, j] = value[j];
+							this[i, j] = value[j];
 						}
 
 						break;
