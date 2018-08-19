@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Security.Cryptography.X509Certificates;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
+using LinearAlgebra.Main;
+using LinearAlgebra.Numeric;
 
 namespace LinearAlgebra
 {
+	/// <inheritdoc />
 	/// <summary>
-	/// Specific implementation of MatrixBase&lt;Real&gt; because real matrices are by far the most common ones
+	/// Specific implementation of Matrix&lt;Real&gt; because real matrices are by far the most common ones
 	/// </summary>
-	public class Matrix : MatrixBase<Real>
+	public class RealMatrix : Matrix<Real>
 	{
 		#region Constructors
 
@@ -15,7 +19,7 @@ namespace LinearAlgebra
 		/// Constructor of a MatrixBase
 		/// </summary>
 		/// <param name="indices"></param>
-		public Matrix(Real[,] indices) : base(indices)
+		public RealMatrix(Real[,] indices) : base(indices)
 		{
 			
 		}
@@ -24,7 +28,7 @@ namespace LinearAlgebra
 		/// Constructor of a MatrixBase
 		/// </summary>
 		/// <param name="indices"></param>
-		public Matrix(double[,] indices) : base(indices.GetLength(0), indices.GetLength(1))
+		public RealMatrix(double[,] indices) : base(indices.GetLength(0), indices.GetLength(1))
 		{
 			for (int i = 0; i < Height; i++)
 			{
@@ -39,7 +43,7 @@ namespace LinearAlgebra
 		/// Constructor of a MatrixBase
 		/// </summary>
 		/// <param name="indices"></param>
-		public Matrix(int[,] indices) : base(indices.GetLength(0), indices.GetLength(1))
+		public RealMatrix(int[,] indices) : base(indices.GetLength(0), indices.GetLength(1))
 		{
 			Real[,] realIndices = new Real[Height, Width];
 
@@ -58,7 +62,7 @@ namespace LinearAlgebra
 		/// Clone the given matrix
 		/// </summary>
 		/// <param name="m"></param>
-		public Matrix(Matrix m) : base(m)
+		public RealMatrix(RealMatrix m) : base(m)
 		{
 			
 		}
@@ -68,7 +72,7 @@ namespace LinearAlgebra
 		/// can be columns or rows based on type
 		/// </summary>
 		/// <param name="vectors"></param>
-		public Matrix(Vector[] vectors) : this(vectors, DefaultVectorType)
+		public RealMatrix(RealVector[] vectors) : this(vectors, DefaultVectorType)
 		{
 
 		}
@@ -79,7 +83,7 @@ namespace LinearAlgebra
 		/// </summary>
 		/// <param name="vectors"></param>
 		/// <param name="type">Determines whether the vectors are columns or rows</param>
-		public Matrix(Vector[] vectors, VectorType type) : base(vectors, type)
+		public RealMatrix(RealVector[] vectors, VectorType type) : base(vectors, type)
 		{
 			
 		}
@@ -88,7 +92,7 @@ namespace LinearAlgebra
 		/// Creates a diagonal matrix with the given vector on the diagonal
 		/// </summary>
 		/// <param name="diagonal"></param>
-		public Matrix(Vector diagonal) : base(diagonal)
+		public RealMatrix(RealVector diagonal) : base(diagonal)
 		{
 			
 		}
@@ -97,7 +101,7 @@ namespace LinearAlgebra
 		/// Creates a diagonal matrix with the given array on the diagonal
 		/// </summary>
 		/// <param name="diagonal"></param>
-		public Matrix(Real[] diagonal) : base(diagonal)
+		public RealMatrix(Real[] diagonal) : base(diagonal)
 		{
 			
 		}
@@ -106,7 +110,7 @@ namespace LinearAlgebra
 		/// Create a unit matrix with the given size
 		/// </summary>
 		/// <param name="size"></param>
-		public Matrix(int size) : base(size)
+		public RealMatrix(int size) : base(size)
 		{
 			
 		}
@@ -116,7 +120,7 @@ namespace LinearAlgebra
 		/// </summary>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		public Matrix(int height, int width) : base(height, width)
+		public RealMatrix(int height, int width) : base(height, width)
 		{
 			
 		}
@@ -132,7 +136,7 @@ namespace LinearAlgebra
 		/// <param name="n"></param>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public new Vector this[int n, VectorType type]
+		public new RealVector this[int n, VectorType type]
 		{
 			get => this[type][n];
 			set
@@ -176,20 +180,20 @@ namespace LinearAlgebra
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public new Vector[] this[VectorType type]
+		public new RealVector[] this[VectorType type]
 		{
 			get
 			{
-				Vector[] result;
+				RealVector[] result;
 
 				switch (type)
 				{
 					case VectorType.Column:
-						result = new Vector[Width];
+						result = new RealVector[Width];
 
 						for (int j = 0; j < result.Length; j++)
 						{
-							result[j] = new Vector(Height);
+							result[j] = new RealVector(Height);
 						}
 
 						for (int i = 0; i < Height; i++)
@@ -201,11 +205,11 @@ namespace LinearAlgebra
 						}
 						return result;
 					case VectorType.Row:
-						result = new Vector[Height];
+						result = new RealVector[Height];
 
 						for (int i = 0; i < result.Length; i++)
 						{
-							result[i] = new Vector(Width);
+							result[i] = new RealVector(Width);
 						}
 
 						for (int i = 0; i < Height; i++)
@@ -256,6 +260,30 @@ namespace LinearAlgebra
 
 		#endregion
 
+		/**
+		 * Some tests which cannot be performed on matrices in general, like orthogonality
+		 */
+		#region Tests
+
+		public bool IsOrthogonal()
+		{
+			RealVector[] columns = this[VectorType.Column];
+
+			// For loop with x and y to indicate that they do not refer to indices of the matrix
+			for (int x = 0; x < columns.Length; x++)
+			{
+				for (int y = 0; y < columns.Length; y++)
+				{
+					if (x == y && !(columns[x] * columns[y]).CloseTo(1)) return false;
+					if (x != y && !(columns[x] * columns[y]).CloseTo(0)) return false;
+				}
+			}
+
+			return true;
+		}
+
+		#endregion
+
 		#region Operators
 
 		/// <summary>
@@ -264,7 +292,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Matrix operator +(Matrix left, Matrix right)
+		public static RealMatrix operator +(RealMatrix left, RealMatrix right)
 		{
 			if (left.Addable(right))
 			{
@@ -278,7 +306,7 @@ namespace LinearAlgebra
 					}
 				}
 
-				return new Matrix(indices);
+				return new RealMatrix(indices);
 			}
 			throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Addition);
 		}
@@ -288,7 +316,7 @@ namespace LinearAlgebra
 		/// </summary>
 		/// <param name="m"></param>
 		/// <returns></returns>
-		public static Matrix operator -(Matrix m)
+		public static RealMatrix operator -(RealMatrix m)
 		{
 			Real[,] indices = new Real[m.Width, m.Height];
 
@@ -300,7 +328,7 @@ namespace LinearAlgebra
 				}
 			}
 
-			return new Matrix(indices);
+			return new RealMatrix(indices);
 		}
 
 		/// <summary>
@@ -309,7 +337,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Matrix operator -(Matrix left, Matrix right)
+		public static RealMatrix operator -(RealMatrix left, RealMatrix right)
 		{
 			if (left.Addable(right))
 			{
@@ -325,7 +353,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Matrix operator *(Matrix left, Matrix right)
+		public static RealMatrix operator *(RealMatrix left, RealMatrix right)
 		{
 			if (!left.Multipliable(right))
 				throw new
@@ -341,7 +369,7 @@ namespace LinearAlgebra
 				}
 			}
 
-			return new Matrix(indices);
+			return new RealMatrix(indices);
 		}
 
 		/// <summary>
@@ -350,19 +378,19 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Matrix operator ^(Matrix left, int right)
+		public static RealMatrix operator ^(RealMatrix left, int right)
 		{
 			if (!left.IsSquare())
 				throw new
 					IncompatibleOperationException(IncompatibleMatrixOperationType.Multiplication);
 
 			if (right == 0)
-				return new Matrix(left.Width);
+				return new RealMatrix(left.Width);
 
 			if (right < 0)
-				return (Matrix)left.Inverse() ^ (-right);
+				return (RealMatrix)left.Inverse() ^ (-right);
 
-			Matrix m = left;
+			RealMatrix m = left;
 
 			for (int i = 1; i < right; i++)
 			{
@@ -378,7 +406,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Matrix operator *(Matrix left, double right)
+		public static RealMatrix operator *(RealMatrix left, double right)
 		{
 			return left * (Real) right;
 		}
@@ -389,7 +417,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Matrix operator *(double left, Matrix right)
+		public static RealMatrix operator *(double left, RealMatrix right)
 		{
 			return right * left;
 		}
@@ -400,7 +428,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Matrix operator /(Matrix left, double right)
+		public static RealMatrix operator /(RealMatrix left, double right)
 		{
 			return left * (1 / right);
 		}
@@ -411,7 +439,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Matrix operator *(Matrix left, Real right)
+		public static RealMatrix operator *(RealMatrix left, Real right)
 		{
 			Real[,] indices = left.Indices;
 
@@ -423,7 +451,7 @@ namespace LinearAlgebra
 				}
 			}
 
-			return new Matrix(indices);
+			return new RealMatrix(indices);
 		}
 
 		/// <summary>
@@ -432,7 +460,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Matrix operator *(Real left, Matrix right)
+		public static RealMatrix operator *(Real left, RealMatrix right)
 		{
 			return right * left;
 		}
@@ -443,7 +471,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Matrix operator /(Matrix left, Real right)
+		public static RealMatrix operator /(RealMatrix left, Real right)
 		{
 			return left * (1 / right);
 		}

@@ -10,7 +10,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 	/// Specific implementation of VectorBase&lt;Complex&gt; because ComplexVectors are still pretty common.
 	/// Also adds some specific complex methods.
 	/// </summary>
-	public class ComplexVector : VectorBase<Complex>
+	public class ComplexVector : Vector<Complex>
 	{
 		#region Constructors
 

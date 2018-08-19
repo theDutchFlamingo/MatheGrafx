@@ -13,10 +13,10 @@ namespace LinearAlgebra.Main
 		/// <param name="m"></param>
 		/// <param name="amountToIgnore"></param>
 		/// <returns></returns>
-		private static MatrixBase<T> SortNullRows<T>(this MatrixBase<T> m, int amountToIgnore = 0) where  T : FieldMember, new()
+		private static Matrix<T> SortNullRows<T>(this Matrix<T> m, int amountToIgnore = 0) where  T : FieldMember, new()
 		{
 			// First clone the matrix so that the original is not changed
-			MatrixBase<T> n = new MatrixBase<T>(m);
+			Matrix<T> n = new Matrix<T>(m);
 
 			// Put all null rows on the bottom of the matrix
 			while (!n.AreNullRowsBelow(amountToIgnore))
@@ -39,9 +39,9 @@ namespace LinearAlgebra.Main
 		/// <param name="m"></param>
 		/// <param name="amountToIgnore"></param>
 		/// <returns></returns>
-		private static MatrixBase<T> ToSortedForm<T>(this MatrixBase<T> m, int amountToIgnore = 0) where T : FieldMember, new()
+		private static Matrix<T> ToSortedForm<T>(this Matrix<T> m, int amountToIgnore = 0) where T : FieldMember, new()
 		{
-			MatrixBase<T> n = m.SortNullRows(amountToIgnore);
+			Matrix<T> n = m.SortNullRows(amountToIgnore);
 
 			int rowsSorted = -1;
 
@@ -71,9 +71,9 @@ namespace LinearAlgebra.Main
 		/// <param name="amountToIgnore">The amount of rows on the right that should not
 		/// be considered when converting to echelon (amount of auxiliary columns)</param>
 		/// <returns></returns>
-		public static MatrixBase<T> ToEchelonForm<T>(this MatrixBase<T> m, int amountToIgnore = 0) where T : FieldMember, new()
+		public static Matrix<T> ToEchelonForm<T>(this Matrix<T> m, int amountToIgnore = 0) where T : FieldMember, new()
 		{
-			MatrixBase<T> n = m.ToSortedForm();
+			Matrix<T> n = m.ToSortedForm();
 
 			int from = -1;
 
@@ -115,9 +115,9 @@ namespace LinearAlgebra.Main
 		/// <param name="m"></param>
 		/// <param name="amountToIgnore"></param>
 		/// <returns></returns>
-		private static MatrixBase<T> ToUnitPivots<T>(this MatrixBase<T> m, int amountToIgnore = 0) where T : FieldMember, new()
+		private static Matrix<T> ToUnitPivots<T>(this Matrix<T> m, int amountToIgnore = 0) where T : FieldMember, new()
 		{
-			MatrixBase<T> n = m.ToEchelonForm(amountToIgnore);
+			Matrix<T> n = m.ToEchelonForm(amountToIgnore);
 
 			int i = 0;
 
@@ -141,10 +141,10 @@ namespace LinearAlgebra.Main
 		/// <param name="m"></param>
 		/// <param name="amountToIgnore"></param>
 		/// <returns></returns>
-		public static MatrixBase<T> ToReducedEchelonForm<T>(this MatrixBase<T> m, int amountToIgnore = 0) where T : FieldMember, new()
+		public static Matrix<T> ToReducedEchelonForm<T>(this Matrix<T> m, int amountToIgnore = 0) where T : FieldMember, new()
 		{
 			// First convert to normal echelon form
-			MatrixBase<T> n = m.ToUnitPivots(amountToIgnore);
+			Matrix<T> n = m.ToUnitPivots(amountToIgnore);
 
 			int from = n.Height - n.AmountOfNullRows(amountToIgnore);
 
@@ -178,7 +178,7 @@ namespace LinearAlgebra.Main
 		/// <param name="m"></param>
 		/// <param name="amountToIgnore"></param>
 		/// <returns></returns>
-		private static bool AreNullRowsBelow<T>(this MatrixBase<T> m, int amountToIgnore) where T : FieldMember, new()
+		private static bool AreNullRowsBelow<T>(this Matrix<T> m, int amountToIgnore) where T : FieldMember, new()
 		{
 			return m.MisplacedNullRows(amountToIgnore).Count == 0;
 		}
@@ -190,7 +190,7 @@ namespace LinearAlgebra.Main
 		/// <param name="m"></param>
 		/// <param name="amountToIgnore"></param>
 		/// <returns></returns>
-		private static bool IsSorted<T>(this MatrixBase<T> m, int amountToIgnore) where T : FieldMember, new()
+		private static bool IsSorted<T>(this Matrix<T> m, int amountToIgnore) where T : FieldMember, new()
 		{
 			int maxPivot = -1;
 
@@ -212,7 +212,7 @@ namespace LinearAlgebra.Main
 		/// <param name="m"></param>
 		/// <param name="amountToIgnore"></param>
 		/// <returns></returns>
-		private static List<int> MisplacedNullRows<T>(this MatrixBase<T> m, int amountToIgnore) where T : FieldMember, new()
+		private static List<int> MisplacedNullRows<T>(this Matrix<T> m, int amountToIgnore) where T : FieldMember, new()
 		{
 			List<int> result = new List<int>();
 
@@ -231,7 +231,7 @@ namespace LinearAlgebra.Main
 		/// <param name="m"></param>
 		/// <param name="amountToIgnore"></param>
 		/// <returns></returns>
-		public static bool IsEchelon<T>(this MatrixBase<T> m, int amountToIgnore = 0) where T : FieldMember, new()
+		public static bool IsEchelon<T>(this Matrix<T> m, int amountToIgnore = 0) where T : FieldMember, new()
 		{
 			int maxPivot = -1;
 
@@ -255,7 +255,7 @@ namespace LinearAlgebra.Main
 		/// <param name="m"></param>
 		/// <param name="amountToIgnore"></param>
 		/// <returns></returns>
-		public static bool IsReducedEchelon<T>(this MatrixBase<T> m, int amountToIgnore = 0) where T : FieldMember, new()
+		public static bool IsReducedEchelon<T>(this Matrix<T> m, int amountToIgnore = 0) where T : FieldMember, new()
 		{
 			if (!m.IsEchelon(amountToIgnore)) return false;
 
@@ -277,9 +277,9 @@ namespace LinearAlgebra.Main
 		/// <param name="m"></param>
 		/// <param name="amountToIgnore"></param>
 		/// <returns></returns>
-		public static int AmountOfNullRows<T>(this MatrixBase<T> m, int amountToIgnore = 0) where T : FieldMember, new()
+		public static int AmountOfNullRows<T>(this Matrix<T> m, int amountToIgnore = 0) where T : FieldMember, new()
 		{
-			MatrixBase<T> n = new MatrixBase<T>(m);
+			Matrix<T> n = new Matrix<T>(m);
 
 			for (int j = m.Width - 1; j >= m.Width - amountToIgnore; j--)
 			{
@@ -295,7 +295,7 @@ namespace LinearAlgebra.Main
 		/// <param name="m"></param>
 		/// <param name="n"></param>
 		/// <returns></returns>
-		private static MatrixBase<T> WithoutColumn<T>(this MatrixBase<T> m, int n) where T : FieldMember, new()
+		private static Matrix<T> WithoutColumn<T>(this Matrix<T> m, int n) where T : FieldMember, new()
 		{
 			T[,] indices = new T[m.Height, m.Width - 1];
 
@@ -313,7 +313,7 @@ namespace LinearAlgebra.Main
 				}
 			}
 
-			return new MatrixBase<T>(indices);
+			return new Matrix<T>(indices);
 		}
 
 		/// <summary>
@@ -325,7 +325,7 @@ namespace LinearAlgebra.Main
 		/// <param name="amountToIgnore">Amount of columns on the right
 		/// to ignore when searching non-zero values</param>
 		/// <returns></returns>
-		public static int GetPivot<T>(this MatrixBase<T> m, int i, int amountToIgnore = 0) where T : FieldMember, new()
+		public static int GetPivot<T>(this Matrix<T> m, int i, int amountToIgnore = 0) where T : FieldMember, new()
 		{
 			if (i >= m.Height)
 				throw new IndexOutOfRangeException(

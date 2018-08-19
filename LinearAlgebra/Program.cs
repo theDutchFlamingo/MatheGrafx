@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using LinearAlgebra.ComplexLinearAlgebra;
 using LinearAlgebra.Fields;
 using LinearAlgebra.Main;
@@ -7,16 +8,40 @@ namespace LinearAlgebra
 {
     public static class Program
     {
+	    public static string Url = "https://www.google.com";
+	    
+		private static readonly Complex i = Complex.I;
+
 	    static void Main()
         {
 			//Complexity();
 			//Test();
-			LinAlg();
+			//LinAlg();
+			ComplexLinAlg();
+			//BasicTest()
+			
 		}
+	    
+	    private static void ComplexLinAlg()
+	    {
+			ComplexMatrix c = new ComplexMatrix(3, 3)
+			{
+				Indices = new [,] {
+					{ 1 + i, 1 + i, 1 + i, 1 + i },
+					{ i, 2*i, 2*i + 3, 2 - 4*i },
+					{ 1 + i, 1 - 2*i, 2 + i, 3 + 5*i },
+					{ 1 + 3*i, 2 - 2*i, 3 + 5*i, 4 }
+				}
+			};
+
+			Console.WriteLine(c.ToDeterminant(3, true, 3));
+		    Console.WriteLine();
+		    Console.WriteLine(c.Inverse().ToTable(3, 3, true));
+	    }
 
 	    private static void Test()
 	    {
-			Matrix m = new Matrix(4, 4)
+			RealMatrix m = new RealMatrix(4, 4)
 			{
 				Indices = new Real[,] { { 1, 1, 1, 1 }, { 1, 1, 1, 2 }, { 1, 1, 2, 3 }, { 1, 2, 3, 4} }
 			};
@@ -24,6 +49,27 @@ namespace LinearAlgebra
 		    m[0, VectorType.Row] = m[1, VectorType.Row];
 
 			Console.WriteLine(m.ToDeterminant(3, true));
+	    }
+
+	    private static void BasicTest()
+	    {
+		    RealMatrix m1 = new RealMatrix(5, 3)
+		    {
+			    Indices = new Real[,] { { 2, 3, 7 }, { 0, 0, 0 }, { 2, 4, 6 }, { -1, 4, 5 }, { 0, 8, 3 } }
+		    };
+
+		    RealMatrix m2 = new RealMatrix(4, 4)
+		    {
+			    Indices = new Real[,] { { 1, 1, 1, 1 }, { 1, 1, 1, 2 }, { 1, 1, 2, 3 }, { 1, 2, 3, 4 } }
+		    };
+
+		    Console.WriteLine(m1.ToTable(3));
+		    Console.WriteLine();
+		    Console.WriteLine(m1.Transpose().ToTable(3));
+		    Console.WriteLine();
+		    Console.WriteLine((m1 * m1.Transpose()).ToDeterminant(3, true));
+		    Console.WriteLine();
+		    Console.WriteLine(m2.ToDeterminant(3, true));
 	    }
 
 	    private static void Complexity()
@@ -68,20 +114,20 @@ namespace LinearAlgebra
 		    }
 
 		    // A matrix with only 2's in it
-		    Matrix m = new Matrix(ints);
+		    RealMatrix m = new RealMatrix(ints);
 
-		    Matrix n = new Matrix(5, 3)
+		    RealMatrix n = new RealMatrix(5, 3)
 		    {
 			    Indices = new Real[,] { { 2, 3, 7 }, { 0, 0, 0 }, { 2, 4, 6 }, { -1, 4, 5 }, { 0, 8, 3 } }
 		    };
 
-		    Matrix p = m * n;
+		    RealMatrix p = m * n;
 
 			Console.WriteLine(p[VectorType.Column]);
 
-		    Matrix e = n.ToReducedEchelonForm().ToRealMatrix();
+		    RealMatrix e = n.ToReducedEchelonForm().ToRealMatrix();
 
-		    Matrix u = n * n.Transpose().ToRealMatrix();
+		    RealMatrix u = n * n.Transpose().ToRealMatrix();
 
 		    Console.WriteLine(e.IsReducedEchelon());
 		    Console.WriteLine();

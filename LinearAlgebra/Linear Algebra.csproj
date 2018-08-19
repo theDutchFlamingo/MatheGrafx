@@ -55,11 +55,11 @@
     <Compile Include="ComplexLinearAlgebra\ComplexVector.cs" />
     <Compile Include="Fields\Field.cs" />
     <Compile Include="Fields\FieldMember.cs" />
-    <Compile Include="Fields\MatrixBase.cs" />
+    <Compile Include="Fields\Matrix.cs" />
     <Compile Include="Fields\Numerical.cs" />
     <Compile Include="Fields\Real.cs" />
     <Compile Include="Fields\RealNumbers.cs" />
-    <Compile Include="Fields\VectorBase.cs" />
+    <Compile Include="Fields\Vector.cs" />
     <Compile Include="Matrix - Copy.cs" />
     <Compile Include="Numeric\Polynomial.cs" />
     <Compile Include="Numeric\RootFinder.cs" />
@@ -73,11 +73,11 @@
     <Compile Include="Main\LinearMath.cs" />
     <Compile Include="Exceptions\InvalidRowOperationException.cs" />
     <Compile Include="Exceptions\InvalidRowOperationType.cs" />
-    <Compile Include="Matrix.cs" />
+    <Compile Include="RealMatrix.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VectorSpaces\VectorSpace.cs" />
-    <Compile Include="Vector.cs" />
+    <Compile Include="RealVector.cs" />
     <Compile Include="VectorType.cs" />
   </ItemGroup>
   <ItemGroup>

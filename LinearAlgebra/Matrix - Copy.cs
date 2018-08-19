@@ -12,7 +12,7 @@ namespace LinearAlgebra
 	/// <summary>
 	/// The original matrix class without being a subclass of MatrixBase
 	/// </summary>
-	public class MatrixCopy : IEnumerable<double>, IEnumerable<Vector>
+	public class MatrixCopy : IEnumerable<double>, IEnumerable<RealVector>
 	{
 		public static VectorType DefaultVectorType { get; set; } = VectorType.Column;
 
@@ -121,7 +121,7 @@ namespace LinearAlgebra
 		/// can be columns or rows based on type
 		/// </summary>
 		/// <param name="vectors"></param>
-		public MatrixCopy(Vector[] vectors) : this(vectors, DefaultVectorType)
+		public MatrixCopy(RealVector[] vectors) : this(vectors, DefaultVectorType)
 		{
 			
 		}
@@ -132,7 +132,7 @@ namespace LinearAlgebra
 		/// </summary>
 		/// <param name="vectors"></param>
 		/// <param name="type">Determines whether the vectors are columns or rows</param>
-		public MatrixCopy(Vector[] vectors, VectorType type)
+		public MatrixCopy(RealVector[] vectors, VectorType type)
 		{
 			Indices = new double[vectors.Length, vectors[0].Dimension];
 
@@ -145,7 +145,7 @@ namespace LinearAlgebra
 		/// Creates a diagonal matrix with the given vector on the diagonal
 		/// </summary>
 		/// <param name="diagonal"></param>
-		public MatrixCopy(Vector diagonal)
+		public MatrixCopy(RealVector diagonal)
 		{
 			Indices = new double[diagonal.Dimension, diagonal.Dimension];
 
@@ -451,7 +451,7 @@ namespace LinearAlgebra
 		/// <param name="n"></param>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public Vector this[int n, VectorType type]
+		public RealVector this[int n, VectorType type]
 		{
 			get => this[type][n];
 			set
@@ -495,20 +495,20 @@ namespace LinearAlgebra
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public Vector[] this[VectorType type]
+		public RealVector[] this[VectorType type]
 		{
 			get
 			{
-				Vector[] result;
+				RealVector[] result;
 
 				switch (type)
 				{
 					case VectorType.Column:
-						result = new Vector[Width];
+						result = new RealVector[Width];
 
 						for (int j = 0; j < result.Length; j++)
 						{
-							result[j] = new Vector(Height);
+							result[j] = new RealVector(Height);
 						}
 
 						for (int i = 0; i < Height; i++)
@@ -520,11 +520,11 @@ namespace LinearAlgebra
 						}
 						return result;
 					case VectorType.Row:
-						result = new Vector[Height];
+						result = new RealVector[Height];
 
 						for (int i = 0; i < result.Length; i++)
 						{
-							result[i] = new Vector(Width);
+							result[i] = new RealVector(Width);
 						}
 
 						for (int i = 0; i < Height; i++)
@@ -882,7 +882,7 @@ namespace LinearAlgebra
 			}
 		}
 
-		IEnumerator<Vector> IEnumerable<Vector>.GetEnumerator()
+		IEnumerator<RealVector> IEnumerable<RealVector>.GetEnumerator()
 		{
 			int position = 0;
 
@@ -919,7 +919,7 @@ namespace LinearAlgebra
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public IEnumerable<Vector> GetVectors(VectorType type)
+		public IEnumerable<RealVector> GetVectors(VectorType type)
 		{
 			Type = type;
 
@@ -930,7 +930,7 @@ namespace LinearAlgebra
 		/// Get the enumerable that loops over the rows
 		/// </summary>
 		/// <returns></returns>
-		public List<Vector> GetRows()
+		public List<RealVector> GetRows()
 		{
 			return GetVectors(VectorType.Row).ToList();
 		}
@@ -939,7 +939,7 @@ namespace LinearAlgebra
 		/// Get the enumerable that loops over the columns
 		/// </summary>
 		/// <returns></returns>
-		public List<Vector> GetColumns()
+		public List<RealVector> GetColumns()
 		{
 			return GetVectors(VectorType.Column).ToList();
 		}

@@ -18,5 +18,11 @@ namespace LinearAlgebra.Fields
 		INumerical Round();
 
 		INumerical Log10();
+
+		/**
+		 * For instances with mutiple values, like Complex and Rational, the value
+		 * that is longest when converted to a string
+		 */
+		INumerical LongestValue();
 	}
 }

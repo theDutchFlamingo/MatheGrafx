@@ -2,6 +2,6 @@
 {
 	public enum IncompatibleMatrixOperationType
 	{
-		Addition, Multiplication, Determinant, Inverse, Eigenvalue, Eigenvector
+		Addition, Multiplication, Determinant, Inverse, Eigenvalue, Eigenvector, Trace
 	}
 }

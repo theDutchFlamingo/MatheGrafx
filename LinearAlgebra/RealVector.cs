@@ -6,15 +6,15 @@ namespace LinearAlgebra
 	/// <summary>
 	/// Specific implementation of VectorBase&lt;Real&gt; because real vectors are by far the most common ones
 	/// </summary>
-	public class Vector : VectorBase<Real>
+	public class RealVector : Vector<Real>
     {
 	    #region Constructors
 
 	    /// <summary>
-	    /// Create a vector with a double array
+	    /// Create a vector with a real number array
 	    /// </summary>
 	    /// <param name="indices"></param>
-	    public Vector(Real[] indices) : base(indices)
+	    public RealVector(Real[] indices) : base(indices)
 	    {
 		    
 	    }
@@ -23,7 +23,19 @@ namespace LinearAlgebra
 	    /// Create a vector with a double array
 	    /// </summary>
 	    /// <param name="indices"></param>
-	    public Vector(double[] indices) : base(indices.Length)
+	    public RealVector(double[] indices) : base(indices.Length)
+	    {
+		    for (int i = 0; i < Dimension; i++)
+		    {
+			    Indices[i] = indices[i];
+		    }
+	    }
+
+	    /// <summary>
+	    /// Create a vector with an integer array
+	    /// </summary>
+	    /// <param name="indices"></param>
+	    public RealVector(int[] indices) : base(indices.Length)
 	    {
 		    for (int i = 0; i < Dimension; i++)
 		    {
@@ -35,7 +47,7 @@ namespace LinearAlgebra
 		/// Create a vector from a VectorBase&lt;Real&gt; object.
 		/// </summary>
 		/// <param name="vector"></param>
-	    public Vector(VectorBase<Real> vector) : base(vector)
+	    public RealVector(Vector<Real> vector) : base(vector)
 	    {
 
 	    }
@@ -44,7 +56,7 @@ namespace LinearAlgebra
 	    /// Create a vector from another vector
 	    /// </summary>
 	    /// <param name="v"></param>
-	    public Vector(Vector v) : base(v)
+	    public RealVector(RealVector v) : base(v)
 	    {
 		    
 	    }
@@ -52,13 +64,13 @@ namespace LinearAlgebra
 	    /// <summary>Creates the (n+1)ᵗʰ unit vector of the given dimension,
 	    /// a.k.a. the 1 is at position n</summary>
 
-	    public Vector(int dimension, int n) : base(dimension, n)
+	    public RealVector(int dimension, int n) : base(dimension, n)
 	    {
 			
 	    }
 
 	    ///<summary>Creates a null vector of given dimension</summary>
-	    public Vector(int dimension) : base(dimension)
+	    public RealVector(int dimension) : base(dimension)
 	    {
 
 	    }
@@ -73,7 +85,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Vector operator +(Vector left, Vector right)
+		public static RealVector operator +(RealVector left, RealVector right)
 		{
 			if (!left.Comparable(right))
 				throw new
@@ -86,7 +98,7 @@ namespace LinearAlgebra
 				indices[i] += right[i];
 			}
 
-			return new Vector(indices);
+			return new RealVector(indices);
 		}
 
 		/// <summary>
@@ -94,7 +106,7 @@ namespace LinearAlgebra
 		/// </summary>
 		/// <param name="v"></param>
 		/// <returns></returns>
-		public static Vector operator -(Vector v)
+		public static RealVector operator -(RealVector v)
 		{
 			Real[] indices = new Real[v.Dimension];
 
@@ -103,7 +115,7 @@ namespace LinearAlgebra
 				indices[i] = -v[i];
 			}
 
-			return new Vector(indices);
+			return new RealVector(indices);
 		}
 
 		/// <summary>
@@ -112,7 +124,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Vector operator -(Vector left, Vector right)
+		public static RealVector operator -(RealVector left, RealVector right)
 		{
 			return left + -right;
 		}
@@ -123,7 +135,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static double operator *(Vector left, Vector right)
+		public static double operator *(RealVector left, RealVector right)
 		{
 			if (!left.Comparable(right))
 				throw new
@@ -145,7 +157,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Vector operator *(Vector left, double right)
+		public static RealVector operator *(RealVector left, double right)
 		{
 			Real[] indices = left.Indices;
 
@@ -154,7 +166,7 @@ namespace LinearAlgebra
 				indices[i] *= right;
 			}
 
-			return new Vector(indices);
+			return new RealVector(indices);
 		}
 
 		/// <summary>
@@ -163,7 +175,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Vector operator *(double left, Vector right)
+		public static RealVector operator *(double left, RealVector right)
 		{
 			return right * left;
 		}
@@ -174,7 +186,7 @@ namespace LinearAlgebra
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Vector operator /(Vector left, double right)
+		public static RealVector operator /(RealVector left, double right)
 		{
 			return left * (1 / right);
 		}

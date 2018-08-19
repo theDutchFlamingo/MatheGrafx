@@ -73,6 +73,27 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 			return b ^ exp;
 		}
 
+		/// <summary>
+		/// Take the log of c with base b.
+		/// </summary>
+		/// <param name="c"></param>
+		/// <param name="b"></param>
+		/// <returns></returns>
+		public static Complex Log(Complex c, double b = Math.E)
+		{
+			return new Complex(Math.Log(c.Modulus, b), c.Argument * Math.Log(Math.E, b));
+		}
+
+		/// <summary>
+		/// Take the log10 of complex number c
+		/// </summary>
+		/// <param name="c"></param>
+		/// <returns></returns>
+		public static Complex Log10(Complex c)
+		{
+			return Log(c, 10);
+		}
+
 		public static bool Equals(this Complex left, Complex right)
 		{
 			return left.Real.CloseTo(right.Real) && left.Imaginary.CloseTo(right.Imaginary);

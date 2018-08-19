@@ -55,7 +55,7 @@ namespace LinearAlgebra.Numeric
 		/// <param name="b"></param>
 		/// <param name="tolerance"></param>
 		/// <returns></returns>
-		public static bool CloseTo(this Vector a, Vector b, double tolerance = LinearMath.Tolerance)
+		public static bool CloseTo(this RealVector a, RealVector b, double tolerance = LinearMath.Tolerance)
 		{
 			return (a - b).Norm().CloseTo(0, tolerance);
 		}

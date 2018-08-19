@@ -30,6 +30,7 @@ namespace LinearAlgebra.Fields
 		#endregion
 
 		#region Override Methods
+		
 		internal override T Add<T>(T other)
 		{
 			if (other is Real r)
@@ -95,6 +96,12 @@ namespace LinearAlgebra.Fields
 		{
 			return new Real(Math.Log10(Value));
 		}
+
+		public INumerical LongestValue()
+		{
+			return this;
+		}
+		
 		#endregion
 
 		#region Operators

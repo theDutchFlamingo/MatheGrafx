@@ -65,7 +65,7 @@ namespace LinearAlgebra.Main
 		/// </summary>
 		/// <param name="m"></param>
 		/// <returns></returns>
-		public MatrixBase<T> ActOn(MatrixBase<T> m)
+		public Matrix<T> ActOn(Matrix<T> m)
 		{
 			switch (Type)
 			{
@@ -88,8 +88,8 @@ namespace LinearAlgebra.Main
 						throw new IncompatibleRowOperationException(
 						"Index of one of the rows was was greater than or equal to the height of the matrix.");
 
-					VectorBase<T> from = m[From, VectorType.Row];
-					VectorBase<T> onto = m[Onto, VectorType.Row];
+					Vector<T> from = m[From, VectorType.Row];
+					Vector<T> onto = m[Onto, VectorType.Row];
 
 					m[Onto, VectorType.Row] = from;
 					m[From, VectorType.Row] = onto;
@@ -103,7 +103,7 @@ namespace LinearAlgebra.Main
 		/// Returns the elementary matrix which corresponds to this operation
 		/// </summary>
 		/// <returns></returns>
-		public MatrixBase<T> ElementaryMatrix(int size)
+		public Matrix<T> ElementaryMatrix(int size)
 		{
 			switch (Type)
 			{

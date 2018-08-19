@@ -2,15 +2,15 @@
 {
 	public class Basis
 	{
-		public Vector[] BasisVectors { get; }
+		public RealVector[] BasisVectors { get; }
 
-		public Basis(Vector[] basisVectors)
+		public Basis(RealVector[] basisVectors)
 		{
 			// Remove enough vectors to have no linear dependence
 			BasisVectors = basisVectors;
 		}
 
-		public Vector[] GetIndependentVectors(Vector[] vectors)
+		public RealVector[] GetIndependentVectors(RealVector[] vectors)
 		{
 			return vectors;
 		}

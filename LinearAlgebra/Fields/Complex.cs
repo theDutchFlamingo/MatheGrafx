@@ -5,7 +5,7 @@ using LinearAlgebra.Main;
 
 namespace LinearAlgebra.Fields
 {
-	public class Complex : FieldMember
+	public class Complex : FieldMember, INumerical
 	{
 		#region Properties
 
@@ -82,7 +82,7 @@ namespace LinearAlgebra.Fields
 
 		#endregion
 
-		#region Strings
+		#region Strings and INumerical Overrides
 
 		/// <summary>
 		/// String representation of the complex number
@@ -93,15 +93,48 @@ namespace LinearAlgebra.Fields
 			return ToString(false);
 		}
 
+		public string ToString(string format)
+		{
+			return ToString(false, format);
+		}
+
+		public INumerical LongestValue()
+		{
+			return LongestValue(false);
+		}
+
+		/// <summary>
+		/// Returns the value which has the longest length when converted to a string
+		/// (from Real and Imaginary if exponential is false,
+		/// and from modulus and aargument if exponential is true).
+		/// </summary>
+		/// <returns></returns>
+		public INumerical LongestValue(bool exponential)
+		{
+			if (exponential) return new Real(Math.Max(Real, Imaginary));
+			return new Real(Math.Max(Modulus, Argument));
+		}
+
+		public INumerical Round()
+		{
+			return new Complex(Math.Round(Real), Math.Round(Imaginary));
+		}
+
+		public INumerical Log10()
+		{
+			return ComplexMath.Log10(this);
+		}
+
 		/// <summary>
 		/// String representation with option to represent in exponential form
 		/// </summary>
 		/// <param name="exponential"></param>
+		/// <param name="format">Optional format that </param>
 		/// <returns></returns>
-		public string ToString(bool exponential)
+		public string ToString(bool exponential, string format = "")
 		{
-			if (exponential) return $"{Modulus}*e^({Argument}i)";
-			return $"{Real} + {Imaginary}i";
+			if (exponential) return $"{Modulus.ToString(format)}*e^({Argument.ToString(format)}i)";
+			return $"{Real.ToString(format)} + {Imaginary.ToString(format)}i";
 		}
 
 		#endregion
@@ -314,7 +347,7 @@ namespace LinearAlgebra.Fields
 
 		#endregion
 
-		#region Override Methods
+		#region FieldMember Override Methods
 
 		internal override T Add<T>(T other)
 		{

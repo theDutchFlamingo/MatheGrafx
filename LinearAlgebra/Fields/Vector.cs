@@ -7,7 +7,7 @@ using LinearAlgebra.Main;
 
 namespace LinearAlgebra.Fields
 {
-	public class VectorBase<T> : IEnumerable<T> where T : FieldMember, new()
+	public class Vector<T> : IEnumerable<T> where T : FieldMember, new()
 	{
 		#region Fields & Properties
 
@@ -39,7 +39,7 @@ namespace LinearAlgebra.Fields
 		/// Create a vector with a double array
 		/// </summary>
 		/// <param name="indices"></param>
-		public VectorBase(T[] indices)
+		public Vector(T[] indices)
 		{
 			Indices = indices;
 		}
@@ -48,7 +48,7 @@ namespace LinearAlgebra.Fields
 		/// Create a vector from another vector
 		/// </summary>
 		/// <param name="v"></param>
-		public VectorBase(VectorBase<T> v)
+		public Vector(Vector<T> v)
 		{
 			Indices = new T[v.Indices.Length];
 
@@ -61,7 +61,7 @@ namespace LinearAlgebra.Fields
 		/// <summary>Creates the (n+1)ᵗʰ unit vector of the given dimension,
 		/// a.k.a. the 1 is at position n</summary>
 
-		public VectorBase(int dimension, int n)
+		public Vector(int dimension, int n)
 		{
 			if (n >= dimension)
 				throw new ArgumentException("The index which contains the 1" +
@@ -78,7 +78,7 @@ namespace LinearAlgebra.Fields
 		}
 
 		///<summary>Creates a null vector of given dimension</summary>
-		public VectorBase(int dimension)
+		public Vector(int dimension)
 		{
 			Indices = new T[dimension];
 
@@ -90,6 +90,9 @@ namespace LinearAlgebra.Fields
 
 		#endregion
 
+		/**
+		 * Whether a vector is null, unit, or of the same dimension as another
+		 */
 		#region Tests
 
 		/// <summary>
@@ -110,7 +113,7 @@ namespace LinearAlgebra.Fields
 			return Norm().CloseTo(1);
 		}
 
-		protected bool Comparable(VectorBase<T> right)
+		protected bool Comparable(Vector<T> right)
 		{
 			return Dimension == right.Dimension;
 		}
@@ -148,19 +151,14 @@ namespace LinearAlgebra.Fields
 			return result;
 		}
 
-		public string ToTable(int maxPrecision, VectorType type, int padding = -1)
+		public string ToTable(int maxPrecision, VectorType type, int padding = -1, int spacing = 1, bool wholeNumbers = false)
 		{
 			if (maxPrecision < 1)
 				throw new ArgumentException("Precision must be at least one", nameof(maxPrecision));
 
-			if (new T() is INumerical n) return ToNumberTable(maxPrecision, type, padding);
+			if (new T() is INumerical) return ToNumberTable(maxPrecision, type, padding, spacing, wholeNumbers);
 
 			List<string> newStrings = this.Select(t => t.ToString()).ToList();
-
-			if (!newStrings.All(s => s.Length < maxPrecision))
-			{
-				newStrings = newStrings.Select(s => s.Substring(0, maxPrecision)).ToList();
-			}
 
 			if (padding == -1)
 				padding = Padding(maxPrecision);
@@ -179,7 +177,7 @@ namespace LinearAlgebra.Fields
 				case VectorType.Row:
 					foreach (var str in newStrings)
 					{
-						result += str.PadLeft(padding) + " ";
+						result += str.PadLeft(padding) + String.Concat(Enumerable.Repeat(" ", spacing));
 					}
 					break;
 			}
@@ -195,8 +193,9 @@ namespace LinearAlgebra.Fields
 		/// <param name="maxPrecision"></param>
 		/// <param name="type"></param>
 		/// <param name="padding"></param>
+		/// <param name="spacing"></param>
 		/// <returns></returns>
-		private string ToNumberTable(int maxPrecision, VectorType type, int padding)
+		private string ToNumberTable(int maxPrecision, VectorType type, int padding, int spacing, bool wholeNumbers)
 		{
 			string result = "";
 
@@ -207,7 +206,7 @@ namespace LinearAlgebra.Fields
 				indices[i] = (INumerical) Indices[i];
 			}
 
-			if (indices.Select(d => d.Round().Log10().ToString().Length)
+			if (indices.Select(d => d.LongestValue().Log10().Round().ToString().Length)
 				.Any(s => s > maxPrecision))
 				maxPrecision += 4;
 
@@ -219,13 +218,27 @@ namespace LinearAlgebra.Fields
 				case VectorType.Column:
 					foreach (var d in this)
 					{
+						if (wholeNumbers)
+						{
+							result += ((INumerical)d).Round().ToString("g" + maxPrecision).PadLeft(padding) + "\n";
+							continue;
+						}
+
 						result += ((INumerical)d).ToString("g" + maxPrecision).PadLeft(padding) + "\n";
 					}
 					break;
 				case VectorType.Row:
 					foreach (var d in this)
 					{
-						result += ((INumerical) d).ToString("g" + maxPrecision).PadLeft(padding) + " ";
+						if (wholeNumbers)
+						{
+							result += ((INumerical) d).Round().ToString("g" + maxPrecision).PadLeft(padding) +
+							          String.Concat(Enumerable.Repeat(" ", spacing));
+							continue;
+						}
+						
+						result += ((INumerical) d).ToString("g" + maxPrecision).PadLeft(padding) +
+						          String.Concat(Enumerable.Repeat(" ", spacing));
 					}
 					break;
 				default:
@@ -245,9 +258,15 @@ namespace LinearAlgebra.Fields
 		/// <returns></returns>
 		protected internal int Padding(int maxPrecision)
 		{
-			int wanted = this.Select(d => ((INumerical) d).ToString("g").Length).Max();
+			int wanted;
 
-			return wanted > maxPrecision ? maxPrecision : wanted;
+			if (new T() is INumerical)
+			{
+				wanted = this.Select(d => ((INumerical) d).ToString("g").Length).Max();
+				return wanted > maxPrecision ? maxPrecision : wanted;
+			}
+			
+			return this.Select(d => d.ToString().Length).Max();
 		}
 
 		#endregion
@@ -275,7 +294,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static VectorBase<T> operator +(VectorBase<T> left, VectorBase<T> right)
+		public static Vector<T> operator +(Vector<T> left, Vector<T> right)
 		{
 			if (!left.Comparable(right))
 				throw new IncompatibleOperationException(IncompatibleVectorOperationType.Addition);
@@ -287,7 +306,7 @@ namespace LinearAlgebra.Fields
 				indices[i] = indices[i].Add(right[i]);
 			}
 
-			return new VectorBase<T>(indices);
+			return new Vector<T>(indices);
 		}
 
 		/// <summary>
@@ -295,7 +314,7 @@ namespace LinearAlgebra.Fields
 		/// </summary>
 		/// <param name="v"></param>
 		/// <returns></returns>
-		public static VectorBase<T> operator -(VectorBase<T> v)
+		public static Vector<T> operator -(Vector<T> v)
 		{
 			T[] indices = new T[v.Dimension];
 
@@ -304,7 +323,7 @@ namespace LinearAlgebra.Fields
 				indices[i] = v[i].Negative<T>();
 			}
 
-			return new VectorBase<T>(indices);
+			return new Vector<T>(indices);
 		}
 
 		/// <summary>
@@ -313,7 +332,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static VectorBase<T> operator -(VectorBase<T> left, VectorBase<T> right)
+		public static Vector<T> operator -(Vector<T> left, Vector<T> right)
 		{
 			return left + -right;
 		}
@@ -324,7 +343,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static T operator *(VectorBase<T> left, VectorBase<T> right)
+		public static T operator *(Vector<T> left, Vector<T> right)
 		{
 			if (!left.Comparable(right))
 				throw new IncompatibleOperationException(IncompatibleVectorOperationType.Inner);
@@ -345,7 +364,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns>&lt;T&gt;</returns>
-		public static VectorBase<T> operator *(VectorBase<T> left, T right)
+		public static Vector<T> operator *(Vector<T> left, T right)
 		{
 			T[] indices = left.Indices;
 
@@ -354,7 +373,7 @@ namespace LinearAlgebra.Fields
 				indices[i] = indices[i].Inner(right);
 			}
 
-			return new VectorBase<T>(indices);
+			return new Vector<T>(indices);
 		}
 
 		/// <summary>
@@ -363,7 +382,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static VectorBase<T> operator *(T left, VectorBase<T> right)
+		public static Vector<T> operator *(T left, Vector<T> right)
 		{
 			return right * left;
 		}
@@ -374,7 +393,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static VectorBase<T> operator /(VectorBase<T> left, T right)
+		public static Vector<T> operator /(Vector<T> left, T right)
 		{
 			return left * right.Inverse<T>();
 		}
@@ -383,24 +402,24 @@ namespace LinearAlgebra.Fields
 
 		#region Cast Operators
 
-		public static explicit operator T[] (VectorBase<T> v)
+		public static explicit operator T[] (Vector<T> v)
 		{
 			return v.Indices.ToArray();
 		}
 
-		public static explicit operator List<T>(VectorBase<T> v)
+		public static explicit operator List<T>(Vector<T> v)
 		{
 			return new List<T>(v.Indices);
 		}
 
-		public static explicit operator VectorBase<T>(List<T> l)
+		public static explicit operator Vector<T>(List<T> l)
 		{
-			return new VectorBase<T>(l.ToArray());
+			return new Vector<T>(l.ToArray());
 		}
 
-		public static explicit operator VectorBase<T>(T[] l)
+		public static explicit operator Vector<T>(T[] l)
 		{
-			return new VectorBase<T>(l);
+			return new Vector<T>(l);
 		}
 
 		#endregion

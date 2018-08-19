@@ -9,7 +9,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 	/// Specific implementation of MatrixBase&lt;Complex&gt; because ComplexMatrices are still pretty common.
 	/// Also adds some specific complex methods.
 	/// </summary>
-	public class ComplexMatrix : MatrixBase<Complex>
+	public class ComplexMatrix : Matrix<Complex>
 	{
 		#region Constructors
 

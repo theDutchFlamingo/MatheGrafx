@@ -53,6 +53,8 @@ namespace LinearAlgebra.Exceptions
 				case IncompatibleMatrixOperationType.Multiplication:
 					return "The two matrices could not be multiplied, the width of the first" +
 					       "should be equal to the height of the second.";
+				case IncompatibleMatrixOperationType.Trace:
+					return "The trace of a matrix exists only if the matrix is square";
 			}
 
 			throw new ArgumentException("This exception has neither a MatrixType" +

@@ -14,7 +14,7 @@ namespace LinearAlgebra.Main
 	/// </summary>
 	public static class LinearMath
 	{
-		public const double Tolerance = 0.0000001;
+		public const double Tolerance = 1E-09D;
 
 		/// <summary>
 		/// Gets the eigenvalues of the given matrix, calculated numerically from the
@@ -23,7 +23,7 @@ namespace LinearAlgebra.Main
 		/// </summary>
 		/// <param name="m"></param>
 		/// <returns></returns>
-		public static Vector EigenValues(this Matrix m)
+		public static RealVector EigenValues(this RealMatrix m)
 		{
 			return null;
 		}
@@ -33,12 +33,12 @@ namespace LinearAlgebra.Main
 		/// </summary>
 		/// <param name="m"></param>
 		/// <returns></returns>
-		public static Vector[] EigenVectors(this Matrix m)
+		public static RealVector[] EigenVectors(this RealMatrix m)
 		{
 			return null;
 		}
 
-		public static bool LinearlyDependent(Vector[] vectors)
+		public static bool LinearlyDependent(RealVector[] vectors)
 		{
 			if (vectors.Select(v => v.Dimension).Distinct().Count() > 1)
 				throw new IncompatibleOperationException(IncompatibleVectorOperationType.Dimension);
@@ -61,9 +61,9 @@ namespace LinearAlgebra.Main
 		/// <param name="v"></param>
 		/// <param name="combination"></param>
 		/// <returns></returns>
-		public static Vector GetLinearCombination(this Vector v, Vector[] combination)
+		public static RealVector GetLinearCombination(this RealVector v, RealVector[] combination)
 		{
-			List<Vector> allVectors = new List<Vector>(combination) {v};
+			List<RealVector> allVectors = new List<RealVector>(combination) {v};
 
 			if (!LinearlyDependent(allVectors.ToArray())) throw new
 				ArgumentException("This vector is not linearly dependent on the given array");
@@ -71,7 +71,7 @@ namespace LinearAlgebra.Main
 			return null;
 		}
 
-		public static VectorSpace ColumnSpace(this Matrix m)
+		public static VectorSpace ColumnSpace(this RealMatrix m)
 		{
 			return null;
 		}
@@ -86,19 +86,19 @@ namespace LinearAlgebra.Main
 			return Math.Abs(d1 - d2) <= tolerance;
 		}
 
-		public static Matrix UnitMatrix(int size)
+		public static RealMatrix UnitMatrix(int size)
 		{
-			return new Matrix(size);
+			return new RealMatrix(size);
 		}
 
-		public static MatrixBase<T> UnitMatrix<T>(int size) where T : FieldMember, new()
+		public static Matrix<T> UnitMatrix<T>(int size) where T : FieldMember, new()
 		{
-			return new MatrixBase<T>(size);
+			return new Matrix<T>(size);
 		}
 
-		public static Matrix NullMatrix(int height, int width)
+		public static RealMatrix NullMatrix(int height, int width)
 		{
-			return new Matrix(height, width);
+			return new RealMatrix(height, width);
 		}
 	}
 }

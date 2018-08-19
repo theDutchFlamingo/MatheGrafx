@@ -12,7 +12,7 @@ namespace LinearAlgebra.Fields
 	/// FieldMember to ensure 
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class MatrixBase<T> : IEnumerable<VectorBase<T>>, IEnumerable<T> where T : FieldMember, new()
+	public class Matrix<T> : IEnumerable<Vector<T>>, IEnumerable<T> where T : FieldMember, new()
 	{
 		#region Static
 		/// <summary>
@@ -84,7 +84,7 @@ namespace LinearAlgebra.Fields
 		/// Constructor of a MatrixBase
 		/// </summary>
 		/// <param name="indices"></param>
-		public MatrixBase(T[,] indices)
+		public Matrix(T[,] indices)
 		{
 			Indices = indices;
 		}
@@ -93,7 +93,7 @@ namespace LinearAlgebra.Fields
 		/// Clone the given matrix
 		/// </summary>
 		/// <param name="m"></param>
-		public MatrixBase(MatrixBase<T> m)
+		public Matrix(Matrix<T> m)
 		{
 			Indices = new T[m.Height, m.Width];
 
@@ -113,7 +113,7 @@ namespace LinearAlgebra.Fields
 		/// can be columns or rows based on type
 		/// </summary>
 		/// <param name="vectors"></param>
-		public MatrixBase(VectorBase<T>[] vectors) : this(vectors, DefaultVectorType)
+		public Matrix(Vector<T>[] vectors) : this(vectors, DefaultVectorType)
 		{
 
 		}
@@ -124,7 +124,7 @@ namespace LinearAlgebra.Fields
 		/// </summary>
 		/// <param name="vectors"></param>
 		/// <param name="type">Determines whether the vectors are columns or rows</param>
-		public MatrixBase(VectorBase<T>[] vectors, VectorType type)
+		public Matrix(Vector<T>[] vectors, VectorType type)
 		{
 			Indices = new T[vectors.Length, vectors[0].Dimension];
 
@@ -137,7 +137,7 @@ namespace LinearAlgebra.Fields
 		/// Creates a diagonal matrix with the given vector on the diagonal
 		/// </summary>
 		/// <param name="diagonal"></param>
-		public MatrixBase(VectorBase<T> diagonal)
+		public Matrix(Vector<T> diagonal)
 		{
 			Indices = new T[diagonal.Dimension, diagonal.Dimension];
 
@@ -151,7 +151,7 @@ namespace LinearAlgebra.Fields
 		/// Creates a diagonal matrix with the given array on the diagonal
 		/// </summary>
 		/// <param name="diagonal"></param>
-		public MatrixBase(T[] diagonal)
+		public Matrix(T[] diagonal)
 		{
 			int size = diagonal.Length;
 
@@ -167,7 +167,7 @@ namespace LinearAlgebra.Fields
 		/// Create a unit matrix with the given size
 		/// </summary>
 		/// <param name="size"></param>
-		public MatrixBase(int size)
+		public Matrix(int size)
 		{
 			Indices = new T[size, size];
 
@@ -182,7 +182,7 @@ namespace LinearAlgebra.Fields
 		/// </summary>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		public MatrixBase(int height, int width)
+		public Matrix(int height, int width)
 		{
 			Indices = new T[height, width];
 
@@ -231,7 +231,7 @@ namespace LinearAlgebra.Fields
 		/// Get the inverse of the matrix, which is done by dividing the adjugate matrix by the determinant
 		/// </summary>
 		/// <returns></returns>
-		public MatrixBase<T> Inverse()
+		public Matrix<T> Inverse()
 		{
 			if (!IsSquare() || Determinant().IsNull())
 				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Inverse);
@@ -243,7 +243,7 @@ namespace LinearAlgebra.Fields
 		/// Get the transpose of this matrix, that is, each value i,j becomes j,i
 		/// </summary>
 		/// <returns></returns>
-		public MatrixBase<T> Transpose()
+		public Matrix<T> Transpose()
 		{
 			T[,] indices = new T[Width, Height];
 
@@ -255,7 +255,7 @@ namespace LinearAlgebra.Fields
 				}
 			}
 
-			return new MatrixBase<T>(indices);
+			return new Matrix<T>(indices);
 		}
 
 		/// <summary>
@@ -264,7 +264,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="m"></param>
 		/// <param name="n"></param>
 		/// <returns></returns>
-		public MatrixBase<T> SubMatrix(int m, int n)
+		public Matrix<T> SubMatrix(int m, int n)
 		{
 			T[,] indices = new T[Height - 1, Width - 1];
 
@@ -285,7 +285,7 @@ namespace LinearAlgebra.Fields
 				}
 			}
 
-			return new MatrixBase<T>(indices);
+			return new Matrix<T>(indices);
 		}
 
 		/// <summary>
@@ -306,7 +306,7 @@ namespace LinearAlgebra.Fields
 		/// Gets the matrix of minors, which replaces every index its corresponding minor
 		/// </summary>
 		/// <returns></returns>
-		public MatrixBase<T> MatrixOfMinors()
+		public Matrix<T> MatrixOfMinors()
 		{
 			if (!IsSquare())
 				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
@@ -321,7 +321,7 @@ namespace LinearAlgebra.Fields
 				}
 			}
 
-			return new MatrixBase<T>(indices);
+			return new Matrix<T>(indices);
 		}
 
 		/// <summary>
@@ -343,7 +343,7 @@ namespace LinearAlgebra.Fields
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		public MatrixBase<T> CofactorMatrix()
+		public Matrix<T> CofactorMatrix()
 		{
 			if (!IsSquare())
 				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
@@ -358,19 +358,33 @@ namespace LinearAlgebra.Fields
 				}
 			}
 
-			return new MatrixBase<T>(indices);
+			return new Matrix<T>(indices);
 		}
 
 		/// <summary>
 		/// Gets the adjugate matrix, which is the transpose of the cofactor matrix
 		/// </summary>
 		/// <returns></returns>
-		public MatrixBase<T> Adjugate()
+		public Matrix<T> Adjugate()
 		{
 			if (!IsSquare())
 				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
 
 			return CofactorMatrix().Transpose();
+		}
+
+		public T Trace()
+		{
+			if (!IsSquare()) throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Trace);
+			
+			T result = new T();
+
+			for (int i = 0; i < Width; i++)
+			{
+				result = result.Add(this[i, i]);
+			}
+
+			return result;
 		}
 
 		#endregion
@@ -413,7 +427,7 @@ namespace LinearAlgebra.Fields
 		/// </summary>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		protected bool Addable(MatrixBase<T> right)
+		protected bool Addable(Matrix<T> right)
 		{
 			return Width == right.Width && Height == right.Height;
 		}
@@ -423,7 +437,7 @@ namespace LinearAlgebra.Fields
 		/// </summary>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		protected bool Multipliable(MatrixBase<T> right)
+		protected bool Multipliable(Matrix<T> right)
 		{
 			return Width == right.Height;
 		}
@@ -431,7 +445,7 @@ namespace LinearAlgebra.Fields
 		#endregion
 
 		/**
-		 * Indexing of the matrix. You can index by vectors, by 2D-indexes, or a 1D-indexer.
+		 * Indexing of the matrix. You can index by vectors, by 2D-indices, or a 1D-indexer.
 		 */
 		#region Indexing
 
@@ -490,7 +504,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="n"></param>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public VectorBase<T> this[int n, VectorType type]
+		public Vector<T> this[int n, VectorType type]
 		{
 			get => this[type][n];
 			set
@@ -534,20 +548,20 @@ namespace LinearAlgebra.Fields
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public VectorBase<T>[] this[VectorType type]
+		public Vector<T>[] this[VectorType type]
 		{
 			get
 			{
-				VectorBase<T>[] result;
+				Vector<T>[] result;
 
 				switch (type)
 				{
 					case VectorType.Column:
-						result = new VectorBase<T>[Width];
+						result = new Vector<T>[Width];
 
 						for (int j = 0; j < result.Length; j++)
 						{
-							result[j] = new VectorBase<T>(Height);
+							result[j] = new Vector<T>(Height);
 						}
 
 						for (int i = 0; i < Height; i++)
@@ -559,11 +573,11 @@ namespace LinearAlgebra.Fields
 						}
 						return result;
 					case VectorType.Row:
-						result = new VectorBase<T>[Height];
+						result = new Vector<T>[Height];
 
 						for (int i = 0; i < result.Length; i++)
 						{
-							result[i] = new VectorBase<T>(Width);
+							result[i] = new Vector<T>(Width);
 						}
 
 						for (int i = 0; i < Height; i++)
@@ -641,8 +655,9 @@ namespace LinearAlgebra.Fields
 		/// Format the matrix as a table
 		/// </summary>
 		/// <param name="precision"></param>
+		/// <param name="spacing"></param>
 		/// <returns></returns>
-		public string ToTable(int precision)
+		public string ToTable(int precision, int spacing = 1, bool wholeNumbers = false)
 		{
 			string result = "";
 
@@ -650,7 +665,7 @@ namespace LinearAlgebra.Fields
 
 			foreach (var vector in this[VectorType.Row])
 			{
-				result += vector.ToTable(precision, VectorType.Row, padding) + "\n";
+				result += vector.ToTable(precision, VectorType.Row, padding, spacing, wholeNumbers) + "\n";
 			}
 
 			result = result.Remove(result.Length - 1);
@@ -663,10 +678,13 @@ namespace LinearAlgebra.Fields
 		/// like a determinant is being taken.
 		/// </summary>
 		/// <param name="precision"></param>
+		/// <param name="spacing"></param>
 		/// <param name="addResult">Whether to add the value of the determinant</param>
 		/// <returns></returns>
-		public string ToDeterminant(int precision, bool addResult = false)
+		public string ToDeterminant(int precision, bool addResult = false, int spacing = 1)
 		{
+			if (!IsSquare()) throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
+
 			string result = "";
 
 			int middle = (int)Math.Floor((double)Height / 2);
@@ -675,7 +693,7 @@ namespace LinearAlgebra.Fields
 
 			foreach (var vector in this[VectorType.Row])
 			{
-				result += "| " + vector.ToTable(precision, VectorType.Row, padding) +
+				result += "| " + vector.ToTable(precision, VectorType.Row, padding, spacing) +
 				          (i == middle && addResult ? $" | = {Determinant()}\n" : " |\n");
 				i++;
 			}
@@ -692,7 +710,7 @@ namespace LinearAlgebra.Fields
 		 */
 		#region Equality Methods
 
-		protected bool Equals(Matrix other)
+		protected bool Equals(RealMatrix other)
 		{
 			return Equals(Indices, other.Indices);
 		}
@@ -705,7 +723,7 @@ namespace LinearAlgebra.Fields
 				return true;
 			if (obj.GetType() != GetType())
 				return false;
-			return Equals((Matrix)obj);
+			return Equals((RealMatrix)obj);
 		}
 
 		public override int GetHashCode()
@@ -727,7 +745,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static bool operator ==(MatrixBase<T> left, MatrixBase<T> right)
+		public static bool operator ==(Matrix<T> left, Matrix<T> right)
 		{
 			// If the property width is null, the matrix must also be null
 			if (left?.Width == null && right?.Width == null)
@@ -752,7 +770,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static bool operator !=(MatrixBase<T> left, MatrixBase<T> right)
+		public static bool operator !=(Matrix<T> left, Matrix<T> right)
 		{
 			return !(left == right);
 		}
@@ -763,7 +781,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static MatrixBase<T> operator +(MatrixBase<T> left, MatrixBase<T> right)
+		public static Matrix<T> operator +(Matrix<T> left, Matrix<T> right)
 		{
 			if (left.Addable(right))
 			{
@@ -777,7 +795,7 @@ namespace LinearAlgebra.Fields
 					}
 				}
 
-				return new MatrixBase<T>(indices);
+				return new Matrix<T>(indices);
 			}
 			throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Addition);
 		}
@@ -787,7 +805,7 @@ namespace LinearAlgebra.Fields
 		/// </summary>
 		/// <param name="m"></param>
 		/// <returns></returns>
-		public static MatrixBase<T> operator -(MatrixBase<T> m)
+		public static Matrix<T> operator -(Matrix<T> m)
 		{
 			T[,] indices = new T[m.Width, m.Height];
 
@@ -799,7 +817,7 @@ namespace LinearAlgebra.Fields
 				}
 			}
 
-			return new MatrixBase<T>(indices);
+			return new Matrix<T>(indices);
 		}
 
 		/// <summary>
@@ -808,7 +826,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static MatrixBase<T> operator -(MatrixBase<T> left, MatrixBase<T> right)
+		public static Matrix<T> operator -(Matrix<T> left, Matrix<T> right)
 		{
 			if (left.Addable(right))
 			{
@@ -824,7 +842,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static MatrixBase<T> operator *(MatrixBase<T> left, MatrixBase<T> right)
+		public static Matrix<T> operator *(Matrix<T> left, Matrix<T> right)
 		{
 			if (!left.Multipliable(right))
 				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Multiplication);
@@ -839,7 +857,7 @@ namespace LinearAlgebra.Fields
 				}
 			}
 
-			return new MatrixBase<T>(indices);
+			return new Matrix<T>(indices);
 		}
 
 		/// <summary>
@@ -848,18 +866,18 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static MatrixBase<T> operator ^(MatrixBase<T> left, int right)
+		public static Matrix<T> operator ^(Matrix<T> left, int right)
 		{
 			if (!left.IsSquare())
 				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Multiplication);
 
 			if (right == 0)
-				return new MatrixBase<T>(left.Width);
+				return new Matrix<T>(left.Width);
 
 			if (right < 0)
 				return left.Inverse() ^ (-right);
 
-			MatrixBase<T> m = left;
+			Matrix<T> m = left;
 
 			for (int i = 1; i < right; i++)
 			{
@@ -875,7 +893,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static MatrixBase<T> operator *(MatrixBase<T> left, T right)
+		public static Matrix<T> operator *(Matrix<T> left, T right)
 		{
 			T[,] indices = left.Indices;
 
@@ -887,7 +905,7 @@ namespace LinearAlgebra.Fields
 				}
 			}
 
-			return new MatrixBase<T>(indices);
+			return new Matrix<T>(indices);
 		}
 
 		/// <summary>
@@ -896,7 +914,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static MatrixBase<T> operator *(T left, MatrixBase<T> right)
+		public static Matrix<T> operator *(T left, Matrix<T> right)
 		{
 			return right * left;
 		}
@@ -907,7 +925,7 @@ namespace LinearAlgebra.Fields
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static MatrixBase<T> operator /(MatrixBase<T> left, T right)
+		public static Matrix<T> operator /(Matrix<T> left, T right)
 		{
 			return left * right.Inverse<T>();
 		}
@@ -936,7 +954,7 @@ namespace LinearAlgebra.Fields
 			}
 		}
 
-		IEnumerator<VectorBase<T>> IEnumerable<VectorBase<T>>.GetEnumerator()
+		IEnumerator<Vector<T>> IEnumerable<Vector<T>>.GetEnumerator()
 		{
 			int position = 0;
 
@@ -973,7 +991,7 @@ namespace LinearAlgebra.Fields
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public IEnumerable<VectorBase<T>> GetVectors(VectorType type)
+		public IEnumerable<Vector<T>> GetVectors(VectorType type)
 		{
 			Type = type;
 
@@ -984,7 +1002,7 @@ namespace LinearAlgebra.Fields
 		/// Get the enumerable that loops over the rows
 		/// </summary>
 		/// <returns></returns>
-		public List<VectorBase<T>> GetRows()
+		public List<Vector<T>> GetRows()
 		{
 			return GetVectors(VectorType.Row).ToList();
 		}
@@ -993,20 +1011,23 @@ namespace LinearAlgebra.Fields
 		/// Get the enumerable that loops over the columns
 		/// </summary>
 		/// <returns></returns>
-		public List<VectorBase<T>> GetColumns()
+		public List<Vector<T>> GetColumns()
 		{
 			return GetVectors(VectorType.Column).ToList();
 		}
 
 		#endregion
 
+		/**
+		 * This section allows conversion to commonly used subtypes, like real and complex matrices
+		 */
 		#region SubTypes
 
-		public Matrix ToRealMatrix()
+		public RealMatrix ToRealMatrix()
 		{
 			if (_indices is Real[,] indices)
 			{
-				return new Matrix(indices);
+				return new RealMatrix(indices);
 			}
 			
 			throw new InvalidOperationException("Can't convert this matrix to a real matrix");
