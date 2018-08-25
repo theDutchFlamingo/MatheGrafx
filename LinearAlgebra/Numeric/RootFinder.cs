@@ -21,7 +21,7 @@ namespace LinearAlgebra.Numeric
 		/// </summary>
 		/// <param name="p"></param>
 		/// <returns></returns>
-		public static List<Complex> DurandKerner(Polynomial p)
+		public static List<Complex> DurandKerner(IntegerPolynomial p)
 		{
 			// According to Wikipedia, radius of initial condition should be 1 + max(|a_1|,|a_2|,...,|a_n-1|)
 			ComplexVector current = InitialCondition(p.Degree, 1 + p.Coefficients.Select(d => Math.Abs(d)).Max());
@@ -112,11 +112,11 @@ namespace LinearAlgebra.Numeric
 		/// </summary>
 		/// <param name="p"></param>
 		/// <returns></returns>
-		public static Polynomial ScalePolynomial(Polynomial p)
+		public static IntegerPolynomial ScalePolynomial(IntegerPolynomial p)
 		{
-			double scale = p.Coefficients[p.Degree - 1];
+			int scale = p.Coefficients[p.Degree - 1];
 
-			return new Polynomial(p.Coefficients / scale);
+			return new IntegerPolynomial(p.Coefficients / scale);
 		}
 	}
 }

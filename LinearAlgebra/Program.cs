@@ -3,6 +3,7 @@ using System.Linq;
 using LinearAlgebra.ComplexLinearAlgebra;
 using LinearAlgebra.Fields;
 using LinearAlgebra.Main;
+using LinearAlgebra.Numeric;
 
 namespace LinearAlgebra
 {
@@ -14,13 +15,20 @@ namespace LinearAlgebra
 
 	    static void Main()
         {
-			//Complexity();
-			//Test();
-			//LinAlg();
-			ComplexLinAlg();
-			//BasicTest()
-			
-		}
+//			Complexity();
+//			Test();
+//			LinAlg();
+//			ComplexLinAlg();
+	        BasicTest();
+//			Polynomials();
+        }
+
+	    public static void Polynomials()
+	    {
+//		    IntegerPolynomial p = new IntegerPolynomial(new RealVector(new []{1, 1}));
+		    
+//		    Console.WriteLine((p^3) + (p^2));
+	    }
 	    
 	    private static void ComplexLinAlg()
 	    {
@@ -43,10 +51,10 @@ namespace LinearAlgebra
 	    {
 			RealMatrix m = new RealMatrix(4, 4)
 			{
-				Indices = new Real[,] { { 1, 1, 1, 1 }, { 1, 1, 1, 2 }, { 1, 1, 2, 3 }, { 1, 2, 3, 4} }
+				Indices = new Real[,] { { 1, 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1, 2 }, { 1, 1, 1, 1, 2, 3 }, { 1, 1, 1, 2, 3, 4}, {1, 1, 2, 3, 4, 5}, {1, 2, 3, 4, 5, 6} }
 			};
 
-		    m[0, VectorType.Row] = m[1, VectorType.Row];
+//		    m[0, VectorType.Row] = m[1, VectorType.Row];
 
 			Console.WriteLine(m.ToDeterminant(3, true));
 	    }

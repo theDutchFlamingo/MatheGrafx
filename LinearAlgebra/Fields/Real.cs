@@ -150,7 +150,7 @@ namespace LinearAlgebra.Fields
 		}
 
 		/// <summary>
-		/// Divide one FieldMember<V> by another
+		/// Divide one FieldMember&lt;V&gt; by another
 		/// </summary>
 		/// <param name="left"></param>
 		/// <param name="right"></param>
@@ -163,6 +163,7 @@ namespace LinearAlgebra.Fields
 		#endregion
 
 		#region Conversions
+		
 		public static implicit operator double(Real r)
 		{
 			return r.Value;
@@ -182,6 +183,7 @@ namespace LinearAlgebra.Fields
 		{
 			return Value.ToString(format);
 		}
+		
 		#endregion
 	}
 }

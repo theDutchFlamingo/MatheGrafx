@@ -75,6 +75,11 @@ namespace LinearAlgebra.Main
 		{
 			return null;
 		}
+		
+		public static bool CloseTo(this int d1, int d2, double tolerance = Tolerance)
+		{
+			return Math.Abs(d1 - d2) <= tolerance;
+		}
 
 		public static bool CloseTo(this double d1, double d2, double tolerance = Tolerance)
 		{

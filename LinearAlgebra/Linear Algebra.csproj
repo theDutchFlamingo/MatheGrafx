@@ -55,13 +55,15 @@
     <Compile Include="ComplexLinearAlgebra\ComplexVector.cs" />
     <Compile Include="Fields\Field.cs" />
     <Compile Include="Fields\FieldMember.cs" />
+    <Compile Include="Fields\Integer.cs" />
     <Compile Include="Fields\Matrix.cs" />
     <Compile Include="Fields\Numerical.cs" />
+    <Compile Include="Fields\Rational.cs" />
     <Compile Include="Fields\Real.cs" />
     <Compile Include="Fields\RealNumbers.cs" />
     <Compile Include="Fields\Vector.cs" />
     <Compile Include="Matrix - Copy.cs" />
-    <Compile Include="Numeric\Polynomial.cs" />
+    <Compile Include="Numeric\IntegerPolynomial.cs" />
     <Compile Include="Numeric\RootFinder.cs" />
     <Compile Include="VectorSpaces\Basis.cs" />
     <Compile Include="Main\MatrixConversion.cs" />
