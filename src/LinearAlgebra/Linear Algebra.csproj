@@ -63,7 +63,10 @@
     <Compile Include="Fields\RealNumbers.cs" />
     <Compile Include="Fields\Vector.cs" />
     <Compile Include="Matrix - Copy.cs" />
+    <Compile Include="Numeric\FractionalFunction.cs" />
+    <Compile Include="Numeric\RealPolynomial.cs" />
     <Compile Include="Numeric\IntegerPolynomial.cs" />
+    <Compile Include="Numeric\RationalFunction.cs" />
     <Compile Include="Numeric\RootFinder.cs" />
     <Compile Include="VectorSpaces\Basis.cs" />
     <Compile Include="Main\MatrixConversion.cs" />
@@ -85,6 +88,8 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

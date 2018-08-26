@@ -9,9 +9,7 @@ namespace LinearAlgebra
 {
     public static class Program
     {
-	    public static string Url = "https://www.google.com";
-	    
-		private static readonly Complex i = Complex.I;
+	    private static readonly Complex i = Complex.I;
 
 	    static void Main()
         {
@@ -25,10 +23,10 @@ namespace LinearAlgebra
 
 	    public static void Polynomials()
 	    {
-//		    IntegerPolynomial p = new IntegerPolynomial(new RealVector(new []{1, 1}));
-		    
-//		    Console.WriteLine((p^3) + (p^2));
-	    }
+			IntegerPolynomial p = new IntegerPolynomial(new Vector<Integer>(new Integer[] { 1, 1 }));
+
+			Console.WriteLine((p ^ 3) + (p ^ 2));
+		}
 	    
 	    private static void ComplexLinAlg()
 	    {
