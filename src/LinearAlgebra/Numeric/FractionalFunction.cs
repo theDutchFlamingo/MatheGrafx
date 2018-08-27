@@ -17,6 +17,12 @@ namespace LinearAlgebra.Numeric
 		public RealPolynomial Num { get; set; }
 		public RealPolynomial Den { get; set; }
 
+		public FractionalFunction() : base(new RealPolynomial())
+		{
+			Num = new RealPolynomial();
+			Den = new RealPolynomial(new Vector<Real>(new Real[] {1}));
+		}
+
 		public FractionalFunction(RealPolynomial num, RealPolynomial den) : base(num)
 		{
 			if (((FractionalFunction) den).IsNull())
@@ -30,9 +36,19 @@ namespace LinearAlgebra.Numeric
 
 		#region Test Methods
 
-		public bool TryFactor(out FractionalFunction FractionalFunction)
+		public bool TryFactor(out FractionalFunction fractionalFunction)
 		{
-			List<Complex> numRoots = RootFinder.DurandKerner();
+			List<Complex> numRoots = RootFinder.DurandKerner(Num);
+			List<Complex> denRoots = RootFinder.DurandKerner(Den);
+
+			if (!numRoots.Intersect(denRoots).Any())
+			{
+				// If factoring is impossible, return this same function
+				fractionalFunction = new FractionalFunction(Num, Den);
+				return false;
+			}
+
+			throw new NotImplementedException();
 		}
 
 		#endregion
@@ -88,13 +104,21 @@ namespace LinearAlgebra.Numeric
 
 		public override double ToDouble()
 		{
-			return this;
+			throw new InvalidOperationException("Fractional functions ");
 		}
 
 		public override bool Equals<T>(T other)
 		{
 			if (other is FractionalFunction r)
-				return (Num / Den).CloseTo(r.Num / r.Den);
+			{
+				FractionalFunction function1;
+				FractionalFunction function2;
+
+				TryFactor(out function1);
+				r.TryFactor(out function2);
+
+				return r.Num.Equals(Num) && r.Den.Equals(Den);
+			}
 			return false;
 		}
 
@@ -107,24 +131,24 @@ namespace LinearAlgebra.Numeric
 
 		public static explicit operator RealPolynomial(FractionalFunction function)
 		{
-			if (function.IsNull())
+			if (function.Num.IsNull())
 			{
 				return new RealPolynomial(new Vector<Real>(new Real[]{0}));
 			}
 
-			if (function.IsUnit())
+			if (function.Den.IsUnit())
 			{
-				return new RealPolynomial(new Vector<Real>(new Real[]{1}));
+				return function.Num;
 			}
 
-			try
+			if (function.TryFactor(out FractionalFunction f))
 			{
-				return 
+				if (!f.Den.IsUnit()) throw new InvalidCastException("Can't write this fractional function as polynomial");
+
+				return (RealPolynomial) function;
 			}
-			catch ()
-			{
-				throw new InvalidCastException("Cannot cast this function to an Real polynomial");
-			}
+
+			throw new InvalidCastException("Can't write this fractional function as polynomial");
 		}
 	}
 }

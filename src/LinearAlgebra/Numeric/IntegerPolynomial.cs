@@ -63,6 +63,8 @@ namespace LinearAlgebra.Numeric
 			}
 		}
 
+		#region Constructors
+
 		/// <summary>
 		/// Create a polynomial with the given vector as coefficients
 		/// </summary>
@@ -81,11 +83,28 @@ namespace LinearAlgebra.Numeric
 			Coefficients = new Vector<Integer>(p.Coefficients);
 		}
 
+		public IntegerPolynomial()
+		{
+			Coefficients = new Vector<Integer>(new Integer[] {0});
+		}
+
+		#endregion
+
 		#region Tests
 
 		public bool IsMonic()
 		{
 			return Coefficients[Degree].Equals(1);
+		}
+
+		public bool IsNull()
+		{
+			return Coefficients == new Vector<Integer>(new Integer[] { 0 });
+		}
+
+		public bool IsUnit()
+		{
+			return Coefficients == new Vector<Integer>(new Integer[] { 1 });
 		}
 
 		#endregion
@@ -94,7 +113,7 @@ namespace LinearAlgebra.Numeric
 		 * Operators to add polynomials or multiply them
 		 */
 		#region Operators
-		
+
 		/// <summary>
 		/// Add the two polynomials together
 		/// </summary>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Graph App</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+<script type="text/javascript" src="graph.js"></script>
+<body>
+    <div class="container" ng-controller="GraphController as ctrl">
+        <h1>{{ctrl.Title}}</h1>
+        <canvas id="graph" onclick="function Click() {return 's'}" width="200" height="100" style="border:1px solid #000000;">
+
+        </canvas>
+        <table >
+            <thead>
+                <tr>
+                    <th style="min-width: 80px;">x</th>
+                    <th style="min-width: 80px;">y</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="point in ctrl.Graph.Points">
+                    <td>{{ point.X }}</td>
+                    <td>{{ point.Y }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="graph" ng-controller="NavigationController as ctrl">
+        
+    </div>
+</body>
+<script type="text/javascript" src="node_modules/angular/angular.min.js"></script>
+<script type="text/javascript" src="app.js"></script>
+</html>

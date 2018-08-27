@@ -63,6 +63,8 @@ namespace LinearAlgebra.Numeric
 			}
 		}
 
+		#region Constructors
+
 		/// <summary>
 		/// Create a polynomial with the given vector as coefficients
 		/// </summary>
@@ -81,11 +83,28 @@ namespace LinearAlgebra.Numeric
 			Coefficients = new Vector<Real>(p.Coefficients);
 		}
 
+		public RealPolynomial()
+		{
+			Coefficients = new Vector<Real>(new Real[] { 0 });
+		}
+
+		#endregion
+
 		#region Tests
 
 		public bool IsMonic()
 		{
 			return Coefficients[Degree].Equals(1);
+		}
+
+		public bool IsNull()
+		{
+			return Coefficients == new Vector<Real>(new Real[] {0});
+		}
+
+		public bool IsUnit()
+		{
+			return Coefficients == new Vector<Real>(new Real[] {1});
 		}
 
 		#endregion

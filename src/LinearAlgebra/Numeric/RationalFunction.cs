@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using LinearAlgebra.Exceptions;
@@ -16,6 +17,12 @@ namespace LinearAlgebra.Numeric
 	{
 		public IntegerPolynomial Num { get; set; }
 		public IntegerPolynomial Den { get; set; }
+
+		public RationalFunction() : base(new IntegerPolynomial())
+		{
+			Num = new IntegerPolynomial();
+			Den = new IntegerPolynomial(new Vector<Integer>(new Integer[] {1}));
+		}
 
 		public RationalFunction(IntegerPolynomial num, IntegerPolynomial den) : base(num)
 		{
@@ -37,11 +44,12 @@ namespace LinearAlgebra.Numeric
 
 			if (!numRoots.Intersect(denRoots).Any())
 			{
-				rationalFunction = null;
+				// If factoring is impossible, return this same function
+				rationalFunction = new RationalFunction(Num, Den);
 				return false;
 			}
 
-
+			throw new NotImplementedException();
 		}
 
 		#endregion
@@ -97,13 +105,21 @@ namespace LinearAlgebra.Numeric
 
 		public override double ToDouble()
 		{
-			return this;
+			throw new InvalidOperationException("Fractional functions ");
 		}
 
 		public override bool Equals<T>(T other)
 		{
 			if (other is RationalFunction r)
-				return (Num / Den).CloseTo(r.Num / r.Den);
+			{
+				RationalFunction function1;
+				RationalFunction function2;
+
+				TryFactor(out function1);
+				r.TryFactor(out function2);
+
+				return r.Num.Equals(Num) && r.Den.Equals(Den);
+			}
 			return false;
 		}
 
@@ -116,24 +132,25 @@ namespace LinearAlgebra.Numeric
 
 		public static explicit operator IntegerPolynomial(RationalFunction function)
 		{
-			if (function.IsNull())
+			if (function.Num.IsNull())
 			{
-				return new IntegerPolynomial(new Vector<Integer>(new Integer[]{0}));
+				return new IntegerPolynomial(new Vector<Integer>(new Integer[] { 0 }));
 			}
 
-			if (function.IsUnit())
+			if (function.Den.IsUnit())
 			{
-				return new IntegerPolynomial(new Vector<Integer>(new Integer[]{1}));
+				return function.Num;
 			}
 
-			try
+			if (function.TryFactor(out RationalFunction r))
 			{
-				return 
+				if (!r.Den.IsUnit())
+					throw new InvalidCastException("Can't write this fractional function as polynomial");
+
+				return function.Num;
 			}
-			catch ()
-			{
-				throw new InvalidCastException("Cannot cast this function to an integer polynomial");
-			}
+
+			throw new InvalidCastException("Can't write this fractional function as polynomial");
 		}
 	}
 }
