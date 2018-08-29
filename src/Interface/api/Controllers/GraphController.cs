@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -10,22 +6,27 @@ namespace api.Controllers
 	[Route("api/[controller]")]
 	public class GraphController : Controller
 	{
+		public static List<string> Spacings = new List<string>
+		{
+			"2", "5", "10" 
+		};
+
 		// GET api/graph
 		[HttpGet]
 		public IActionResult Get()
 		{
-			Point[] pointArray = new Point[]
+			var points1 = new []
 			{
-				new Point(-3, 9),
-				new Point(-2, 4),
-				new Point(-1, 1),
-				new Point(0, 0),
-				new Point(1, 1),
-				new Point(2, 4),
-				new Point(3, 9),
+				new {X = -3, Y = 9},
+				new {X = -2, Y = 4},
+				new {X = -1, Y = 1},
+				new {X = 0, Y = 0},
+				new {X = 1, Y = 1},
+				new {X = 2, Y = 4},
+				new {X = 3, Y = 9}
 			};
 
-			dynamic points = new dynamic[20]; // Amount of points
+			//dynamic points = new dynamic[20]; // Amount of points
 
 			//for (int i = 0; i < pointArray.Length; i++)
 			//{
@@ -38,12 +39,26 @@ namespace api.Controllers
 
 			var result = new
 			{
-				Precision = 0.1,
+				StepX = 0.1,
+				StepY = 0.1,
 
-				Points = new []
+				MinX = -10,
+				MaxX = 10,
+				MinY = -10,
+				MaxY = 10,
+
+				GridSpacing = "2",
+
+				Functions = new[]
 				{
-					new { X = 1, Y = 5 },
-					new { X = 2, Y = 9 }
+					new
+					{
+						Name = "f1",
+						Points = points1,
+						IsVisible = true,
+						IsFocused = true,
+						Color = "blue"
+					}, // Example function
 				}
 			};
 

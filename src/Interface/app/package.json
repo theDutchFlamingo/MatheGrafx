@@ -10,7 +10,8 @@
     "electron-builder": "^20.28.2"
   },
   "dependencies": {
-    "angular": "^1.6.1"
+    "angular": "^1.6.1",
+    "chart.js": "^2.7.2"
   },
   "scripts": {
     "start": "electron .",

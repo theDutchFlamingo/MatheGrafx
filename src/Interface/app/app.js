@@ -1,8 +1,7 @@
 'use strict';
 
 var app = angular.module('GraphApp', []);
-
-var points;
+var controller;
 
 document.addEventListener('DOMContentLoaded', function () {
     angular.bootstrap(document, ['GraphApp']);
@@ -18,11 +17,12 @@ app.controller('GraphController', function (GraphService) {
         GraphService.Get()
             .then(function (graph) {
                 ctrl.Graph = graph;
-                points = graph;
             }, function (error) {
                 ctrl.ErrorMessage = error
             });
     }
+
+    controller = ctrl;
 });
 
 app.service('GraphService', function ($http) {
