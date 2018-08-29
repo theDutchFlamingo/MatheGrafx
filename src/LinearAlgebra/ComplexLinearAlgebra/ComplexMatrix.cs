@@ -128,7 +128,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 
 				return new ComplexMatrix(indices);
 			}
-			throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Addition);
+			throw new IncompatibleOperationException(MatrixOperationType.Addition);
 		}
 
 		/// <summary>
@@ -163,7 +163,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 			{
 				return left + -right;
 			}
-			throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Addition,
+			throw new IncompatibleOperationException(MatrixOperationType.Addition,
 				"The two matrices could not be subtracted because their dimensions were unequal.");
 		}
 
@@ -177,7 +177,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		{
 			if (!left.Multipliable(right))
 				throw new
-					IncompatibleOperationException(IncompatibleMatrixOperationType.Multiplication);
+					IncompatibleOperationException(MatrixOperationType.Multiplication);
 
 			Complex[,] indices = new Complex[left.Height, right.Width];
 
@@ -202,7 +202,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		{
 			if (!left.IsSquare())
 				throw new
-					IncompatibleOperationException(IncompatibleMatrixOperationType.Multiplication);
+					IncompatibleOperationException(MatrixOperationType.Multiplication);
 
 			if (right == 0)
 				return new ComplexMatrix(left.Width);

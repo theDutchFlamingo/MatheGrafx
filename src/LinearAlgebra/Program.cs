@@ -4,6 +4,7 @@ using LinearAlgebra.ComplexLinearAlgebra;
 using LinearAlgebra.Fields;
 using LinearAlgebra.Main;
 using LinearAlgebra.Numeric;
+using LinearAlgebra.Rationals;
 
 namespace LinearAlgebra
 {
@@ -17,8 +18,13 @@ namespace LinearAlgebra
 //			Test();
 //			LinAlg();
 //			ComplexLinAlg();
-	        BasicTest();
+	        //BasicTest();
 //			Polynomials();
+
+			Rational<Integer> r = new Rational<Integer>
+			{
+				DoubleConvert = x => 0
+			};
         }
 
 	    public static void Polynomials()

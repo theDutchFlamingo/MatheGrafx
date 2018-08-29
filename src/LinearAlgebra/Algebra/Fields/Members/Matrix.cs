@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using LinearAlgebra.ComplexLinearAlgebra;
 using LinearAlgebra.Exceptions;
+using LinearAlgebra.Fields.Members;
+using LinearAlgebra.Groups;
 
 namespace LinearAlgebra.Fields
 {
@@ -12,7 +14,7 @@ namespace LinearAlgebra.Fields
 	/// FieldMember to ensure 
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class Matrix<T> : IEnumerable<Vector<T>>, IEnumerable<T> where T : FieldMember, new()
+	public class Matrix<T> : FieldMember, IEnumerable<Vector<T>>, IEnumerable<T> where T : FieldMember, new()
 	{
 		#region Static
 		/// <summary>
@@ -84,7 +86,7 @@ namespace LinearAlgebra.Fields
 		/// Constructor of a MatrixBase
 		/// </summary>
 		/// <param name="indices"></param>
-		public Matrix(T[,] indices)
+		public Matrix(T[,] indices) : base(indices)
 		{
 			Indices = indices;
 		}
@@ -93,7 +95,7 @@ namespace LinearAlgebra.Fields
 		/// Clone the given matrix
 		/// </summary>
 		/// <param name="m"></param>
-		public Matrix(Matrix<T> m)
+		public Matrix(Matrix<T> m) : base(m.Indices)
 		{
 			Indices = new T[m.Height, m.Width];
 
@@ -124,7 +126,7 @@ namespace LinearAlgebra.Fields
 		/// </summary>
 		/// <param name="vectors"></param>
 		/// <param name="type">Determines whether the vectors are columns or rows</param>
-		public Matrix(Vector<T>[] vectors, VectorType type)
+		public Matrix(Vector<T>[] vectors, VectorType type) : base(vectors)
 		{
 			Indices = new T[vectors.Length, vectors[0].Dimension];
 
@@ -137,7 +139,7 @@ namespace LinearAlgebra.Fields
 		/// Creates a diagonal matrix with the given vector on the diagonal
 		/// </summary>
 		/// <param name="diagonal"></param>
-		public Matrix(Vector<T> diagonal)
+		public Matrix(Vector<T> diagonal) : base(diagonal)
 		{
 			Indices = new T[diagonal.Dimension, diagonal.Dimension];
 
@@ -210,7 +212,7 @@ namespace LinearAlgebra.Fields
 		public T Determinant()
 		{
 			if (!IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
+				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
 
 			if (Width == 1)
 				return Indices[0, 0];
@@ -234,7 +236,7 @@ namespace LinearAlgebra.Fields
 		public Matrix<T> Inverse()
 		{
 			if (!IsSquare() || Determinant().IsNull())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Inverse);
+				throw new IncompatibleOperationException(MatrixOperationType.Inverse);
 
 			return Adjugate() / Determinant();
 		}
@@ -297,7 +299,7 @@ namespace LinearAlgebra.Fields
 		public T Minor(int m, int n)
 		{
 			if (!IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
+				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
 
 			return SubMatrix(m, n).Determinant();
 		}
@@ -309,7 +311,7 @@ namespace LinearAlgebra.Fields
 		public Matrix<T> MatrixOfMinors()
 		{
 			if (!IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
+				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
 
 			T[,] indices = Indices;
 
@@ -333,7 +335,7 @@ namespace LinearAlgebra.Fields
 		public T Cofactor(int i, int j)
 		{
 			if (!IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
+				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
 
 			return (i + j) % 2 == 0 ? Minor(i, j) : Minor(i, j).Negative<T>();
 		}
@@ -346,7 +348,7 @@ namespace LinearAlgebra.Fields
 		public Matrix<T> CofactorMatrix()
 		{
 			if (!IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
+				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
 
 			T[,] indices = Indices;
 
@@ -368,14 +370,23 @@ namespace LinearAlgebra.Fields
 		public Matrix<T> Adjugate()
 		{
 			if (!IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
+				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
 
 			return CofactorMatrix().Transpose();
 		}
 
+		public Vector<T> Diagonal()
+		{
+			if (!IsSquare()) throw new IncompatibleOperationException(MatrixOperationType.Diagonal);
+			
+			Vector<T> diag = new Vector<T>();
+
+			return diag;
+		}
+
 		public T Trace()
 		{
-			if (!IsSquare()) throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Trace);
+			if (!IsSquare()) throw new IncompatibleOperationException(MatrixOperationType.Trace);
 			
 			T result = new T();
 
@@ -683,7 +694,7 @@ namespace LinearAlgebra.Fields
 		/// <returns></returns>
 		public string ToDeterminant(int precision, bool addResult = false, int spacing = 1)
 		{
-			if (!IsSquare()) throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
+			if (!IsSquare()) throw new IncompatibleOperationException(MatrixOperationType.Determinant);
 
 			string result = "";
 
@@ -797,7 +808,7 @@ namespace LinearAlgebra.Fields
 
 				return new Matrix<T>(indices);
 			}
-			throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Addition);
+			throw new IncompatibleOperationException(MatrixOperationType.Addition);
 		}
 
 		/// <summary>
@@ -832,7 +843,7 @@ namespace LinearAlgebra.Fields
 			{
 				return left + -right;
 			}
-			throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Addition,
+			throw new IncompatibleOperationException(MatrixOperationType.Addition,
 				"The two matrices could not be subtracted because their dimensions were unequal.");
 		}
 
@@ -845,7 +856,7 @@ namespace LinearAlgebra.Fields
 		public static Matrix<T> operator *(Matrix<T> left, Matrix<T> right)
 		{
 			if (!left.Multipliable(right))
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Multiplication);
+				throw new IncompatibleOperationException(MatrixOperationType.Multiplication);
 
 			T[,] indices = new T[left.Height, right.Width];
 
@@ -869,7 +880,7 @@ namespace LinearAlgebra.Fields
 		public static Matrix<T> operator ^(Matrix<T> left, int right)
 		{
 			if (!left.IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Multiplication);
+				throw new IncompatibleOperationException(MatrixOperationType.Multiplication);
 
 			if (right == 0)
 				return new Matrix<T>(left.Width);
@@ -1041,6 +1052,71 @@ namespace LinearAlgebra.Fields
 			}
 			
 			throw new InvalidOperationException("Can't convert this matrix to a complex matrix");
+		}
+
+		#endregion
+
+		#region Overrides
+
+		internal override T1 Add<T1>(T1 other)
+		{
+			if (other is Matrix<T> m)
+			{
+				return (T1) (GroupMember) (this + m);
+			}
+
+			throw new IncorrectFieldException(GetType(), "added", typeof(T1));
+		}
+
+		public override T1 Negative<T1>()
+		{
+			return (T1)(INegatable)(-this);
+		}
+
+		internal override T1 Multiply<T1>(T1 other)
+		{
+			if (other is Matrix<T> m)
+			{
+				return (T1)(GroupMember)(this * m);
+			}
+
+			throw new IncorrectFieldException(GetType(), "multiplied", typeof(T1));
+		}
+
+		public override T1 Inverse<T1>()
+		{
+			return (T1)(IInvertible)Inverse();
+		}
+
+		public override T1 Null<T1>()
+		{
+			if (typeof(T1) == GetType())
+				return (T1)(GroupMember)new Matrix<T>(Height, Width);
+			throw new IncorrectFieldException(this, "null", typeof(T1));
+		}
+
+		public override T1 Unit<T1>()
+		{
+			if (!IsSquare()) throw new IncompatibleOperationException(MatrixOperationType.Unit);
+			if (typeof(T1) == GetType())
+				return (T1)(GroupMember)new Real(1);
+			throw new IncorrectFieldException(this, "unit", typeof(T1));
+		}
+
+		public override bool IsNull() => GetRows().Select(i => i);
+
+		public override bool IsUnit() => Value.CloseTo(1);
+
+		public override double ToDouble()
+		{
+			return this;
+		}
+
+		public override bool Equals<T1>(T1 other)
+		{
+			if (other is Real r)
+				return this.CloseTo(r);
+			return false;
 		}
 
 		#endregion

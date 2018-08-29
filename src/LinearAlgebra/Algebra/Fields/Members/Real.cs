@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using LinearAlgebra.Exceptions;
+using LinearAlgebra.Fields.Members;
+using LinearAlgebra.Groups;
 using LinearAlgebra.Main;
 
 namespace LinearAlgebra.Fields
@@ -14,60 +16,64 @@ namespace LinearAlgebra.Fields
 		 * Contains the double value of this real number
 		 */
 		#region Properties
-		public new double Value { get; set; }
+
+		public double Value { get; set; }
+		
 		#endregion
 
 		#region Constructors
-		public Real() : base(0)
+		
+		public Real()
 		{
-
+			
 		}
 
-		public Real(double value) : base(value)
+		public Real(double value)
 		{
 			Value = value;
 		}
+		
 		#endregion
 
 		#region Override Methods
-		
+
 		internal override T Add<T>(T other)
 		{
 			if (other is Real r)
 			{
-				return (T)(FieldMember)new Real(Value + r.Value);
+				return (T)(GroupMember)new Real(Value + r.Value);
 			}
 			throw new IncorrectFieldException(GetType(), "added", other.GetType());
 		}
 
-		internal override T Negative<T>()
+		public override T Negative<T>()
 		{
-			return (T)(FieldMember)new Real(-Value);
+			return (T)(INegatable)new Real(-Value);
 		}
 
 		internal override T Multiply<T>(T other)
 		{
 			if (other is Real c)
-				return (T)(FieldMember)new Real(Value * c.Value);
-			throw new IncorrectFieldException(GetType(), "added", other.GetType());
+				return (T)(GroupMember)new Real(Value * c.Value);
+			throw new IncorrectFieldException(GetType(), "multiplied", other.GetType());
 		}
 
-		internal override T Inverse<T>()
+		public override T Inverse<T>()
 		{
-			return (T)(FieldMember)new Real(1 / Value);
+			return (T)(IInvertible)new Real(1 / Value);
 		}
 
 		public override T Null<T>()
 		{
 			if (typeof(T) == GetType())
-				return (T)(FieldMember) new Real(0);
+				return (T)(GroupMember) new Real(0);
 			throw new IncorrectFieldException(this, "null", typeof(T));
 		}
 
 		public override T Unit<T>()
 		{
 			if (typeof(T) == GetType())
-				return (T)(FieldMember)new Real(1);
+				return (T)(GroupMember)new Real(1);
 			throw new IncorrectFieldException(this, "unit", typeof(T));
 		}
 
@@ -101,7 +107,17 @@ namespace LinearAlgebra.Fields
 		{
 			return this;
 		}
-		
+
+		public override bool Equals(FieldMember other)
+		{
+			if (other is Real r)
+			{
+				return r.Value.CloseTo(Value);
+			}
+
+			return false;
+		}
+
 		#endregion
 
 		#region Operators

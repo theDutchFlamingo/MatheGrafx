@@ -48,33 +48,43 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\FactorTypeException.cs" />
+    <Compile Include="Exceptions\GroupOperationType.cs" />
     <Compile Include="Exceptions\IncorrectFieldException.cs" />
-    <Compile Include="Fields\Complex.cs" />
+    <Compile Include="Algebra\Fields\Members\Complex.cs" />
     <Compile Include="ComplexLinearAlgebra\ComplexMath.cs" />
     <Compile Include="ComplexLinearAlgebra\ComplexMatrix.cs" />
     <Compile Include="ComplexLinearAlgebra\ComplexVector.cs" />
-    <Compile Include="Fields\Field.cs" />
-    <Compile Include="Fields\FieldMember.cs" />
-    <Compile Include="Fields\Integer.cs" />
-    <Compile Include="Fields\Matrix.cs" />
-    <Compile Include="Fields\Numerical.cs" />
-    <Compile Include="Fields\Rational.cs" />
-    <Compile Include="Fields\Real.cs" />
-    <Compile Include="Fields\RealNumbers.cs" />
-    <Compile Include="Fields\Vector.cs" />
+    <Compile Include="Algebra\Fields\Field.cs" />
+    <Compile Include="Algebra\Fields\Members\FieldMember.cs" />
+    <Compile Include="Algebra\Rings\Members\Integer.cs" />
+    <Compile Include="Algebra\Fields\Members\Matrix.cs" />
+    <Compile Include="Algebra\Fields\Numerical.cs" />
+    <Compile Include="Rationals\Fraction - Copy.cs" />
+    <Compile Include="Rationals\IFactorable.cs" />
+    <Compile Include="Rationals\Rational.cs" />
+    <Compile Include="Rationals\Fraction.cs" />
+    <Compile Include="Algebra\Fields\Members\Real.cs" />
+    <Compile Include="Algebra\Fields\RealNumbers.cs" />
+    <Compile Include="Algebra\Fields\Vector.cs" />
+    <Compile Include="Algebra\Groups\Members\GroupMember.cs" />
+    <Compile Include="Algebra\Groups\INegatable.cs" />
+    <Compile Include="Algebra\Fields\IInvertible.cs" />
     <Compile Include="Matrix - Copy.cs" />
-    <Compile Include="Numeric\FractionalFunction.cs" />
-    <Compile Include="Numeric\RealPolynomial.cs" />
-    <Compile Include="Numeric\IntegerPolynomial.cs" />
-    <Compile Include="Numeric\RationalFunction.cs" />
-    <Compile Include="Numeric\RootFinder.cs" />
+    <Compile Include="Rationals\FractionalFunction.cs" />
+    <Compile Include="Polynomials\RealPolynomial.cs" />
+    <Compile Include="Polynomials\IntegerPolynomial.cs" />
+    <Compile Include="Rationals\RationalFunction.cs" />
+    <Compile Include="Polynomials\RootFinder.cs" />
+    <Compile Include="Algebra\Rings\Members\RingMember.cs" />
+    <Compile Include="Algebra\Rings\Ring.cs" />
     <Compile Include="VectorSpaces\Basis.cs" />
     <Compile Include="Main\MatrixConversion.cs" />
     <Compile Include="Main\RowOperation.cs" />
     <Compile Include="Exceptions\IncompatibleRowOperationException.cs" />
-    <Compile Include="Exceptions\IncompatibleVectorOperationType.cs" />
+    <Compile Include="Exceptions\VectorOperationType.cs" />
     <Compile Include="Exceptions\IncompatibleOperationException.cs" />
-    <Compile Include="Exceptions\IncompatibleMatrixOperationType.cs" />
+    <Compile Include="Exceptions\MatrixOperationType.cs" />
     <Compile Include="Main\LinearMath.cs" />
     <Compile Include="Exceptions\InvalidRowOperationException.cs" />
     <Compile Include="Exceptions\InvalidRowOperationType.cs" />
@@ -90,6 +100,9 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Algebra\Monoids\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
+using LinearAlgebra.Groups;
 using LinearAlgebra.Main;
+using LinearAlgebra.Rings.Members;
 
 namespace LinearAlgebra.Numeric
 {
 	/// <summary>
 	/// A polynomial with real coefficients
 	/// </summary>
-	public class IntegerPolynomial
+	public class IntegerPolynomial : GroupMember, INegatable
 	{
 		/**
 		 * Contains the regexes... regeces (?)... anyway, they can check for variable name correctness,
@@ -95,16 +98,6 @@ namespace LinearAlgebra.Numeric
 		public bool IsMonic()
 		{
 			return Coefficients[Degree].Equals(1);
-		}
-
-		public bool IsNull()
-		{
-			return Coefficients == new Vector<Integer>(new Integer[] { 0 });
-		}
-
-		public bool IsUnit()
-		{
-			return Coefficients == new Vector<Integer>(new Integer[] { 1 });
 		}
 
 		#endregion
@@ -328,6 +321,75 @@ namespace LinearAlgebra.Numeric
 			result += $"{Coefficients[0]}";
 
 			return result;
+		}
+
+		#endregion
+
+		#region Overrides
+
+		public T Negative<T>() where T : INegatable
+		{
+			return (T) (INegatable) (-this);
+		}
+
+		public bool IsNegative()
+		{
+			return Coefficients[Degree] < 0;
+		}
+
+		internal override T Add<T>(T other)
+		{
+			if (other is IntegerPolynomial polynomial)
+			{
+				return (T) (GroupMember) (this + polynomial);
+			}
+
+			throw new IncompatibleOperationException(GroupOperationType.Addition);
+		}
+
+		internal override T Multiply<T>(T other)
+		{
+			if (other is IntegerPolynomial polynomial)
+			{
+				return (T) (GroupMember) (this * polynomial);
+			}
+
+			throw new IncompatibleOperationException(GroupOperationType.Multiplication);
+		}
+
+		public override T Null<T>()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override T Unit<T>()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override double ToDouble()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override bool IsNull()
+		{
+			return Coefficients == new Vector<Integer>(new Integer[] { 0 });
+		}
+
+		public override bool IsUnit()
+		{
+			return Coefficients == new Vector<Integer>(new Integer[] { 1 });
+		}
+
+		public override bool Equals<T>(T other)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override bool Equals(GroupMember other)
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion

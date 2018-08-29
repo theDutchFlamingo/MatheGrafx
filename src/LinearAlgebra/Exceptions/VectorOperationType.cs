@@ -1,6 +1,6 @@
 ﻿namespace LinearAlgebra.Exceptions
 {
-	public enum IncompatibleVectorOperationType
+	public enum VectorOperationType
 	{
 		Addition, Inner, Outer, MatrixVector, Dimension
 	}

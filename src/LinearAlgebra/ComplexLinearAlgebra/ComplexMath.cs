@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LinearAlgebra.Fields;
+using LinearAlgebra.Fields.Members;
 using LinearAlgebra.Main;
 
 namespace LinearAlgebra.ComplexLinearAlgebra

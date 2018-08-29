@@ -1,6 +1,7 @@
 ﻿using System;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
+using LinearAlgebra.Fields.Members;
 
 namespace LinearAlgebra.Main
 {

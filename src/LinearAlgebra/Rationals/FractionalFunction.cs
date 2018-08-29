@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
 using LinearAlgebra.Main;
+using LinearAlgebra.Rationals;
 
 namespace LinearAlgebra.Numeric
 {
@@ -57,7 +58,7 @@ namespace LinearAlgebra.Numeric
 
 		internal override T Add<T>(T other)
 		{
-			if (other is Rational r)
+			if (other is Fraction r)
 			{
 				return (T)(FieldMember)new FractionalFunction(r.Num * Den + r.Den * Num, r.Den * Den);
 			}
@@ -71,7 +72,7 @@ namespace LinearAlgebra.Numeric
 
 		internal override T Multiply<T>(T other)
 		{
-			if (other is Rational c)
+			if (other is Fraction c)
 				return (T)(FieldMember)new FractionalFunction(Num * c.Num, Den * c.Den);
 			throw new IncorrectFieldException(GetType(), "added", other.GetType());
 		}
@@ -94,7 +95,7 @@ namespace LinearAlgebra.Numeric
 		public override T Unit<T>()
 		{
 			if (typeof(T) == GetType())
-				return (T)(FieldMember)new Rational(1);
+				return (T)(FieldMember)new Fraction(1);
 			throw new IncorrectFieldException(this, "unit", typeof(T));
 		}
 

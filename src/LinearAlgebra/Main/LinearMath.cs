@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
+using LinearAlgebra.Fields.Members;
 using LinearAlgebra.VectorSpaces;
 
 namespace LinearAlgebra.Main
@@ -41,7 +42,7 @@ namespace LinearAlgebra.Main
 		public static bool LinearlyDependent(RealVector[] vectors)
 		{
 			if (vectors.Select(v => v.Dimension).Distinct().Count() > 1)
-				throw new IncompatibleOperationException(IncompatibleVectorOperationType.Dimension);
+				throw new IncompatibleOperationException(VectorOperationType.Dimension);
 
 			// If the amount of vectors is greater than the dimension they're
 			// automatically linearly dependent.

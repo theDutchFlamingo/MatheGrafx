@@ -89,7 +89,7 @@ namespace LinearAlgebra
 		{
 			if (!left.Comparable(right))
 				throw new
-					IncompatibleOperationException(IncompatibleVectorOperationType.Addition);
+					IncompatibleOperationException(VectorOperationType.Addition);
 
 			Real[] indices = left.Indices;
 
@@ -139,7 +139,7 @@ namespace LinearAlgebra
 		{
 			if (!left.Comparable(right))
 				throw new
-					IncompatibleOperationException(IncompatibleVectorOperationType.Inner);
+					IncompatibleOperationException(VectorOperationType.Inner);
 
 			double result = 0;
 

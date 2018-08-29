@@ -1,27 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using LinearAlgebra.Exceptions;
+using LinearAlgebra.Fields;
+using LinearAlgebra.Fields.Members;
+using LinearAlgebra.Groups;
 using LinearAlgebra.Main;
+using LinearAlgebra.Rationals;
 
-namespace LinearAlgebra.Fields
+namespace LinearAlgebra.Rings.Members
 {
-    public class Integer : FieldMember, INumerical
+    public class Integer : FieldMember, INumerical, IFactorable
     {
-        public new int Value { get; set; } = 0;
+        public int Value { get; set; }
         
         #region Constructors
 
-        public Integer() : base(0)
+        public Integer()
         {
             
         }
 
-        public Integer(int i) : base(i)
+        public Integer(int i)
         {
             Value = i;
         }
 
-        public Integer(Integer i) : base(i.Value)
+        public Integer(Integer i)
         {
             Value = i.Value;
         }
@@ -34,39 +39,39 @@ namespace LinearAlgebra.Fields
         {
             if (other is Integer r)
             {
-                return (T)(FieldMember)new Integer(Value + r.Value);
+                return (T)(GroupMember)new Integer(Value + r.Value);
             }
             throw new IncorrectFieldException(GetType(), "added", other.GetType());
         }
 
-        internal override T Negative<T>()
+        public override T Negative<T>()
         {
-            return (T)(FieldMember)new Integer(-Value);
+            return (T)(INegatable)new Integer(-Value);
         }
 
         internal override T Multiply<T>(T other)
         {
             if (other is Integer c)
-                return (T)(FieldMember)new Integer(Value * c.Value);
-            throw new IncorrectFieldException(GetType(), "added", other.GetType());
+                return (T)(GroupMember)new Integer(Value * c.Value);
+            throw new IncorrectFieldException(GetType(), "multiplied", other.GetType());
         }
 
-        internal override T Inverse<T>()
+        public override T Inverse<T>()
         {
-            return (T)(FieldMember)new Integer(1 / Value);
+            return (T)(IInvertible)new Integer(1 / Value);
         }
 
         public override T Null<T>()
         {
             if (typeof(T) == GetType())
-                return (T)(FieldMember) new Integer(0);
+                return (T)(GroupMember) new Integer(0);
             throw new IncorrectFieldException(this, "null", typeof(T));
         }
 
         public override T Unit<T>()
         {
             if (typeof(T) == GetType())
-                return (T)(FieldMember)new Integer(1);
+                return (T)(GroupMember)new Integer(1);
             throw new IncorrectFieldException(this, "unit", typeof(T));
         }
 
@@ -101,20 +106,55 @@ namespace LinearAlgebra.Fields
             return this;
         }
 
-        #endregion
+        public override bool Equals(FieldMember other)
+        {
+            if (other is Integer i)
+            {
+                return i.Value == Value;
+            }
 
-        /**
+            return false;
+        }
+
+	    public bool TryFactor<T>(out T[] factors) where T : IFactorable
+	    {
+		    factors = null;
+
+			if (typeof(T) == GetType())
+		    {
+				List<T> list = new List<T>();
+
+			    for (int i = 0; i < this; i++)
+			    {
+				    if ((ToDouble() / i % 1).CloseTo(0))
+				    {
+						list.Add((T) (IFactorable) (Integer)i);
+				    }
+			    }
+
+			    factors = list.ToArray();
+
+				if (factors.Length != 0)
+					return true;
+		    }
+
+		    throw new FactorTypeException();
+	    }
+
+		#endregion
+
+		/**
          * The operators to make adding and subtracting easier
          */
-        #region Operators
+		#region Operators
 
-        /// <summary>
-        /// Add the two together
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        public static Integer operator +(Integer left, Integer right)
+		/// <summary>
+		/// Add the two together
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static Integer operator +(Integer left, Integer right)
         {
             return left.Add(right);
         }
@@ -181,7 +221,7 @@ namespace LinearAlgebra.Fields
             return Value.ToString(CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+	    public string ToString(string format)
         {
             return Value.ToString(format);
         }

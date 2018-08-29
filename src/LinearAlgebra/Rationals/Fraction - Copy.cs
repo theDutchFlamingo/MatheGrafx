@@ -1,31 +1,32 @@
 ﻿using System;
-using System.Globalization;
 using LinearAlgebra.Exceptions;
+using LinearAlgebra.Fields;
+using LinearAlgebra.Fields.Members;
+using LinearAlgebra.Groups;
 using LinearAlgebra.Main;
-using Microsoft.SqlServer.Server;
 
-namespace LinearAlgebra.Fields
+namespace LinearAlgebra.Rationals
 {
-    public class Rational : FieldMember, INumerical
+    public class FractionCopy : FieldMember, INumerical
     {
         public int Num { get; set; } = 0;
         public int Den { get; set; } = 1;
         
         #region Constructors
 
-        public Rational() : base(0)
+        public FractionCopy()
         {
             
         }
 
-        public Rational(int numerator, int denominator) : base(numerator/(double)denominator)
+        public FractionCopy(int numerator, int denominator)
         {
             if (denominator == 0) throw new DivideByZeroException();
             Num = denominator > 0 ? numerator : -numerator;
             Den = denominator > 0 ? denominator : -denominator;
         }
 
-        public Rational(Rational i) : this(i.Num, i.Den)
+        public FractionCopy(FractionCopy i) : this(i.Num, i.Den)
         {
             
         }
@@ -36,41 +37,41 @@ namespace LinearAlgebra.Fields
 
         internal override T Add<T>(T other)
         {
-            if (other is Rational r)
+            if (other is FractionCopy r)
             {
-                return (T)(FieldMember)new Rational(r.Num * Den + r.Den * Num, r.Den * Den);
+                return (T)(GroupMember)new FractionCopy(r.Num * Den + r.Den * Num, r.Den * Den);
             }
             throw new IncorrectFieldException(GetType(), "added", other.GetType());
         }
 
-        internal override T Negative<T>()
+        public override T Negative<T>()
         {
-            return (T)(FieldMember)new Rational(-Num, Den);
+            return (T)(INegatable)new FractionCopy(-Num, Den);
         }
 
         internal override T Multiply<T>(T other)
         {
-            if (other is Rational c)
-                return (T)(FieldMember)new Rational(Num * c.Num, Den * c.Den);
-            throw new IncorrectFieldException(GetType(), "added", other.GetType());
+            if (other is FractionCopy c)
+                return (T)(GroupMember)new FractionCopy(Num * c.Num, Den * c.Den);
+            throw new IncorrectFieldException(GetType(), "multiplied", other.GetType());
         }
 
-        internal override T Inverse<T>()
+        public override T Inverse<T>()
         {
-            return (T)(FieldMember)new Rational(Den, Num);
+            return (T)(IInvertible)new FractionCopy(Den, Num);
         }
 
         public override T Null<T>()
         {
             if (typeof(T) == GetType())
-                return (T)(FieldMember) new Rational(0);
+                return (T)(GroupMember) new FractionCopy(0);
             throw new IncorrectFieldException(this, "null", typeof(T));
         }
 
         public override T Unit<T>()
         {
             if (typeof(T) == GetType())
-                return (T)(FieldMember)new Rational(1);
+                return (T)(GroupMember)new FractionCopy(1);
             throw new IncorrectFieldException(this, "unit", typeof(T));
         }
 
@@ -85,7 +86,7 @@ namespace LinearAlgebra.Fields
 
         public override bool Equals<T>(T other)
         {
-            if (other is Rational r)
+            if (other is FractionCopy r)
                 return ((double)Num / Den).CloseTo((double)r.Num / r.Den);
             return false;
         }
@@ -105,6 +106,14 @@ namespace LinearAlgebra.Fields
             return new Real(Math.Abs(Num) > Math.Abs(Den) ? Num : Den);
         }
 
+        public override bool Equals(FieldMember other)
+        {
+            if (other is FractionCopy r)
+            {
+                return r.
+            }
+        }
+
         #endregion
 
         /**
@@ -118,7 +127,7 @@ namespace LinearAlgebra.Fields
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Rational operator +(Rational left, Rational right)
+        public static FractionCopy operator +(FractionCopy left, FractionCopy right)
         {
             return left.Add(right);
         }
@@ -128,9 +137,9 @@ namespace LinearAlgebra.Fields
         /// </summary>
         /// <param name="fieldMember"></param>
         /// <returns></returns>
-        public static Rational operator -(Rational fieldMember)
+        public static FractionCopy operator -(FractionCopy fieldMember)
         {
-            return fieldMember.Negative<Rational>();
+            return fieldMember.Negative<FractionCopy>();
         }
 
         /// <summary>
@@ -139,7 +148,7 @@ namespace LinearAlgebra.Fields
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Rational operator -(Rational left, Rational right)
+        public static FractionCopy operator -(FractionCopy left, FractionCopy right)
         {
             return left + -right;
         }
@@ -150,7 +159,7 @@ namespace LinearAlgebra.Fields
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Rational operator *(Rational left, Rational right)
+        public static FractionCopy operator *(FractionCopy left, FractionCopy right)
         {
             return left.Multiply(right);
         }
@@ -161,27 +170,27 @@ namespace LinearAlgebra.Fields
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Rational operator /(Rational left, Rational right)
+        public static FractionCopy operator /(FractionCopy left, FractionCopy right)
         {
-            return left * right.Inverse<Rational>();
+            return left * right.Inverse<FractionCopy>();
         }
 
         #endregion
 
         #region Conversion
 
-        public static implicit operator double(Rational r)
+        public static implicit operator double(FractionCopy r)
         {
             return (double)r.Num / r.Den;
         }
 
-        public static implicit operator Rational(double r)
+        public static implicit operator FractionCopy(double r)
         {
             int whole = (int) (r > 0 ? Math.Floor(r) : Math.Ceiling(r));
 
             int den = 0, num = 0;
             
-            return new Rational(whole * den + num, den);
+            return new FractionCopy(whole * den + num, den);
         }
 
         public override string ToString()

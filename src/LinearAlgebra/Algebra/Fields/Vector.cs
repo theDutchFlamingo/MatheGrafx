@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using LinearAlgebra.Exceptions;
+using LinearAlgebra.Fields.Members;
 using LinearAlgebra.Main;
 
 namespace LinearAlgebra.Fields
@@ -297,7 +298,7 @@ namespace LinearAlgebra.Fields
 		public static Vector<T> operator +(Vector<T> left, Vector<T> right)
 		{
 			if (!left.Comparable(right))
-				throw new IncompatibleOperationException(IncompatibleVectorOperationType.Addition);
+				throw new IncompatibleOperationException(VectorOperationType.Addition);
 
 			T[] indices = left.Indices;
 
@@ -346,7 +347,7 @@ namespace LinearAlgebra.Fields
 		public static T operator *(Vector<T> left, Vector<T> right)
 		{
 			if (!left.Comparable(right))
-				throw new IncompatibleOperationException(IncompatibleVectorOperationType.Inner);
+				throw new IncompatibleOperationException(VectorOperationType.Inner);
 
 			T result = new T();
 

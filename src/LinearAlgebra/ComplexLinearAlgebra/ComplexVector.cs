@@ -87,7 +87,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		{
 			if (!left.Comparable(right))
 				throw new
-					IncompatibleOperationException(IncompatibleVectorOperationType.Addition);
+					IncompatibleOperationException(VectorOperationType.Addition);
 
 			Complex[] indices = left.Indices;
 
@@ -137,7 +137,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		{
 			if (!left.Comparable(right))
 				throw new
-					IncompatibleOperationException(IncompatibleVectorOperationType.Inner);
+					IncompatibleOperationException(VectorOperationType.Inner);
 
 			Complex result = 0;
 

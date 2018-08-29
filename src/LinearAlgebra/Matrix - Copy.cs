@@ -211,7 +211,7 @@ namespace LinearAlgebra
 		public double Determinant()
 		{
 			if (!IsSquare()) throw new
-				IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
+				IncompatibleOperationException(MatrixOperationType.Determinant);
 
 			if (Width == 1) return Indices[0, 0];
 
@@ -234,7 +234,7 @@ namespace LinearAlgebra
 		public MatrixCopy Inverse()
 		{
 			if (!IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Inverse);
+				throw new IncompatibleOperationException(MatrixOperationType.Inverse);
 
 			return Adjugate() / Determinant();
 		}
@@ -294,7 +294,7 @@ namespace LinearAlgebra
 		public double Minor(int m, int n)
 		{
 			if (!IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
+				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
 
 			return SubMatrix(m, n).Determinant();
 		}
@@ -306,7 +306,7 @@ namespace LinearAlgebra
 		public MatrixCopy MatrixOfMinors()
 		{
 			if (!IsSquare()) throw new
-				IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
+				IncompatibleOperationException(MatrixOperationType.Determinant);
 
 			double[,] indices = Indices;
 
@@ -330,7 +330,7 @@ namespace LinearAlgebra
 		public double Cofactor(int i, int j)
 		{
 			if (!IsSquare()) throw new
-				IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
+				IncompatibleOperationException(MatrixOperationType.Determinant);
 
 			return Math.Pow(-1, i + j) * Minor(i, j);
 		}
@@ -343,7 +343,7 @@ namespace LinearAlgebra
 		public MatrixCopy CofactorMatrix()
 		{
 			if (!IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
+				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
 
 			double[,] indices = Indices;
 
@@ -365,7 +365,7 @@ namespace LinearAlgebra
 		public MatrixCopy Adjugate()
 		{
 			if (!IsSquare())
-				throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Determinant);
+				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
 
 			return CofactorMatrix().Transpose();
 		}
@@ -713,7 +713,7 @@ namespace LinearAlgebra
 
 				return new MatrixCopy(indices);
 			}
-			throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Addition);
+			throw new IncompatibleOperationException(MatrixOperationType.Addition);
 		}
 
 		/// <summary>
@@ -748,7 +748,7 @@ namespace LinearAlgebra
 			{
 				return left + -right;
 			}
-			throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Addition,
+			throw new IncompatibleOperationException(MatrixOperationType.Addition,
 				"The two matrices could not be subtracted because their dimensions were unequal.");
 		}
 
@@ -761,7 +761,7 @@ namespace LinearAlgebra
 		public static MatrixCopy operator *(MatrixCopy left, MatrixCopy right)
 		{
 			if (!Multipliable(left, right)) throw new
-				IncompatibleOperationException(IncompatibleMatrixOperationType.Multiplication);
+				IncompatibleOperationException(MatrixOperationType.Multiplication);
 
 			double [,] indices = new double[left.Height,right.Width];
 
@@ -785,7 +785,7 @@ namespace LinearAlgebra
 		public static MatrixCopy operator ^(MatrixCopy left, int right)
 		{
 			if (!left.IsSquare()) throw new
-				IncompatibleOperationException(IncompatibleMatrixOperationType.Multiplication);
+				IncompatibleOperationException(MatrixOperationType.Multiplication);
 
 			if (right == 0) return new MatrixCopy(left.Width);
 

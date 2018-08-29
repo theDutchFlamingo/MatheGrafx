@@ -308,7 +308,7 @@ namespace LinearAlgebra
 
 				return new RealMatrix(indices);
 			}
-			throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Addition);
+			throw new IncompatibleOperationException(MatrixOperationType.Addition);
 		}
 
 		/// <summary>
@@ -343,7 +343,7 @@ namespace LinearAlgebra
 			{
 				return left + -right;
 			}
-			throw new IncompatibleOperationException(IncompatibleMatrixOperationType.Addition,
+			throw new IncompatibleOperationException(MatrixOperationType.Addition,
 				"The two matrices could not be subtracted because their dimensions were unequal.");
 		}
 
@@ -357,7 +357,7 @@ namespace LinearAlgebra
 		{
 			if (!left.Multipliable(right))
 				throw new
-					IncompatibleOperationException(IncompatibleMatrixOperationType.Multiplication);
+					IncompatibleOperationException(MatrixOperationType.Multiplication);
 
 			Real[,] indices = new Real[left.Height, right.Width];
 
@@ -382,7 +382,7 @@ namespace LinearAlgebra
 		{
 			if (!left.IsSquare())
 				throw new
-					IncompatibleOperationException(IncompatibleMatrixOperationType.Multiplication);
+					IncompatibleOperationException(MatrixOperationType.Multiplication);
 
 			if (right == 0)
 				return new RealMatrix(left.Width);

@@ -1,9 +1,10 @@
 ﻿using System;
 using LinearAlgebra.ComplexLinearAlgebra;
 using LinearAlgebra.Exceptions;
+using LinearAlgebra.Groups;
 using LinearAlgebra.Main;
 
-namespace LinearAlgebra.Fields
+namespace LinearAlgebra.Fields.Members
 {
 	public class Complex : FieldMember, INumerical
 	{
@@ -38,12 +39,12 @@ namespace LinearAlgebra.Fields
 		/// <summary>
 		/// Complex constructor without arguments
 		/// </summary>
-		public Complex() : base(new { Real = 0, Imaginary = 0 })
+		public Complex()
 		{
 			
 		}
 
-		public Complex(double real, double imaginary) : base(new { Real = real, Imaginary = imaginary })
+		public Complex(double real, double imaginary)
 		{
 			Real = real;
 			Imaginary = imaginary;
@@ -347,43 +348,43 @@ namespace LinearAlgebra.Fields
 
 		#endregion
 
-		#region FieldMember Override Methods
+		#region Override Methods
 
 		internal override T Add<T>(T other)
 		{
 			if (other is Complex c)
-				return (T) (FieldMember) (this + c);
+				return (T) (GroupMember) (this + c);
 			throw new IncorrectFieldException(GetType(), "added", other.GetType());
 		}
 
-		internal override T Negative<T>()
+		public override T Negative<T>()
 		{
-			return (T) (FieldMember) (-this);
+			return (T) (INegatable) (-this);
 		}
 
 		internal override T Multiply<T>(T other)
 		{
 			if (other is Complex c)
-				return (T)(FieldMember)(this * c);
-			throw new IncorrectFieldException(GetType(), "added", other.GetType());
+				return (T)(GroupMember)(this * c);
+			throw new IncorrectFieldException(GetType(), "multiplied", other.GetType());
 		}
 
-		internal override T Inverse<T>()
+		public override T Inverse<T>()
 		{
-			return (T) (FieldMember) (1 / this);
+			return (T) (INegatable) (1 / this);
 		}
 
 		public override T Null<T>()
 		{
 			if (typeof(T) == GetType())
-				return (T) (FieldMember) new Complex(0, 0);
+				return (T) (GroupMember) new Complex(0, 0);
 			throw new IncorrectFieldException(this, "null", typeof(T));
 		}
 
 		public override T Unit<T>()
 		{
 			if (typeof(T) == GetType())
-				return (T)(FieldMember)new Complex(1, 0);
+				return (T)(GroupMember)new Complex(1, 0);
 			throw new IncorrectFieldException(this, "unit", typeof(T));
 		}
 
@@ -401,6 +402,13 @@ namespace LinearAlgebra.Fields
 			if (other is Complex c)
 				return ComplexMath.Equals(this, c);
 			return false;
+		}
+
+		public override T Inner<T>(T fieldMember)
+		{
+			if (fieldMember is Complex c)
+				return (T) (FieldMember) Multiply(c.Conjugate());
+			throw new IncorrectFieldException(GetType(), "inner", typeof(T));
 		}
 
 		#endregion

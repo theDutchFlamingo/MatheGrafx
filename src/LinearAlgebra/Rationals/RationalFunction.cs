@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Tasks;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
-using LinearAlgebra.Main;
+using LinearAlgebra.Numeric;
 
-namespace LinearAlgebra.Numeric
+namespace LinearAlgebra.Rationals
 {
 	/// <summary>
 	/// A rational function is any polynomial divided by any polynomial other than the zero polynomial.
 	/// </summary>
-	public class RationalFunction : FieldMember
+	public class RationalFunction : Rational<IntegerPolynomial>
 	{
 		public IntegerPolynomial Num { get; set; }
 		public IntegerPolynomial Den { get; set; }
@@ -58,7 +55,7 @@ namespace LinearAlgebra.Numeric
 
 		internal override T Add<T>(T other)
 		{
-			if (other is Rational r)
+			if (other is Fraction r)
 			{
 				return (T)(FieldMember)new RationalFunction(r.Num * Den + r.Den * Num, r.Den * Den);
 			}
@@ -72,7 +69,7 @@ namespace LinearAlgebra.Numeric
 
 		internal override T Multiply<T>(T other)
 		{
-			if (other is Rational c)
+			if (other is Fraction c)
 				return (T)(FieldMember)new RationalFunction(Num * c.Num, Den * c.Den);
 			throw new IncorrectFieldException(GetType(), "added", other.GetType());
 		}
@@ -95,7 +92,7 @@ namespace LinearAlgebra.Numeric
 		public override T Unit<T>()
 		{
 			if (typeof(T) == GetType())
-				return (T)(FieldMember)new Rational(1);
+				return (T)(FieldMember)new Fraction(1);
 			throw new IncorrectFieldException(this, "unit", typeof(T));
 		}
 
