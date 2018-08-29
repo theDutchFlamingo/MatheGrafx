@@ -58,7 +58,7 @@
     <Compile Include="Algebra\Rings\WholeNumbers.cs" />
     <Compile Include="Exceptions\FactorTypeException.cs" />
     <Compile Include="Exceptions\GroupOperationType.cs" />
-    <Compile Include="Exceptions\IncorrectFieldException.cs" />
+    <Compile Include="Exceptions\IncorrectSetException.cs" />
     <Compile Include="Algebra\Fields\Members\Complex.cs" />
     <Compile Include="ComplexLinearAlgebra\ComplexMath.cs" />
     <Compile Include="ComplexLinearAlgebra\ComplexMatrix.cs" />

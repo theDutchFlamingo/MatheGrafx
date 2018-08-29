@@ -8,7 +8,7 @@ using Math.Exceptions;
 
 namespace Math.Algebra.Fields
 {
-	public class Vector<T> : IEnumerable<T> where T : RingMember, IInvertible, new()
+	public class Vector<T> : IEnumerable<T> where T : RingMember, new()
 	{
 		#region Fields & Properties
 
@@ -396,7 +396,9 @@ namespace Math.Algebra.Fields
 		/// <returns></returns>
 		public static Vector<T> operator /(Vector<T> left, T right)
 		{
-			return left * right.Inverse<T>();
+			if (right is IInvertible i)
+				return left * (T) i.Inverse<IInvertible>();
+			throw new IncompatibleOperationException(VectorOperationType.Division);
 		}
 
 		#endregion

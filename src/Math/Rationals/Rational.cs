@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Math.Algebra.Fields;
 using Math.Algebra.Fields.Members;
 using Math.Algebra.Groups;
 using Math.Algebra.Groups.Members;
+using Math.Algebra.Monoids.Members;
 using Math.Exceptions;
 
 namespace Math.Rationals
@@ -34,9 +36,44 @@ namespace Math.Rationals
 			Den = den;
 		}
 
-	    #region Factoring
+	    /// <summary>
+	    /// Check if the numerator and denominators match, without trying to factor
+	    /// </summary>
+	    /// <param name="other"></param>
+	    /// <returns></returns>
+	    public bool EqualsExactly(Rational<T> other)
+	    {
+		    return Num == other.Num && Den == other.Den;
+	    }
 
-	    
+		#region Factoring
+
+		/// <summary>
+		/// Whether this rational can be factored
+		/// </summary>
+		/// <param name="factored"></param>
+		/// <returns></returns>
+		public bool TryFactor(out Rational<T> factored)
+		{
+			factored = Factor();
+			return factored.EqualsExactly(this);
+		}
+
+	    public Rational<T> Factor()
+	    {
+		    List<T> matchedFactors = Num.Factors<T>().Intersect(Den.Factors<T>()).ToList();
+
+		    T num = Num;
+		    T den = Den;
+
+		    foreach (var t in matchedFactors)
+		    {
+			    num = num.Without(t);
+			    den = den.Without(t);
+		    }
+
+			return new Rational<T>(num, den);
+	    }
 
 	    #endregion
 
@@ -46,10 +83,10 @@ namespace Math.Rationals
         {
             if (other is Rational<T> r)
             {
-                return (T1)(GroupMember)
+                return (T1)(MonoidMember)
 	                new Rational<T>(r.Num.Multiply(Den).Add(r.Den.Multiply(Num)), r.Den.Multiply(Den));
             }
-            throw new IncorrectFieldException(GetType(), "added", other.GetType());
+            throw new IncorrectSetException(GetType(), "added", other.GetType());
         }
 
         public override T1 Negative<T1>()
@@ -61,7 +98,7 @@ namespace Math.Rationals
         {
             if (other is Rational<T> c)
                 return (T1)(GroupMember)new Rational<T>(Num.Multiply(c.Num), Den.Multiply(c.Den));
-            throw new IncorrectFieldException(GetType(), "multiplied", other.GetType());
+            throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
         }
 
         public override T1 Inverse<T1>()
@@ -73,14 +110,14 @@ namespace Math.Rationals
         {
             if (typeof(T1) == GetType())
                 return (T1)(GroupMember) new Rational<T>(new T());
-            throw new IncorrectFieldException(this, "null", typeof(T1));
+            throw new IncorrectSetException(this, "null", typeof(T1));
         }
 
         public override T1 Unit<T1>()
         {
             if (typeof(T1) == GetType())
                 return (T1)(GroupMember)new Rational<T>(new T().Unit<T>());
-            throw new IncorrectFieldException(this, "unit", typeof(T1));
+            throw new IncorrectSetException(this, "unit", typeof(T1));
         }
 
         public override bool IsNull() => Num.Equals(new T());
@@ -101,25 +138,20 @@ namespace Math.Rationals
         {
 	        if (other is Rational<T> r)
 	        {
-				List<T> matchedFactors = new List<T>();
-
-		        foreach (var VARIABLE in r.)
-		        {
-			        
-		        }
-
-		        return ((double)Num / Den).CloseTo((double)r.Num / r.Den);
+		        return Factor().EqualsExactly(r.Factor());
 	        }
 
             return false;
         }
 
-        public override bool Equals(FieldMember other)
+        public override bool Equals(MonoidMember other)
         {
-            if (other is Fraction r)
+            if (other is Rational<T> r)
             {
-                return r.
+	            return r.Equals(r);
             }
+
+			return false;
         }
 
         #endregion

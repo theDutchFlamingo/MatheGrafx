@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Math.Main;
 using Math.Algebra.Fields;
 using Math.Algebra.Groups;
 using Math.Algebra.Groups.Members;
 using Math.Algebra.Rings.Members;
 using Math.Exceptions;
+using Math.Main;
+using Math.Rationals;
 
-namespace Math.Numeric
+namespace Math.Polynomials
 {
 	/// <summary>
 	/// A polynomial with real coefficients
 	/// </summary>
-	public class IntegerPolynomial : GroupMember, INegatable
+	public class IntegerPolynomial : GroupMember, INegatable, IFactorable
 	{
 		/**
 		 * Contains the regexes... regeces (?)... anyway, they can check for variable name correctness,

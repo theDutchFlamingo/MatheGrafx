@@ -43,7 +43,7 @@ namespace Math.Algebra.Fields.Members
 			{
 				return (T)(GroupMember)new Real(Value + r.Value);
 			}
-			throw new IncorrectFieldException(GetType(), "added", other.GetType());
+			throw new IncorrectSetException(GetType(), "added", other.GetType());
 		}
 
 		public override T Negative<T>()
@@ -55,7 +55,7 @@ namespace Math.Algebra.Fields.Members
 		{
 			if (other is Real c)
 				return (T)(GroupMember)new Real(Value * c.Value);
-			throw new IncorrectFieldException(GetType(), "multiplied", other.GetType());
+			throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
 		}
 
 		public override T Inverse<T>()
@@ -67,14 +67,14 @@ namespace Math.Algebra.Fields.Members
 		{
 			if (typeof(T) == GetType())
 				return (T)(GroupMember) new Real(0);
-			throw new IncorrectFieldException(this, "null", typeof(T));
+			throw new IncorrectSetException(this, "null", typeof(T));
 		}
 
 		public override T Unit<T>()
 		{
 			if (typeof(T) == GetType())
 				return (T)(GroupMember)new Real(1);
-			throw new IncorrectFieldException(this, "unit", typeof(T));
+			throw new IncorrectSetException(this, "unit", typeof(T));
 		}
 
 		public override bool IsNull() => Value.CloseTo(0);
@@ -88,7 +88,7 @@ namespace Math.Algebra.Fields.Members
 				return Value > r.Value;
 			}
 
-			throw new IncorrectFieldException(GetType(), "compared", typeof(T));
+			throw new IncorrectSetException(GetType(), "compared", typeof(T));
 		}
 
 		public bool LessThan<T>(T other)
@@ -98,7 +98,7 @@ namespace Math.Algebra.Fields.Members
 				return Value < r.Value;
 			}
 
-			throw new IncorrectFieldException(GetType(), "compared", typeof(T));
+			throw new IncorrectSetException(GetType(), "compared", typeof(T));
 		}
 
 		public override double ToDouble()

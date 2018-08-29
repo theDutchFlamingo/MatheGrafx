@@ -2,6 +2,11 @@
 {
 	public enum VectorOperationType
 	{
-		Addition, Inner, Outer, MatrixVector, Dimension
+		Addition,
+		Dimension,
+		Division,
+		Inner,
+		Outer,
+		MatrixVector
 	}
 }

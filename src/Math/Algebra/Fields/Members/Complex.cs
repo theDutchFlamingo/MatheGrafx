@@ -1,6 +1,7 @@
 ﻿using System;
 using Math.Algebra.Groups;
 using Math.Algebra.Groups.Members;
+using Math.Algebra.Monoids.Members;
 using Math.ComplexLinearAlgebra;
 using Math.Exceptions;
 using Math.Main;
@@ -354,8 +355,8 @@ namespace Math.Algebra.Fields.Members
 		internal override T Add<T>(T other)
 		{
 			if (other is Complex c)
-				return (T) (GroupMember) (this + c);
-			throw new IncorrectFieldException(GetType(), "added", other.GetType());
+				return (T) (MonoidMember) (this + c);
+			throw new IncorrectSetException(GetType(), "added", other.GetType());
 		}
 
 		public override T Negative<T>()
@@ -367,7 +368,7 @@ namespace Math.Algebra.Fields.Members
 		{
 			if (other is Complex c)
 				return (T)(GroupMember)(this * c);
-			throw new IncorrectFieldException(GetType(), "multiplied", other.GetType());
+			throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
 		}
 
 		public override T Inverse<T>()
@@ -379,14 +380,14 @@ namespace Math.Algebra.Fields.Members
 		{
 			if (typeof(T) == GetType())
 				return (T) (GroupMember) new Complex(0, 0);
-			throw new IncorrectFieldException(this, "null", typeof(T));
+			throw new IncorrectSetException(this, "null", typeof(T));
 		}
 
 		public override T Unit<T>()
 		{
 			if (typeof(T) == GetType())
 				return (T)(GroupMember)new Complex(1, 0);
-			throw new IncorrectFieldException(this, "unit", typeof(T));
+			throw new IncorrectSetException(this, "unit", typeof(T));
 		}
 
 		public override bool IsNull() => Equals(Null<Complex>());
@@ -405,11 +406,16 @@ namespace Math.Algebra.Fields.Members
 			return false;
 		}
 
+		public override bool Equals(MonoidMember other)
+		{
+			return Equals(other);
+		}
+
 		public override T Inner<T>(T fieldMember)
 		{
 			if (fieldMember is Complex c)
 				return (T) (FieldMember) Multiply(c.Conjugate());
-			throw new IncorrectFieldException(GetType(), "inner", typeof(T));
+			throw new IncorrectSetException(GetType(), "inner", typeof(T));
 		}
 
 		#endregion

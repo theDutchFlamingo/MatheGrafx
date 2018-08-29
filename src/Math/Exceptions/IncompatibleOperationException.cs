@@ -80,6 +80,8 @@ namespace Math.Exceptions
 					return "The two vectors could not be added because their dimensions were unequal.";
 				case VectorOperationType.Dimension:
 					return "Two vectors with unequal dimension cannot be compared.";
+				case VectorOperationType.Division:
+					return "Division by a scalar is only supported if the scalar is invertible.";
 				case VectorOperationType.Inner:
 					return "The inner product cannot be taken of vectors with unequal dimensions.";
 				case VectorOperationType.MatrixVector:

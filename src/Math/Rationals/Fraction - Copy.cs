@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Math.Algebra.Fields;
-using Math.Main;
 using Math.Algebra.Fields.Members;
 using Math.Algebra.Groups;
 using Math.Algebra.Groups.Members;
+using Math.Algebra.Monoids.Members;
+using Math.Algebra.Rings.Members;
 using Math.Exceptions;
 
 namespace Math.Rationals
 {
     public class FractionCopy : FieldMember, INumerical
     {
-        public int Num { get; set; } = 0;
-        public int Den { get; set; } = 1;
+        public Integer Num { get; set; } = 0;
+        public Integer Den { get; set; } = 1;
         
         #region Constructors
 
@@ -32,17 +35,27 @@ namespace Math.Rationals
             
         }
 
-        #endregion
+		#endregion
 
-        #region Overrides
+	    /// <summary>
+	    /// Check if the numerator and denominators match, without trying to factor
+	    /// </summary>
+	    /// <param name="other"></param>
+	    /// <returns></returns>
+	    public bool EqualsExactly(FractionCopy other)
+	    {
+		    return Num == other.Num && Den == other.Den;
+	    }
 
-        internal override T Add<T>(T other)
+		#region Overrides
+
+		internal override T Add<T>(T other)
         {
             if (other is FractionCopy r)
             {
-                return (T)(GroupMember)new FractionCopy(r.Num * Den + r.Den * Num, r.Den * Den);
+                return (T)(MonoidMember)new FractionCopy(r.Num * Den + r.Den * Num, r.Den * Den);
             }
-            throw new IncorrectFieldException(GetType(), "added", other.GetType());
+            throw new IncorrectSetException(GetType(), "added", other.GetType());
         }
 
         public override T Negative<T>()
@@ -54,7 +67,7 @@ namespace Math.Rationals
         {
             if (other is FractionCopy c)
                 return (T)(GroupMember)new FractionCopy(Num * c.Num, Den * c.Den);
-            throw new IncorrectFieldException(GetType(), "multiplied", other.GetType());
+            throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
         }
 
         public override T Inverse<T>()
@@ -66,19 +79,19 @@ namespace Math.Rationals
         {
             if (typeof(T) == GetType())
                 return (T)(GroupMember) new FractionCopy(0);
-            throw new IncorrectFieldException(this, "null", typeof(T));
+            throw new IncorrectSetException(this, "null", typeof(T));
         }
 
         public override T Unit<T>()
         {
             if (typeof(T) == GetType())
                 return (T)(GroupMember)new FractionCopy(1);
-            throw new IncorrectFieldException(this, "unit", typeof(T));
+            throw new IncorrectSetException(this, "unit", typeof(T));
         }
 
-        public override bool IsNull() => Num.CloseTo(0);
+        public override bool IsNull() => Num.Equals(0);
 
-        public override bool IsUnit() => Num.CloseTo(Den);
+        public override bool IsUnit() => Num.Equals(Den);
 
         public override double ToDouble()
         {
@@ -88,18 +101,18 @@ namespace Math.Rationals
         public override bool Equals<T>(T other)
         {
             if (other is FractionCopy r)
-                return ((double)Num / Den).CloseTo((double)r.Num / r.Den);
+                return Equals((MonoidMember) r);
             return false;
         }
 
         public INumerical Round()
         {
-            return new Real(System.Math.Round((double)Num / Den));
+            return new Real(System.Math.Round((double)(int)Num / Den));
         }
 
         public INumerical Log10()
         {
-            return new Real(System.Math.Log10((double)Num / Den));
+            return new Real(System.Math.Log10((double)(int)Num / Den));
         }
 
         public INumerical LongestValue()
@@ -107,28 +120,50 @@ namespace Math.Rationals
             return new Real(System.Math.Abs(Num) > System.Math.Abs(Den) ? Num : Den);
         }
 
-        public override bool Equals(FieldMember other)
+        public override bool Equals(MonoidMember other)
         {
-            if (other is FractionCopy r)
-            {
-                return r.
-            }
-        }
+			if (other is FractionCopy r)
+	        {
+		        return Factor().EqualsExactly(r.Factor());
+	        }
 
-        #endregion
+	        return false;
+		}
 
-        /**
+		#endregion
+
+		#region Factoring
+
+		public FractionCopy Factor()
+		{
+			List<Integer> matchedFactors = Num.Factors<Integer>().Intersect(Den.Factors<Integer>()).ToList();
+
+			Integer num = Num;
+			Integer den = Den;
+
+			foreach (var t in matchedFactors)
+			{
+				num = num.Without(t);
+				den = den.Without(t);
+			}
+
+			return new FractionCopy(num, den);
+		}
+
+		#endregion
+
+		/**
          * The operators to make adding and subtracting easier
          */
-        #region Operators
+		#region Operators
 
-        /// <summary>
-        /// Add the two together
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        public static FractionCopy operator +(FractionCopy left, FractionCopy right)
+		/// <summary>
+		/// Add the two together
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static FractionCopy operator +(FractionCopy left, FractionCopy right)
         {
             return left.Add(right);
         }
@@ -182,7 +217,7 @@ namespace Math.Rationals
 
         public static implicit operator double(FractionCopy r)
         {
-            return (double)r.Num / r.Den;
+            return (double)(int)r.Num / r.Den;
         }
 
         public static implicit operator FractionCopy(double r)

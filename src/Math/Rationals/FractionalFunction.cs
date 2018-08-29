@@ -64,7 +64,7 @@ namespace Math.Numeric
 			{
 				return (T)(FieldMember)new FractionalFunction(r.Num * Den + r.Den * Num, r.Den * Den);
 			}
-			throw new IncorrectFieldException(GetType(), "added", other.GetType());
+			throw new IncorrectSetException(GetType(), "added", other.GetType());
 		}
 
 		internal override T Negative<T>()
@@ -76,7 +76,7 @@ namespace Math.Numeric
 		{
 			if (other is Fraction c)
 				return (T)(FieldMember)new FractionalFunction(Num * c.Num, Den * c.Den);
-			throw new IncorrectFieldException(GetType(), "added", other.GetType());
+			throw new IncorrectSetException(GetType(), "added", other.GetType());
 		}
 
 		internal override T Inverse<T>()
@@ -91,14 +91,14 @@ namespace Math.Numeric
 				return (T)(FieldMember)new FractionalFunction(new RealPolynomial(new Vector<Real>(new Real[]{0})),
 					new RealPolynomial(new Vector<Real>(new Real[]{1})));
 			}
-			throw new IncorrectFieldException(this, "null", typeof(T));
+			throw new IncorrectSetException(this, "null", typeof(T));
 		}
 
 		public override T Unit<T>()
 		{
 			if (typeof(T) == GetType())
 				return (T)(FieldMember)new Fraction(1);
-			throw new IncorrectFieldException(this, "unit", typeof(T));
+			throw new IncorrectSetException(this, "unit", typeof(T));
 		}
 
 		public override bool IsNull() => Num.Equals((RealPolynomial) Null<FractionalFunction>());

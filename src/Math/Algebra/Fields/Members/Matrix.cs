@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Math.Algebra.Groups;
 using Math.Algebra.Groups.Members;
+using Math.Algebra.Monoids.Members;
 using Math.ComplexLinearAlgebra;
 using Math.Exceptions;
 
@@ -1061,10 +1062,10 @@ namespace Math.Algebra.Fields.Members
 		{
 			if (other is Matrix<T> m)
 			{
-				return (T1) (GroupMember) (this + m);
+				return (T1) (MonoidMember) (this + m);
 			}
 
-			throw new IncorrectFieldException(GetType(), "added", typeof(T1));
+			throw new IncorrectSetException(GetType(), "added", typeof(T1));
 		}
 
 		public override T1 Negative<T1>()
@@ -1079,7 +1080,7 @@ namespace Math.Algebra.Fields.Members
 				return (T1)(GroupMember)(this * m);
 			}
 
-			throw new IncorrectFieldException(GetType(), "multiplied", typeof(T1));
+			throw new IncorrectSetException(GetType(), "multiplied", typeof(T1));
 		}
 
 		public override T1 Inverse<T1>()
@@ -1091,7 +1092,7 @@ namespace Math.Algebra.Fields.Members
 		{
 			if (typeof(T1) == GetType())
 				return (T1)(GroupMember)new Matrix<T>(Height, Width);
-			throw new IncorrectFieldException(this, "null", typeof(T1));
+			throw new IncorrectSetException(this, "null", typeof(T1));
 		}
 
 		public override T1 Unit<T1>()
@@ -1099,22 +1100,23 @@ namespace Math.Algebra.Fields.Members
 			if (!IsSquare()) throw new IncompatibleOperationException(MatrixOperationType.Unit);
 			if (typeof(T1) == GetType())
 				return (T1)(GroupMember)new Real(1);
-			throw new IncorrectFieldException(this, "unit", typeof(T1));
+			throw new IncorrectSetException(this, "unit", typeof(T1));
 		}
 
-		public override bool IsNull() => GetRows().Select(i => i);
+		public override bool IsNull() => GetRows().All(i => i.IsNull());
 
-		public override bool IsUnit() => Value.CloseTo(1);
+		public override bool IsUnit() => (this - new Matrix<T>(Diagonal())).IsNull() && Diagonal().All(d => d.IsUnit());
 
 		public override double ToDouble()
 		{
-			return this;
+			// Because there's no sensible other thing to do, should I maybe delete this method from GroupMember?
+			return Determinant().ToDouble();
 		}
 
 		public override bool Equals<T1>(T1 other)
 		{
-			if (other is Real r)
-				return this.CloseTo(r);
+			if (other is Matrix<T> r)
+				return this == r;
 			return false;
 		}
 

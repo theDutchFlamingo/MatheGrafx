@@ -6,6 +6,7 @@ using Math.Algebra.Rings.Members;
 using Math.ComplexLinearAlgebra;
 using Math.Main;
 using Math.Numeric;
+using Math.Polynomials;
 using Math.Rationals;
 
 namespace Math

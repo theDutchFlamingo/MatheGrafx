@@ -6,6 +6,7 @@ using Math.Algebra.Fields.Members;
 using Math.Algebra.Rings.Members;
 using Math.Exceptions;
 using Math.Numeric;
+using Math.Polynomials;
 
 namespace Math.Rationals
 {
@@ -14,9 +15,6 @@ namespace Math.Rationals
 	/// </summary>
 	public class RationalFunction : Rational<IntegerPolynomial>
 	{
-		public IntegerPolynomial Num { get; set; }
-		public IntegerPolynomial Den { get; set; }
-
 		public RationalFunction() : base(new IntegerPolynomial())
 		{
 			Num = new IntegerPolynomial();
@@ -61,7 +59,7 @@ namespace Math.Rationals
 			{
 				return (T)(FieldMember)new RationalFunction(r.Num * Den + r.Den * Num, r.Den * Den);
 			}
-			throw new IncorrectFieldException(GetType(), "added", other.GetType());
+			throw new IncorrectSetException(GetType(), "added", other.GetType());
 		}
 
 		internal override T Negative<T>()
@@ -73,7 +71,7 @@ namespace Math.Rationals
 		{
 			if (other is Fraction c)
 				return (T)(FieldMember)new RationalFunction(Num * c.Num, Den * c.Den);
-			throw new IncorrectFieldException(GetType(), "added", other.GetType());
+			throw new IncorrectSetException(GetType(), "added", other.GetType());
 		}
 
 		internal override T Inverse<T>()
@@ -88,14 +86,14 @@ namespace Math.Rationals
 				return (T)(FieldMember)new RationalFunction(new IntegerPolynomial(new Vector<Integer>(new Integer[]{0})),
 					new IntegerPolynomial(new Vector<Integer>(new Integer[]{1})));
 			}
-			throw new IncorrectFieldException(this, "null", typeof(T));
+			throw new IncorrectSetException(this, "null", typeof(T));
 		}
 
 		public override T Unit<T>()
 		{
 			if (typeof(T) == GetType())
 				return (T)(FieldMember)new Fraction(1);
-			throw new IncorrectFieldException(this, "unit", typeof(T));
+			throw new IncorrectSetException(this, "unit", typeof(T));
 		}
 
 		public override bool IsNull() => Num.Equals((IntegerPolynomial) Null<RationalFunction>());

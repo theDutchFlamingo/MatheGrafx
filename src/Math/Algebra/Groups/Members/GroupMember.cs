@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Math.Algebra.Monoids.Members;
 
 namespace Math.Algebra.Groups.Members
 {
-    public abstract class GroupMember : IEquatable<GroupMember>
+    public abstract class GroupMember : MonoidMember
     {
-        internal abstract T Add<T>(T other) where T : GroupMember;
-
         internal abstract T Multiply<T>(T other) where T : GroupMember;
 
         public abstract T Null<T>() where T : GroupMember;
@@ -31,8 +29,6 @@ namespace Math.Algebra.Groups.Members
         public abstract bool IsUnit();
 
         public abstract bool Equals<T>(T other);
-
-        public abstract bool Equals(GroupMember other);
 
         /// <summary>
         /// Gets the double version of this object; not necessarily possible for all instances.

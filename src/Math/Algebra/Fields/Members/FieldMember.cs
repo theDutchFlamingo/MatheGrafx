@@ -4,7 +4,7 @@ using Math.Algebra.Rings.Members;
 
 namespace Math.Algebra.Fields.Members
 {
-	public abstract class FieldMember : RingMember, IInvertible, IEquatable<FieldMember>
+	public abstract class FieldMember : RingMember, IInvertible
 	{
 		public abstract override T Negative<T>();
 
@@ -19,18 +19,6 @@ namespace Math.Algebra.Fields.Members
 		/// <param name="fieldMember"></param>
 		/// <returns></returns>
 		public virtual T Inner<T>(T fieldMember) where T : FieldMember => Multiply(fieldMember);
-
-		public abstract bool Equals(FieldMember other);
-
-		public override bool Equals(GroupMember other)
-		{
-			if (other is FieldMember f)
-			{
-				return Equals(f);
-			}
-
-			return false;
-		}
 
 		/// <summary>
 		/// Gets the double version of this object; not necessarily possible for all instances.

@@ -7,7 +7,7 @@ using Math.Algebra.Fields.Members;
 
 namespace Math.Exceptions
 {
-	class IncorrectFieldException : Exception
+	class IncorrectSetException : Exception
 	{
 		public Type Left { get; set; }
 		public Type Right { get; set; }
@@ -18,9 +18,9 @@ namespace Math.Exceptions
 		/// <param name="left"></param>
 		/// <param name="operation"></param>
 		/// <param name="right"></param>
-		public IncorrectFieldException(Type left, string operation, Type right) :
-			base($@"A field member of type '{left.Name}' cannot be {operation} " +
-						$@"to field members of type'{right.Name}'.")
+		public IncorrectSetException(Type left, string operation, Type right) :
+			base($@"A set member of type '{left.Name}' cannot be {operation} " +
+						$@"to set members of type'{right.Name}'.")
 		{
 			Right = right;
 			Left = left;
@@ -32,8 +32,8 @@ namespace Math.Exceptions
 		/// <param name="field"></param>
 		/// <param name="property"></param>
 		/// <param name="type"></param>
-		public IncorrectFieldException(FieldMember field, string property, Type type) :
-			base($@"A field of type '{field.GetType()}' does not have a '{property}' property of type '{type}'.")
+		public IncorrectSetException(object field, string property, Type type) :
+			base($@"A set of type '{field.GetType()}' does not have a '{property}' property of type '{type}'.")
 		{
 			Left = field.GetType();
 			Right = type;

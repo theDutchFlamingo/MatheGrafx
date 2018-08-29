@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Math.Algebra.Fields.Members;
 using Math.ComplexLinearAlgebra;
 using Math.Main;
-using Math.Polynomials;
 
-namespace Math.Numeric
+namespace Math.Polynomials
 {
 	public static class RootFinder
 	{
