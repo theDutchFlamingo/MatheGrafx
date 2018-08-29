@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LinearAlgebra.Algebra.Fields;
+using LinearAlgebra.Algebra.Fields.Members;
 using LinearAlgebra.Fields.Members;
 using LinearAlgebra.Rationals;
 
@@ -15,13 +17,13 @@ namespace LinearAlgebra.Fields
 	public abstract class Field<T> where T : FieldMember
 	{
 		public static Field<Real> Reals = new RealNumbers();
-		public static Field<Fraction> Fractions = new 
+		public static Field<Fraction> Fractions = new RationalNumbers();
 
 		public abstract T Unit();
 
 		public abstract T Null();
 
-		public abstract T Create(object value);
+		public abstract T Create(params object[] value);
 
 		public bool Contains(T m)
 		{

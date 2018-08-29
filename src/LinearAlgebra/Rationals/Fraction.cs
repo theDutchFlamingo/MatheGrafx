@@ -1,4 +1,5 @@
 ﻿using System;
+using LinearAlgebra.Algebra.Rings.Members;
 using LinearAlgebra.Fields;
 
 namespace LinearAlgebra.Rationals

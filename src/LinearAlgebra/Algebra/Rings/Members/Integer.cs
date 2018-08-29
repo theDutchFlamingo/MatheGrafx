@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using LinearAlgebra.Algebra.Fields.Members;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
 using LinearAlgebra.Fields.Members;
@@ -8,9 +9,9 @@ using LinearAlgebra.Groups;
 using LinearAlgebra.Main;
 using LinearAlgebra.Rationals;
 
-namespace LinearAlgebra.Rings.Members
+namespace LinearAlgebra.Algebra.Rings.Members
 {
-    public class Integer : FieldMember, INumerical, IFactorable
+    public class Integer : RingMember, INumerical, IFactorable
     {
         public int Value { get; set; }
         
@@ -46,7 +47,7 @@ namespace LinearAlgebra.Rings.Members
 
         public override T Negative<T>()
         {
-            return (T)(INegatable)new Integer(-Value);
+            return (T)(RingMember)new Integer(-Value);
         }
 
         internal override T Multiply<T>(T other)

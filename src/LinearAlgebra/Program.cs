@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
+using LinearAlgebra.Algebra.Fields;
+using LinearAlgebra.Algebra.Rings.Members;
 using LinearAlgebra.ComplexLinearAlgebra;
 using LinearAlgebra.Fields;
+using LinearAlgebra.Fields.Members;
 using LinearAlgebra.Main;
 using LinearAlgebra.Numeric;
 using LinearAlgebra.Rationals;

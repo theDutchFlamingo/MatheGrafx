@@ -1,4 +1,6 @@
 ﻿using System;
+using LinearAlgebra.Algebra.Fields;
+using LinearAlgebra.Algebra.Fields.Members;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
 using LinearAlgebra.Fields.Members;

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LinearAlgebra.Algebra.Rings.Members;
 
-namespace LinearAlgebra.Rings
+namespace LinearAlgebra.Algebra.Rings
 {
-	class Ring
+	public class Ring<T> where T : RingMember
 	{
+		public Ring<Integer> Integers = new 
 	}
 }

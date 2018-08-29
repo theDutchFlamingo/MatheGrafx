@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using LinearAlgebra.Algebra.Fields.Members;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
+using LinearAlgebra.Fields.Members;
 using LinearAlgebra.Groups;
 
 namespace LinearAlgebra.Rationals

@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LinearAlgebra.Algebra.Fields;
+using LinearAlgebra.Algebra.Fields.Members;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
+using LinearAlgebra.Fields.Members;
 using LinearAlgebra.Main;
+using LinearAlgebra.Polynomials;
 using LinearAlgebra.Rationals;
 
 namespace LinearAlgebra.Numeric

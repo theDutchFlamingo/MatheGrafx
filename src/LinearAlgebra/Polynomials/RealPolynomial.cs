@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using LinearAlgebra.Algebra.Fields;
 using LinearAlgebra.Fields;
 using LinearAlgebra.Main;
 
-namespace LinearAlgebra.Numeric
+namespace LinearAlgebra.Polynomials
 {
 	/// <summary>
 	/// A polynomial with real coefficients

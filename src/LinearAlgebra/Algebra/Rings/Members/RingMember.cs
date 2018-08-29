@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LinearAlgebra.Groups;
+﻿using LinearAlgebra.Groups;
 
-namespace LinearAlgebra.Rings.Members
+namespace LinearAlgebra.Algebra.Rings.Members
 {
-	public abstract class RingMember : GroupMember
+	public abstract class RingMember : GroupMember, INegatable
 	{
+		public abstract T Negative<T>() where T : INegatable;
 	}
 }

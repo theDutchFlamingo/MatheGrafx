@@ -2,13 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using LinearAlgebra.Algebra.Rings.Members;
 using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields.Members;
+using LinearAlgebra.Fields;
+using LinearAlgebra.Groups;
 using LinearAlgebra.Main;
 
-namespace LinearAlgebra.Fields
+namespace LinearAlgebra.Algebra.Fields
 {
-	public class Vector<T> : IEnumerable<T> where T : FieldMember, new()
+	public class Vector<T> : IEnumerable<T> where T : RingMember, IInvertible, new()
 	{
 		#region Fields & Properties
 
@@ -371,7 +373,7 @@ namespace LinearAlgebra.Fields
 
 			for (int i = 0; i < indices.Length; i++)
 			{
-				indices[i] = indices[i].Inner(right);
+				indices[i] = indices[i].Multiply(right);
 			}
 
 			return new Vector<T>(indices);

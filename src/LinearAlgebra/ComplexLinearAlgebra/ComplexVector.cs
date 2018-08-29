@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using LinearAlgebra.Algebra.Fields;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
+using LinearAlgebra.Fields.Members;
 
 namespace LinearAlgebra.ComplexLinearAlgebra
 {

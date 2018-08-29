@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using LinearAlgebra.Algebra.Fields.Members;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields.Members;
 using LinearAlgebra.Groups;

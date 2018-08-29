@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using LinearAlgebra.Algebra.Fields;
+using LinearAlgebra.Algebra.Rings.Members;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
 using LinearAlgebra.Groups;
 using LinearAlgebra.Main;
-using LinearAlgebra.Rings.Members;
 
 namespace LinearAlgebra.Numeric
 {

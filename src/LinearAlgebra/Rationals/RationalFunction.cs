@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LinearAlgebra.Algebra.Fields;
+using LinearAlgebra.Algebra.Fields.Members;
+using LinearAlgebra.Algebra.Rings.Members;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
+using LinearAlgebra.Fields.Members;
 using LinearAlgebra.Numeric;
 
 namespace LinearAlgebra.Rationals

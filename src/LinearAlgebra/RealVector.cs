@@ -1,4 +1,5 @@
-﻿using LinearAlgebra.Exceptions;
+﻿using LinearAlgebra.Algebra.Fields;
+using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields;
 
 namespace LinearAlgebra

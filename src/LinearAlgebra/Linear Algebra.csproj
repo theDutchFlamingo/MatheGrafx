@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algebra\Fields\RationalNumbers.cs" />
+    <Compile Include="Algebra\Rings\WholeNumbers.cs" />
     <Compile Include="Exceptions\FactorTypeException.cs" />
     <Compile Include="Exceptions\GroupOperationType.cs" />
     <Compile Include="Exceptions\IncorrectFieldException.cs" />

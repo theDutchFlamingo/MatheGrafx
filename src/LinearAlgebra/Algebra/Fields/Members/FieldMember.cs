@@ -1,11 +1,12 @@
 ﻿using System;
+using LinearAlgebra.Algebra.Rings.Members;
 using LinearAlgebra.Groups;
 
-namespace LinearAlgebra.Fields.Members
+namespace LinearAlgebra.Algebra.Fields.Members
 {
-	public abstract class FieldMember : GroupMember, INegatable, IInvertible, IEquatable<FieldMember>
+	public abstract class FieldMember : RingMember, IInvertible, IEquatable<FieldMember>
 	{
-		public abstract T Negative<T>() where T : INegatable;
+		public abstract override T Negative<T>();
 
 		public abstract T Inverse<T>() where T : IInvertible;
 

@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using LinearAlgebra.Algebra.Fields;
+using LinearAlgebra.Algebra.Fields.Members;
 using LinearAlgebra.ComplexLinearAlgebra;
 using LinearAlgebra.Exceptions;
 using LinearAlgebra.Fields.Members;
@@ -86,7 +88,7 @@ namespace LinearAlgebra.Fields
 		/// Constructor of a MatrixBase
 		/// </summary>
 		/// <param name="indices"></param>
-		public Matrix(T[,] indices) : base(indices)
+		public Matrix(T[,] indices)
 		{
 			Indices = indices;
 		}
@@ -95,7 +97,7 @@ namespace LinearAlgebra.Fields
 		/// Clone the given matrix
 		/// </summary>
 		/// <param name="m"></param>
-		public Matrix(Matrix<T> m) : base(m.Indices)
+		public Matrix(Matrix<T> m)
 		{
 			Indices = new T[m.Height, m.Width];
 
