@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using LinearAlgebra.Algebra.Fields;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Main;
+using Math.Main;
+using Math.Algebra.Fields;
+using Math.Fields;
 
-namespace LinearAlgebra.Polynomials
+namespace Math.Polynomials
 {
 	/// <summary>
 	/// A polynomial with real coefficients
@@ -123,7 +123,7 @@ namespace LinearAlgebra.Polynomials
 		/// <returns></returns>
 		public static RealPolynomial operator +(RealPolynomial left, RealPolynomial right)
 		{
-			Vector<Real> newCoefficients = new Vector<Real>(Math.Max(left.Degree, right.Degree) + 1);
+			Vector<Real> newCoefficients = new Vector<Real>(System.Math.Max(left.Degree, right.Degree) + 1);
 
 			for (int i = 0; i < newCoefficients.Dimension; i++)
 			{

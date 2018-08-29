@@ -1,11 +1,11 @@
 ﻿using System;
-using LinearAlgebra.Algebra.Fields.Members;
-using LinearAlgebra.ComplexLinearAlgebra;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Groups;
-using LinearAlgebra.Main;
+using Math.Main;
+using Math.Algebra.Fields.Members;
+using Math.ComplexLinearAlgebra;
+using Math.Exceptions;
+using Math.Groups;
 
-namespace LinearAlgebra.Fields.Members
+namespace Math.Fields.Members
 {
 	public class Complex : FieldMember, INumerical
 	{
@@ -17,11 +17,11 @@ namespace LinearAlgebra.Fields.Members
 		/// <summary>
 		/// The modulus, or absolute value of this complex number
 		/// </summary>
-		public double Modulus => Math.Sqrt(Real * Real + Imaginary * Imaginary);
+		public double Modulus => System.Math.Sqrt(Real * Real + Imaginary * Imaginary);
 		/// <summary>
 		/// The argument, or angle of this complex number with respect to the x-axis
 		/// </summary>
-		public double Argument => Math.Atan2(Imaginary, Real);
+		public double Argument => System.Math.Atan2(Imaginary, Real);
 
 		#endregion
 
@@ -113,13 +113,13 @@ namespace LinearAlgebra.Fields.Members
 		/// <returns></returns>
 		public INumerical LongestValue(bool exponential)
 		{
-			if (exponential) return new Real(Math.Max(Real, Imaginary));
-			return new Real(Math.Max(Modulus, Argument));
+			if (exponential) return new Real(System.Math.Max(Real, Imaginary));
+			return new Real(System.Math.Max(Modulus, Argument));
 		}
 
 		public INumerical Round()
 		{
-			return new Complex(Math.Round(Real), Math.Round(Imaginary));
+			return new Complex(System.Math.Round(Real), System.Math.Round(Imaginary));
 		}
 
 		public INumerical Log10()
@@ -294,7 +294,7 @@ namespace LinearAlgebra.Fields.Members
 		/// <returns></returns>
 		public static Complex operator ^(Complex b, double exp)
 		{
-			return ComplexMath.Exponential(Math.Pow(b.Modulus, exp), b.Argument * exp);
+			return ComplexMath.Exponential(System.Math.Pow(b.Modulus, exp), b.Argument * exp);
 		}
 
 		/// <summary>
@@ -305,7 +305,7 @@ namespace LinearAlgebra.Fields.Members
 		/// <returns></returns>
 		public static Complex operator ^(double b, Complex exp)
 		{
-			return ComplexMath.Exponential(Math.Pow(b, exp.Real), exp.Imaginary * Math.Log(b));
+			return ComplexMath.Exponential(System.Math.Pow(b, exp.Real), exp.Imaginary * System.Math.Log(b));
 		}
 
 		/// <summary>
@@ -317,7 +317,7 @@ namespace LinearAlgebra.Fields.Members
 		public static Complex operator ^(Complex b, Complex exp)
 		{
 			return (b.Modulus ^ (exp.Real + exp.Imaginary * I)) *
-			       (Math.E ^ (b.Argument * (exp.Real * I - exp.Imaginary)));
+			       (System.Math.E ^ (b.Argument * (exp.Real * I - exp.Imaginary)));
 		}
 
 		#endregion

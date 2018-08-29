@@ -1,4 +1,4 @@
-﻿namespace LinearAlgebra.Rationals
+﻿namespace Math.Rationals
 {
 	public interface IFactorable
 	{

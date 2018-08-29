@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LinearAlgebra.ComplexLinearAlgebra;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Fields.Members;
-using LinearAlgebra.Main;
-using LinearAlgebra.Polynomials;
+using Math.Fields;
+using Math.ComplexLinearAlgebra;
+using Math.Fields.Members;
+using Math.Main;
+using Math.Polynomials;
 
-namespace LinearAlgebra.Numeric
+namespace Math.Numeric
 {
 	public static class RootFinder
 	{
@@ -26,7 +26,7 @@ namespace LinearAlgebra.Numeric
 		public static List<Complex> DurandKerner(IntegerPolynomial p)
 		{
 			// According to Wikipedia, radius of initial condition should be 1 + max(|a_1|,|a_2|,...,|a_n-1|)
-			ComplexVector current = InitialCondition(p.Degree, 1 + p.Coefficients.Select(d => Math.Abs(d)).Max());
+			ComplexVector current = InitialCondition(p.Degree, 1 + p.Coefficients.Select(d => System.Math.Abs(d)).Max());
 
 			ComplexVector Iterate(ComplexVector v)
 			{
@@ -58,7 +58,7 @@ namespace LinearAlgebra.Numeric
 		public static List<Complex> DurandKerner(RealPolynomial p)
 		{
 			// According to Wikipedia, radius of initial condition should be 1 + max(|a_1|,|a_2|,...,|a_n-1|)
-			ComplexVector current = InitialCondition(p.Degree, 1 + p.Coefficients.Select(d => Math.Abs(d)).Max());
+			ComplexVector current = InitialCondition(p.Degree, 1 + p.Coefficients.Select(d => System.Math.Abs(d)).Max());
 
 			ComplexVector Iterate(ComplexVector v)
 			{

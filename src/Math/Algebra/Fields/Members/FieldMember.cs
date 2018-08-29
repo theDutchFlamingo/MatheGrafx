@@ -1,8 +1,8 @@
 ﻿using System;
-using LinearAlgebra.Algebra.Rings.Members;
-using LinearAlgebra.Groups;
+using Math.Algebra.Rings.Members;
+using Math.Groups;
 
-namespace LinearAlgebra.Algebra.Fields.Members
+namespace Math.Algebra.Fields.Members
 {
 	public abstract class FieldMember : RingMember, IInvertible, IEquatable<FieldMember>
 	{

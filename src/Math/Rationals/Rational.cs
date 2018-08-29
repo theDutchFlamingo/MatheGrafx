@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using LinearAlgebra.Algebra.Fields.Members;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Fields.Members;
-using LinearAlgebra.Groups;
+using Math.Fields;
+using Math.Fields.Members;
+using Math.Algebra.Fields.Members;
+using Math.Exceptions;
+using Math.Groups;
 
-namespace LinearAlgebra.Rationals
+namespace Math.Rationals
 {
     public class Rational<T> : FieldMember where T : GroupMember, INegatable, IFactorable, new()
     {

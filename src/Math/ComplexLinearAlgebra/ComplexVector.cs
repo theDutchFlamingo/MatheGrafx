@@ -1,10 +1,10 @@
 ﻿using System.Linq;
-using LinearAlgebra.Algebra.Fields;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Fields.Members;
+using Math.Fields;
+using Math.Algebra.Fields;
+using Math.Exceptions;
+using Math.Fields.Members;
 
-namespace LinearAlgebra.ComplexLinearAlgebra
+namespace Math.ComplexLinearAlgebra
 {
 	/// <summary>
 	/// Specific implementation of VectorBase&lt;Complex&gt; because ComplexVectors are still pretty common.

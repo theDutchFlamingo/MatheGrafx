@@ -2,13 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using LinearAlgebra.ComplexLinearAlgebra;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Fields.Members;
-using LinearAlgebra.Main;
+using Math.ComplexLinearAlgebra;
+using Math.Fields;
+using Math.Main;
+using Math.Exceptions;
+using Math.Fields.Members;
 
-namespace LinearAlgebra
+namespace Math
 {
 	/// <summary>
 	/// The original matrix class without being a subclass of MatrixBase
@@ -333,7 +333,7 @@ namespace LinearAlgebra
 			if (!IsSquare()) throw new
 				IncompatibleOperationException(MatrixOperationType.Determinant);
 
-			return Math.Pow(-1, i + j) * Minor(i, j);
+			return System.Math.Pow(-1, i + j) * Minor(i, j);
 		}
 
 		/// <summary>
@@ -622,7 +622,7 @@ namespace LinearAlgebra
 		{
 			string result = "";
 
-			int middle = (int) Math.Floor((double) Height / 2);
+			int middle = (int) System.Math.Floor((double) Height / 2);
 			int i = 0;
 			int padding = this[VectorType.Row].Select(v => v.Padding(precision)).Max();
 

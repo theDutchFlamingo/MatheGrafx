@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Rationals;
+using Math.Fields;
+using Math.Rationals;
 
-namespace LinearAlgebra.Algebra.Fields
+namespace Math.Algebra.Fields
 {
 	public class RationalNumbers : Field<Fraction>
 	{

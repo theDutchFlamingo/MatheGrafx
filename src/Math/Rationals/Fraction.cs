@@ -1,8 +1,8 @@
 ﻿using System;
-using LinearAlgebra.Algebra.Rings.Members;
-using LinearAlgebra.Fields;
+using Math.Algebra.Rings.Members;
+using Math.Fields;
 
-namespace LinearAlgebra.Rationals
+namespace Math.Rationals
 {
     public class Fraction : Rational<Integer>, INumerical
     {
@@ -32,18 +32,18 @@ namespace LinearAlgebra.Rationals
         public INumerical Round()
         {
 	        // ReSharper disable once PossibleLossOfFraction
-	        return new Real(Math.Round((double) ((int) Num / (int) Den)));
+	        return new Real(System.Math.Round((double) ((int) Num / (int) Den)));
         }
 
         public INumerical Log10()
         {
 	        // ReSharper disable once PossibleLossOfFraction
-	        return new Real(Math.Log10((int) Num / (int) Den));
+	        return new Real(System.Math.Log10((int) Num / (int) Den));
         }
 
         public INumerical LongestValue()
         {
-            return new Real(Math.Abs(Num) > Math.Abs(Den) ? Num : Den);
+            return new Real(System.Math.Abs(Num) > System.Math.Abs(Den) ? Num : Den);
         }
 
         #endregion
@@ -118,7 +118,7 @@ namespace LinearAlgebra.Rationals
 
         public static implicit operator Fraction(double r)
         {
-            int whole = (int) (r > 0 ? Math.Floor(r) : Math.Ceiling(r));
+            int whole = (int) (r > 0 ? System.Math.Floor(r) : System.Math.Ceiling(r));
 
             int den = 0, num = 0;
             

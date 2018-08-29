@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B5B408CC-286B-4083-BA38-211A22EC129D}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>LinearAlgebra</RootNamespace>
-    <AssemblyName>LinearAlgebra</AssemblyName>
+    <RootNamespace>Math</RootNamespace>
+    <AssemblyName>Math</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -48,7 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algebra\Fields\OrderedField.cs" />
     <Compile Include="Algebra\Fields\RationalNumbers.cs" />
+    <Compile Include="Algebra\Ordering\ITotallyOrdered.cs" />
     <Compile Include="Algebra\Rings\WholeNumbers.cs" />
     <Compile Include="Exceptions\FactorTypeException.cs" />
     <Compile Include="Exceptions\GroupOperationType.cs" />

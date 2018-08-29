@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using LinearAlgebra.Algebra.Fields;
-using LinearAlgebra.Algebra.Rings.Members;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Groups;
-using LinearAlgebra.Main;
+using Math.Fields;
+using Math.Main;
+using Math.Algebra.Fields;
+using Math.Algebra.Rings.Members;
+using Math.Exceptions;
+using Math.Groups;
 
-namespace LinearAlgebra.Numeric
+namespace Math.Numeric
 {
 	/// <summary>
 	/// A polynomial with real coefficients
@@ -116,7 +116,7 @@ namespace LinearAlgebra.Numeric
 		/// <returns></returns>
 		public static IntegerPolynomial operator +(IntegerPolynomial left, IntegerPolynomial right)
 		{
-			Vector<Integer> newCoefficients = new Vector<Integer>(Math.Max(left.Degree, right.Degree) + 1);
+			Vector<Integer> newCoefficients = new Vector<Integer>(System.Math.Max(left.Degree, right.Degree) + 1);
 
 			for (int i = 0; i < newCoefficients.Dimension; i++)
 			{

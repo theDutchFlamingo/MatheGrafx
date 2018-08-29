@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LinearAlgebra.Fields
+namespace Math.Fields
 {
 	public class RealNumbers : Field<Real>
 	{

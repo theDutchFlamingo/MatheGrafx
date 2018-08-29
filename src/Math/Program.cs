@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Linq;
-using LinearAlgebra.Algebra.Fields;
-using LinearAlgebra.Algebra.Rings.Members;
-using LinearAlgebra.ComplexLinearAlgebra;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Fields.Members;
-using LinearAlgebra.Main;
-using LinearAlgebra.Numeric;
-using LinearAlgebra.Rationals;
+using Math.Algebra.Fields;
+using Math.Algebra.Rings.Members;
+using Math.ComplexLinearAlgebra;
+using Math.Fields;
+using Math.Fields.Members;
+using Math.Main;
+using Math.Numeric;
+using Math.Rationals;
 
-namespace LinearAlgebra
+namespace Math
 {
     public static class Program
     {
@@ -91,13 +91,13 @@ namespace LinearAlgebra
 	    {
 		    Complex result = Complex.I ^ (Complex.I + 3);
 
-		    Complex x = ComplexMath.Exponential(1, Math.PI / 3);
+		    Complex x = ComplexMath.Exponential(1, System.Math.PI / 3);
 
 			Console.WriteLine(x);
 
 			Console.WriteLine(result);
 
-			Console.WriteLine(1*(Math.Sin(Math.PI/3) * Complex.I + Math.Cos(Math.PI/3)));
+			Console.WriteLine(1*(System.Math.Sin(System.Math.PI/3) * Complex.I + System.Math.Cos(System.Math.PI/3)));
 
 			Console.Write("Input here: ");
 		    if (Complex.TryParse(Console.ReadLine(), out var c))

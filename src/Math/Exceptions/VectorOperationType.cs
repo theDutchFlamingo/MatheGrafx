@@ -1,4 +1,4 @@
-﻿namespace LinearAlgebra.Exceptions
+﻿namespace Math.Exceptions
 {
 	public enum VectorOperationType
 	{

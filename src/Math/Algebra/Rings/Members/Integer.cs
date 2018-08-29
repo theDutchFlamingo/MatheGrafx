@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using LinearAlgebra.Algebra.Fields.Members;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Fields.Members;
-using LinearAlgebra.Groups;
-using LinearAlgebra.Main;
-using LinearAlgebra.Rationals;
+using Math.Fields.Members;
+using Math.Main;
+using Math.Algebra.Fields.Members;
+using Math.Exceptions;
+using Math.Fields;
+using Math.Groups;
+using Math.Rationals;
 
-namespace LinearAlgebra.Algebra.Rings.Members
+namespace Math.Algebra.Rings.Members
 {
     public class Integer : RingMember, INumerical, IFactorable
     {
@@ -99,7 +99,7 @@ namespace LinearAlgebra.Algebra.Rings.Members
 
         public INumerical Log10()
         {
-            return new Real(Math.Log10(Value));
+            return new Real(System.Math.Log10(Value));
         }
 
         public INumerical LongestValue()

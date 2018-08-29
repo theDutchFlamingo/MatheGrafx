@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LinearAlgebra.Algebra.Fields.Members;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Fields.Members;
+using Math.Fields;
+using Math.Fields.Members;
+using Math.Algebra.Fields.Members;
 
-namespace LinearAlgebra.Exceptions
+namespace Math.Exceptions
 {
 	class IncorrectFieldException : Exception
 	{

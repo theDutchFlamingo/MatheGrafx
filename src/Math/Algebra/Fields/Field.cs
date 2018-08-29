@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LinearAlgebra.Algebra.Fields;
-using LinearAlgebra.Algebra.Fields.Members;
-using LinearAlgebra.Fields.Members;
-using LinearAlgebra.Rationals;
+using Math.Fields.Members;
+using Math.Algebra.Fields;
+using Math.Algebra.Fields.Members;
+using Math.Rationals;
 
-namespace LinearAlgebra.Fields
+namespace Math.Fields
 {
 	/// <summary>
 	/// Represents a set of mathematical objects that obey certain properties

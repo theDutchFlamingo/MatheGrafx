@@ -1,6 +1,6 @@
-﻿using LinearAlgebra.Groups;
+﻿using Math.Groups;
 
-namespace LinearAlgebra.Algebra.Rings.Members
+namespace Math.Algebra.Rings.Members
 {
 	public abstract class RingMember : GroupMember, INegatable
 	{

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Globalization;
-using LinearAlgebra.Algebra.Fields.Members;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields.Members;
-using LinearAlgebra.Groups;
-using LinearAlgebra.Main;
+using Math.Fields.Members;
+using Math.Main;
+using Math.Algebra.Fields.Members;
+using Math.Exceptions;
+using Math.Groups;
 
-namespace LinearAlgebra.Fields
+namespace Math.Fields
 {
 	/// <summary>
 	/// A class that represents real numbers
@@ -96,12 +96,12 @@ namespace LinearAlgebra.Fields
 
 		public INumerical Round()
 		{
-			return new Real(Math.Round(Value));
+			return new Real(System.Math.Round(Value));
 		}
 
 		public INumerical Log10()
 		{
-			return new Real(Math.Log10(Value));
+			return new Real(System.Math.Log10(Value));
 		}
 
 		public INumerical LongestValue()

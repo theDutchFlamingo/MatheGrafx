@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LinearAlgebra.Algebra.Fields;
-using LinearAlgebra.Algebra.Fields.Members;
-using LinearAlgebra.Algebra.Rings.Members;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Fields.Members;
-using LinearAlgebra.Numeric;
+using Math.Fields;
+using Math.Algebra.Fields;
+using Math.Algebra.Fields.Members;
+using Math.Algebra.Rings.Members;
+using Math.Exceptions;
+using Math.Fields.Members;
+using Math.Numeric;
 
-namespace LinearAlgebra.Rationals
+namespace Math.Rationals
 {
 	/// <summary>
 	/// A rational function is any polynomial divided by any polynomial other than the zero polynomial.

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Fields.Members;
-using LinearAlgebra.Main;
+using Math.Fields;
+using Math.Main;
+using Math.Fields.Members;
 
-namespace LinearAlgebra.ComplexLinearAlgebra
+namespace Math.ComplexLinearAlgebra
 {
 	/// <summary>
 	/// A class for manipulating Complex numbers (like the exponential version of a complex number)
@@ -16,7 +16,7 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 	{
 		public static Complex Exponential(double modulus, double argument)
 		{
-			return modulus * (Math.Sin(argument) * Complex.I + Math.Cos(argument));
+			return modulus * (System.Math.Sin(argument) * Complex.I + System.Math.Cos(argument));
 		}
 
 		/// <summary>
@@ -80,9 +80,9 @@ namespace LinearAlgebra.ComplexLinearAlgebra
 		/// <param name="c"></param>
 		/// <param name="b"></param>
 		/// <returns></returns>
-		public static Complex Log(Complex c, double b = Math.E)
+		public static Complex Log(Complex c, double b = System.Math.E)
 		{
-			return new Complex(Math.Log(c.Modulus, b), c.Argument * Math.Log(Math.E, b));
+			return new Complex(System.Math.Log(c.Modulus, b), c.Argument * System.Math.Log(System.Math.E, b));
 		}
 
 		/// <summary>

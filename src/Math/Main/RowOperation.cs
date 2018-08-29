@@ -1,11 +1,11 @@
 ﻿using System;
-using LinearAlgebra.Algebra.Fields;
-using LinearAlgebra.Algebra.Fields.Members;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Fields.Members;
+using Math.Fields.Members;
+using Math.Algebra.Fields;
+using Math.Algebra.Fields.Members;
+using Math.Exceptions;
+using Math.Fields;
 
-namespace LinearAlgebra.Main
+namespace Math.Main
 {
 	public class RowOperation<T> where T : FieldMember, new()
 	{

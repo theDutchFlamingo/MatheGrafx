@@ -1,12 +1,12 @@
 ﻿using System;
-using LinearAlgebra.Algebra.Fields.Members;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Fields.Members;
-using LinearAlgebra.Groups;
-using LinearAlgebra.Main;
+using Math.Fields.Members;
+using Math.Main;
+using Math.Algebra.Fields.Members;
+using Math.Exceptions;
+using Math.Fields;
+using Math.Groups;
 
-namespace LinearAlgebra.Rationals
+namespace Math.Rationals
 {
     public class FractionCopy : FieldMember, INumerical
     {
@@ -94,17 +94,17 @@ namespace LinearAlgebra.Rationals
 
         public INumerical Round()
         {
-            return new Real(Math.Round((double)Num / Den));
+            return new Real(System.Math.Round((double)Num / Den));
         }
 
         public INumerical Log10()
         {
-            return new Real(Math.Log10((double)Num / Den));
+            return new Real(System.Math.Log10((double)Num / Den));
         }
 
         public INumerical LongestValue()
         {
-            return new Real(Math.Abs(Num) > Math.Abs(Den) ? Num : Den);
+            return new Real(System.Math.Abs(Num) > System.Math.Abs(Den) ? Num : Den);
         }
 
         public override bool Equals(FieldMember other)
@@ -187,7 +187,7 @@ namespace LinearAlgebra.Rationals
 
         public static implicit operator FractionCopy(double r)
         {
-            int whole = (int) (r > 0 ? Math.Floor(r) : Math.Ceiling(r));
+            int whole = (int) (r > 0 ? System.Math.Floor(r) : System.Math.Ceiling(r));
 
             int den = 0, num = 0;
             

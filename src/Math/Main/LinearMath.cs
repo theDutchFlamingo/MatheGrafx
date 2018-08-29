@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LinearAlgebra.Algebra.Fields.Members;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Fields.Members;
-using LinearAlgebra.VectorSpaces;
+using Math.Fields.Members;
+using Math.Algebra.Fields.Members;
+using Math.Exceptions;
+using Math.Fields;
+using Math.VectorSpaces;
 
-namespace LinearAlgebra.Main
+namespace Math.Main
 {
 	/// <summary>
 	/// The class which allows you to perform more complicated procedures on Matrices,
@@ -80,17 +80,17 @@ namespace LinearAlgebra.Main
 		
 		public static bool CloseTo(this int d1, int d2, double tolerance = Tolerance)
 		{
-			return Math.Abs(d1 - d2) <= tolerance;
+			return System.Math.Abs(d1 - d2) <= tolerance;
 		}
 
 		public static bool CloseTo(this double d1, double d2, double tolerance = Tolerance)
 		{
-			return Math.Abs(d1 - d2) <= tolerance;
+			return System.Math.Abs(d1 - d2) <= tolerance;
 		}
 
 		public static bool CloseTo(this Real d1, Real d2, double tolerance = Tolerance)
 		{
-			return Math.Abs(d1 - d2) <= tolerance;
+			return System.Math.Abs(d1 - d2) <= tolerance;
 		}
 
 		public static RealMatrix UnitMatrix(int size)

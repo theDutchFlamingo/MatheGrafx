@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LinearAlgebra.Exceptions
+namespace Math.Exceptions
 {
 	public class FactorTypeException : Exception
 	{

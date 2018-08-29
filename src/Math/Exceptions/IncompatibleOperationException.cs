@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LinearAlgebra.Exceptions
+namespace Math.Exceptions
 {
 	/**
 	 * When two matrices are multiplied or added, or a determinant or an inverse is taken,

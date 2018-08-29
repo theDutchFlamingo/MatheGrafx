@@ -1,4 +1,4 @@
-﻿namespace LinearAlgebra.VectorSpaces
+﻿namespace Math.VectorSpaces
 {
 	public class VectorSpace
 	{

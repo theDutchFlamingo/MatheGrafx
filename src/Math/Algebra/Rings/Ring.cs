@@ -1,9 +1,11 @@
-﻿using LinearAlgebra.Algebra.Rings.Members;
+﻿using Math.Algebra.Rings.Members;
 
-namespace LinearAlgebra.Algebra.Rings
+namespace Math.Algebra.Rings
 {
-	public class Ring<T> where T : RingMember
+	public abstract class Ring<T> where T : RingMember
 	{
-		public Ring<Integer> Integers = new 
+		public static Ring<Integer> Integers = new WholeNumbers();
+
+		public abstract T Unit();
 	}
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LinearAlgebra.Fields
+namespace Math.Fields
 {
 	/// <summary>
 	/// For classes that support a conversion to string with specified parameters, like double

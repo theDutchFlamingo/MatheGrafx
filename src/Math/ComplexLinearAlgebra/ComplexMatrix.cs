@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Fields.Members;
+using Math.Exceptions;
+using Math.Fields;
+using Math.Fields.Members;
 
-namespace LinearAlgebra.ComplexLinearAlgebra
+namespace Math.ComplexLinearAlgebra
 {
 	/// <summary>
 	/// Specific implementation of MatrixBase&lt;Complex&gt; because ComplexMatrices are still pretty common.

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LinearAlgebra.Algebra.Fields.Members;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Fields.Members;
+using Math.Fields.Members;
+using Math.Algebra.Fields.Members;
+using Math.Fields;
 
-namespace LinearAlgebra.Main
+namespace Math.Main
 {
 	public static class MatrixConversion
 	{

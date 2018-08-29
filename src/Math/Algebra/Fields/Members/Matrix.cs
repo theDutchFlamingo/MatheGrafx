@@ -2,14 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using LinearAlgebra.Algebra.Fields;
-using LinearAlgebra.Algebra.Fields.Members;
-using LinearAlgebra.ComplexLinearAlgebra;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields.Members;
-using LinearAlgebra.Groups;
+using Math.Algebra.Fields;
+using Math.Algebra.Fields.Members;
+using Math.ComplexLinearAlgebra;
+using Math.Exceptions;
+using Math.Fields.Members;
+using Math.Groups;
 
-namespace LinearAlgebra.Fields
+namespace Math.Fields
 {
 	/// <summary>
 	/// A class for matrices of any type. The generic parameter must be a subclass of
@@ -700,7 +700,7 @@ namespace LinearAlgebra.Fields
 
 			string result = "";
 
-			int middle = (int)Math.Floor((double)Height / 2);
+			int middle = (int)System.Math.Floor((double)Height / 2);
 			int i = 0;
 			int padding = this[VectorType.Row].Select(v => v.Padding(precision)).Max();
 

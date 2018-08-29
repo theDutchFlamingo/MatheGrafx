@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Security.Cryptography.X509Certificates;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Main;
-using LinearAlgebra.Numeric;
+using Math.Main;
+using Math.Numeric;
+using Math.Exceptions;
+using Math.Fields;
 
-namespace LinearAlgebra
+namespace Math
 {
 	/// <inheritdoc />
 	/// <summary>

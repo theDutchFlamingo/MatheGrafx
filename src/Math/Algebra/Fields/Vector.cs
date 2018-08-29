@@ -2,13 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using LinearAlgebra.Algebra.Rings.Members;
-using LinearAlgebra.Exceptions;
-using LinearAlgebra.Fields;
-using LinearAlgebra.Groups;
-using LinearAlgebra.Main;
+using Math.Main;
+using Math.Algebra.Rings.Members;
+using Math.Exceptions;
+using Math.Fields;
+using Math.Groups;
 
-namespace LinearAlgebra.Algebra.Fields
+namespace Math.Algebra.Fields
 {
 	public class Vector<T> : IEnumerable<T> where T : RingMember, IInvertible, new()
 	{
@@ -131,7 +131,7 @@ namespace LinearAlgebra.Algebra.Fields
 		/// <returns></returns>
 		public double Norm()
 		{
-			return Math.Sqrt((double) (this * this));
+			return System.Math.Sqrt((double) (this * this));
 		}
 
 		#endregion
