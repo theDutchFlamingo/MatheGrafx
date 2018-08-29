@@ -2,11 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Math.Algebra.Fields.Members;
 using Math.ComplexLinearAlgebra;
-using Math.Fields;
 using Math.Main;
 using Math.Exceptions;
-using Math.Fields.Members;
 
 namespace Math
 {

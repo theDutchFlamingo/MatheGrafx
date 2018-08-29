@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Math.Fields;
 using Math.Main;
 using Math.Algebra.Fields;
+using Math.Algebra.Groups;
+using Math.Algebra.Groups.Members;
 using Math.Algebra.Rings.Members;
 using Math.Exceptions;
-using Math.Groups;
 
 namespace Math.Numeric
 {

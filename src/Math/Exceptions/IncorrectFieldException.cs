@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Math.Fields;
-using Math.Fields.Members;
 using Math.Algebra.Fields.Members;
 
 namespace Math.Exceptions

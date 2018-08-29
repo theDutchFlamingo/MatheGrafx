@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Math.Fields;
 using Math.Algebra.Fields;
 using Math.Algebra.Fields.Members;
 using Math.Algebra.Rings.Members;
 using Math.Exceptions;
-using Math.Fields.Members;
 using Math.Numeric;
 
 namespace Math.Rationals

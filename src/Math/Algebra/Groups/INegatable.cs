@@ -1,4 +1,4 @@
-﻿namespace Math.Groups
+﻿namespace Math.Algebra.Groups
 {
 	public interface INegatable
 	{

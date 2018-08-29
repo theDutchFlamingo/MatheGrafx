@@ -12,6 +12,6 @@ namespace Math.Algebra.Ordering
 
 		bool GreaterThan<T>(T other);
 
-		bool Equal<T>(T other);
+		bool Equals<T>(T other);
 	}
 }

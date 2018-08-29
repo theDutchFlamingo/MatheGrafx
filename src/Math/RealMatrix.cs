@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Security.Cryptography.X509Certificates;
+using Math.Algebra.Fields.Members;
 using Math.Main;
 using Math.Numeric;
 using Math.Exceptions;
-using Math.Fields;
 
 namespace Math
 {

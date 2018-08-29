@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Math.Fields.Members;
 using Math.Algebra.Fields.Members;
-using Math.Fields;
 
 namespace Math.Main
 {

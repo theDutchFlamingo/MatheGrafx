@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Math.Groups
+namespace Math.Algebra.Groups.Members
 {
     public abstract class GroupMember : IEquatable<GroupMember>
     {

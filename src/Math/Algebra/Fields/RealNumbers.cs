@@ -1,8 +1,9 @@
 ﻿using System;
+using Math.Algebra.Fields.Members;
 
-namespace Math.Fields
+namespace Math.Algebra.Fields
 {
-	public class RealNumbers : Field<Real>
+	public class RealNumbers : OrderedField<Real>
 	{
 		public override Real Create(params object[] value)
 		{
@@ -21,6 +22,16 @@ namespace Math.Fields
 		public override Real Unit()
 		{
 			return Create(1);
+		}
+
+		public override bool Equal(Real left, Real right)
+		{
+			return left.Equals<Real>(right);
+		}
+
+		public override bool LessThan(Real left, Real right)
+		{
+			return left.LessThan(right);
 		}
 	}
 }

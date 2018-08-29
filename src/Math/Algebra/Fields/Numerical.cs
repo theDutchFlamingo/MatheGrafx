@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Math.Fields
+﻿namespace Math.Algebra.Fields
 {
 	/// <summary>
 	/// For classes that support a conversion to string with specified parameters, like double

@@ -2,14 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Math.Algebra.Fields;
-using Math.Algebra.Fields.Members;
+using Math.Algebra.Groups;
+using Math.Algebra.Groups.Members;
 using Math.ComplexLinearAlgebra;
 using Math.Exceptions;
-using Math.Fields.Members;
-using Math.Groups;
 
-namespace Math.Fields
+namespace Math.Algebra.Fields.Members
 {
 	/// <summary>
 	/// A class for matrices of any type. The generic parameter must be a subclass of
@@ -128,7 +126,7 @@ namespace Math.Fields
 		/// </summary>
 		/// <param name="vectors"></param>
 		/// <param name="type">Determines whether the vectors are columns or rows</param>
-		public Matrix(Vector<T>[] vectors, VectorType type) : base(vectors)
+		public Matrix(Vector<T>[] vectors, VectorType type)
 		{
 			Indices = new T[vectors.Length, vectors[0].Dimension];
 
@@ -141,7 +139,7 @@ namespace Math.Fields
 		/// Creates a diagonal matrix with the given vector on the diagonal
 		/// </summary>
 		/// <param name="diagonal"></param>
-		public Matrix(Vector<T> diagonal) : base(diagonal)
+		public Matrix(Vector<T> diagonal)
 		{
 			Indices = new T[diagonal.Dimension, diagonal.Dimension];
 
@@ -741,8 +739,7 @@ namespace Math.Fields
 
 		public override int GetHashCode()
 		{
-			var hashCode = Indices != null ? Indices.GetHashCode() : 0;
-			return hashCode;
+			return Indices?.GetHashCode() ?? 0;
 		}
 
 		#endregion

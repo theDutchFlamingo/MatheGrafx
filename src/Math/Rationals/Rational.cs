@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Math.Fields;
-using Math.Fields.Members;
+using Math.Algebra.Fields;
 using Math.Algebra.Fields.Members;
+using Math.Algebra.Groups;
+using Math.Algebra.Groups.Members;
 using Math.Exceptions;
-using Math.Groups;
 
 namespace Math.Rationals
 {

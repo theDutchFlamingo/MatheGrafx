@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Math.Main;
 using Math.Algebra.Fields;
-using Math.Fields;
+using Math.Algebra.Fields.Members;
 
 namespace Math.Polynomials
 {

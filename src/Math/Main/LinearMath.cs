@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Math.Fields.Members;
 using Math.Algebra.Fields.Members;
 using Math.Exceptions;
-using Math.Fields;
 using Math.VectorSpaces;
 
 namespace Math.Main

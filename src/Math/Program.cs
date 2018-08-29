@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Math.Algebra.Fields;
+using Math.Algebra.Fields.Members;
 using Math.Algebra.Rings.Members;
 using Math.ComplexLinearAlgebra;
-using Math.Fields;
-using Math.Fields.Members;
 using Math.Main;
 using Math.Numeric;
 using Math.Rationals;

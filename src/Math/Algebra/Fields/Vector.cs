@@ -5,8 +5,6 @@ using System.Linq;
 using Math.Main;
 using Math.Algebra.Rings.Members;
 using Math.Exceptions;
-using Math.Fields;
-using Math.Groups;
 
 namespace Math.Algebra.Fields
 {

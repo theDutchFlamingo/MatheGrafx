@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Math.Fields.Members;
+using Math.Algebra.Fields;
 using Math.Main;
 using Math.Algebra.Fields.Members;
+using Math.Algebra.Groups.Members;
 using Math.Exceptions;
-using Math.Fields;
-using Math.Groups;
 using Math.Rationals;
 
 namespace Math.Algebra.Rings.Members

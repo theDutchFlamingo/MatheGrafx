@@ -1,11 +1,11 @@
 ﻿using System;
-using Math.Main;
-using Math.Algebra.Fields.Members;
+using Math.Algebra.Groups;
+using Math.Algebra.Groups.Members;
 using Math.ComplexLinearAlgebra;
 using Math.Exceptions;
-using Math.Groups;
+using Math.Main;
 
-namespace Math.Fields.Members
+namespace Math.Algebra.Fields.Members
 {
 	public class Complex : FieldMember, INumerical
 	{

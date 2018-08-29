@@ -1,24 +1,23 @@
-﻿using System;
-using System.Globalization;
-using Math.Fields.Members;
-using Math.Main;
-using Math.Algebra.Fields.Members;
+﻿using System.Globalization;
+using Math.Algebra.Groups;
+using Math.Algebra.Groups.Members;
+using Math.Algebra.Ordering;
 using Math.Exceptions;
-using Math.Groups;
+using Math.Main;
 
-namespace Math.Fields
+namespace Math.Algebra.Fields.Members
 {
 	/// <summary>
 	/// A class that represents real numbers
 	/// </summary>
-	public class Real : FieldMember, INumerical
+	public class Real : FieldMember, INumerical, ITotallyOrdered
 	{
 		/**
 		 * Contains the double value of this real number
 		 */
 		#region Properties
 
-		public double Value { get; set; }
+		public double Value { get; }
 		
 		#endregion
 
@@ -81,6 +80,26 @@ namespace Math.Fields
 		public override bool IsNull() => Value.CloseTo(0);
 
 		public override bool IsUnit() => Value.CloseTo(1);
+
+		public bool GreaterThan<T>(T other)
+		{
+			if (other is Real r)
+			{
+				return Value > r.Value;
+			}
+
+			throw new IncorrectFieldException(GetType(), "compared", typeof(T));
+		}
+
+		public bool LessThan<T>(T other)
+		{
+			if (other is Real r)
+			{
+				return Value < r.Value;
+			}
+
+			throw new IncorrectFieldException(GetType(), "compared", typeof(T));
+		}
 
 		public override double ToDouble()
 		{
@@ -179,8 +198,59 @@ namespace Math.Fields
 
 		#endregion
 
+		#region Comparisons
+
+		public static bool operator >(Real left, Real right)
+		{
+			return left.LessThan(right);
+		}
+
+		public static bool operator <(Real left, Real right)
+		{
+			return left.GreaterThan(right);
+		}
+
+		public static bool operator ==(Real left, Real right)
+		{
+			return left?.Equals<Real>(right) ?? false;
+		}
+
+		public static bool operator !=(Real left, Real right)
+		{
+			return !(left == right);
+		}
+
+		public static bool operator <=(Real left, Real right)
+		{
+			return left < right || left == right;
+		}
+
+		public static bool operator >=(Real left, Real right)
+		{
+			return left > right || left == right;
+		}
+
+		public override bool Equals(object other)
+		{
+			if (other is double d)
+			{
+				return d.CloseTo(Value);
+			}
+
+			if (other is Real r)
+			{
+				return r.Equals<Real>(this);
+			}
+
+			return false;
+		}
+
+		public override int GetHashCode() => Value.GetHashCode();
+
+		#endregion
+
 		#region Conversions
-		
+
 		public static implicit operator double(Real r)
 		{
 			return r.Value;

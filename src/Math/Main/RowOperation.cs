@@ -1,9 +1,7 @@
 ﻿using System;
-using Math.Fields.Members;
 using Math.Algebra.Fields;
 using Math.Algebra.Fields.Members;
 using Math.Exceptions;
-using Math.Fields;
 
 namespace Math.Main
 {

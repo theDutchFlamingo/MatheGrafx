@@ -7,8 +7,6 @@ using Math.Main;
 using Math.Algebra.Fields;
 using Math.Algebra.Fields.Members;
 using Math.Exceptions;
-using Math.Fields;
-using Math.Fields.Members;
 using Math.Polynomials;
 using Math.Rationals;
 

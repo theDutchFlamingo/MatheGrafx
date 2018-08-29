@@ -1,6 +1,6 @@
 ﻿using System;
+using Math.Algebra.Groups.Members;
 using Math.Algebra.Rings.Members;
-using Math.Groups;
 
 namespace Math.Algebra.Fields.Members
 {

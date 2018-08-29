@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Math.Fields;
+using Math.Algebra.Fields.Members;
 using Math.Main;
-using Math.Fields.Members;
 
 namespace Math.ComplexLinearAlgebra
 {

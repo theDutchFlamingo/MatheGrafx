@@ -50,6 +50,10 @@
   <ItemGroup>
     <Compile Include="Algebra\Fields\OrderedField.cs" />
     <Compile Include="Algebra\Fields\RationalNumbers.cs" />
+    <Compile Include="Algebra\Groups\Group.cs" />
+    <Compile Include="Algebra\Groups\Members\Natural.cs" />
+    <Compile Include="Algebra\Monoids\Members\MonoidMember.cs" />
+    <Compile Include="Algebra\Monoids\Monoid.cs" />
     <Compile Include="Algebra\Ordering\ITotallyOrdered.cs" />
     <Compile Include="Algebra\Rings\WholeNumbers.cs" />
     <Compile Include="Exceptions\FactorTypeException.cs" />
@@ -105,8 +109,6 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Algebra\Monoids\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
