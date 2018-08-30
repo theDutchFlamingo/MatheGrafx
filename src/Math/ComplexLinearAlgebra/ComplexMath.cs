@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Math.Algebra.Fields.Members;
-using Math.Main;
+using Math.LinearAlgebra;
 
 namespace Math.ComplexLinearAlgebra
 {

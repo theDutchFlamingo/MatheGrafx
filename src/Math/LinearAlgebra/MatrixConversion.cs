@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Math.Algebra.Fields.Members;
 
-namespace Math.Main
+namespace Math.LinearAlgebra
 {
 	public static class MatrixConversion
 	{

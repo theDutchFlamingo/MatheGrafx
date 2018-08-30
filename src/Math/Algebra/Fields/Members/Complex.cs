@@ -2,9 +2,10 @@
 using Math.Algebra.Groups;
 using Math.Algebra.Groups.Members;
 using Math.Algebra.Monoids.Members;
+using Math.Algebra.Rings.Members;
 using Math.ComplexLinearAlgebra;
 using Math.Exceptions;
-using Math.Main;
+using Math.LinearAlgebra;
 
 namespace Math.Algebra.Fields.Members
 {
@@ -379,7 +380,7 @@ namespace Math.Algebra.Fields.Members
 		public override T Null<T>()
 		{
 			if (typeof(T) == GetType())
-				return (T) (GroupMember) new Complex(0, 0);
+				return (T) (MonoidMember) new Complex(0, 0);
 			throw new IncorrectSetException(this, "null", typeof(T));
 		}
 
@@ -394,6 +395,7 @@ namespace Math.Algebra.Fields.Members
 
 		public override bool IsUnit() => Equals(Unit<Complex>());
 
+		[Obsolete]
 		public override double ToDouble()
 		{
 			return Real;
@@ -406,15 +408,10 @@ namespace Math.Algebra.Fields.Members
 			return false;
 		}
 
-		public override bool Equals(MonoidMember other)
-		{
-			return Equals(other);
-		}
-
 		public override T Inner<T>(T fieldMember)
 		{
 			if (fieldMember is Complex c)
-				return (T) (FieldMember) Multiply(c.Conjugate());
+				return (T) (RingMember) Multiply(c.Conjugate());
 			throw new IncorrectSetException(GetType(), "inner", typeof(T));
 		}
 

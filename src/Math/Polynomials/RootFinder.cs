@@ -2,7 +2,7 @@
 using System.Linq;
 using Math.Algebra.Fields.Members;
 using Math.ComplexLinearAlgebra;
-using Math.Main;
+using Math.LinearAlgebra;
 
 namespace Math.Polynomials
 {

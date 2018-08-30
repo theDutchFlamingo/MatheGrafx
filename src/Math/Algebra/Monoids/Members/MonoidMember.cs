@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace Math.Algebra.Monoids.Members
 {
-	public abstract class MonoidMember : IEquatable<MonoidMember>
+	public abstract class MonoidMember
 	{
 		internal abstract T Add<T>(T other) where T : MonoidMember;
 
-		public abstract bool Equals(MonoidMember other);
+		public abstract T Null<T>() where T : MonoidMember;
+
+		public abstract bool Equals<T>(T other);
 	}
 }

@@ -380,7 +380,12 @@ namespace Math.Algebra.Fields.Members
 		{
 			if (!IsSquare()) throw new IncompatibleOperationException(MatrixOperationType.Diagonal);
 			
-			Vector<T> diag = new Vector<T>();
+			Vector<T> diag = new Vector<T>(Width);
+
+			for (int i = 0; i < Width; i++)
+			{
+				diag[i] = this[i, i];
+			}
 
 			return diag;
 		}
@@ -1091,7 +1096,7 @@ namespace Math.Algebra.Fields.Members
 		public override T1 Null<T1>()
 		{
 			if (typeof(T1) == GetType())
-				return (T1)(GroupMember)new Matrix<T>(Height, Width);
+				return (T1)(MonoidMember)new Matrix<T>(Height, Width);
 			throw new IncorrectSetException(this, "null", typeof(T1));
 		}
 

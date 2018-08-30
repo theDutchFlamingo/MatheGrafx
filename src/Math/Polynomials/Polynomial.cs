@@ -8,17 +8,14 @@ using Math.Algebra.Groups.Members;
 using Math.Algebra.Monoids.Members;
 using Math.Algebra.Rings.Members;
 using Math.Exceptions;
-using Math.LinearAlgebra;
+using Math.Parsing;
 using Math.Rationals;
 
 namespace Math.Polynomials
 {
-	/// <summary>
-	/// A polynomial with real coefficients
-	/// </summary>
-	public class IntegerPolynomial : RingMember, IFactorable
-	{
-		/**
+    public class Polynomial<T> : RingMember, IFactorable where T : RingMember, IParsable<T>, new()
+    {
+        /**
 		 * Contains the regexes... regeces (?)... anyway, they can check for variable name correctness,
 		 * and two types of monomials.
 		 */
@@ -50,17 +47,17 @@ namespace Math.Polynomials
 
 		#endregion
 		
-		private Vector<Integer> _coefficients;
+		private Vector<T> _coefficients;
 
 		public int Degree { get; private set; }
 
 		/// <summary>
 		/// The getter and setter of the coefficitents vector, setter automatically sets the degree
 		/// </summary>
-		public Vector<Integer> Coefficients
+		public Vector<T> Coefficients
 		{
 			get => _coefficients;
-			set
+			private set
 			{
 				_coefficients = value;
 				// Degree of a polynomial is always the amount of coefficients minus 1,
@@ -75,23 +72,37 @@ namespace Math.Polynomials
 		/// Create a polynomial with the given vector as coefficients
 		/// </summary>
 		/// <param name="coefficients"></param>
-		public IntegerPolynomial(Vector<Integer> coefficients)
+		public Polynomial(Vector<T> coefficients)
 		{
 			Coefficients = coefficients;
+		}
+
+		/// <summary>
+		/// Construct a constant polynomial with single coefficient r
+		/// </summary>
+		/// <param name="r"></param>
+		public Polynomial(T r)
+		{
+			Coefficients = new Vector<T>(new []{r});
+		}
+
+		public Polynomial(T[] coefficients)
+		{
+			Coefficients = new Vector<T>(coefficients);
 		}
 
 		/// <summary>
 		/// Create a polynomial with another polynomial
 		/// </summary>
 		/// <param name="p"></param>
-		public IntegerPolynomial(IntegerPolynomial p)
+		public Polynomial(Polynomial<T> p)
 		{
-			Coefficients = new Vector<Integer>(p.Coefficients);
+			Coefficients = new Vector<T>(p.Coefficients);
 		}
 
-		public IntegerPolynomial()
+		public Polynomial()
 		{
-			Coefficients = new Vector<Integer>(new Integer[] {0});
+			Coefficients = new Vector<T>(new [] { new T() });
 		}
 
 		#endregion
@@ -105,28 +116,129 @@ namespace Math.Polynomials
 
 		#endregion
 
+		#region Overrides
+
+		internal override T1 Add<T1>(T1 other)
+		{
+			if (other is Polynomial<T> r)
+			{
+				return (T1)(MonoidMember)new Polynomial<T>(Coefficients + r.Coefficients);
+			}
+			throw new IncorrectSetException(GetType(), "added", other.GetType());
+		}
+
+		public override T1 Negative<T1>()
+		{
+			return (T1)(INegatable)new Polynomial<T>(-Coefficients);
+		}
+
+		internal override T1 Multiply<T1>(T1 other)
+		{
+			if (other is Polynomial<T> c)
+				return (T1)(RingMember) (this * c);
+			throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
+		}
+
+		public override T1 Null<T1>()
+		{
+			if (typeof(T1) == GetType())
+				return (T1)(MonoidMember) new Polynomial<T>(new T());
+			throw new IncorrectSetException(this, "null", typeof(T1));
+		}
+
+		public override T1 Unit<T1>()
+		{
+			if (typeof(T1) == GetType())
+				return (T1)(GroupMember)new Polynomial<T>(new T().Unit<T>());
+			throw new IncorrectSetException(this, "unit", typeof(T1));
+		}
+
+		public override bool IsNull() => Coefficients.Equals(new Vector<T>(1));
+
+		public override bool IsUnit() => Coefficients.Equals(new Vector<T>(1, 1));
+
+		public override bool Equals<T1>(T1 other)
+		{
+			if (other is Polynomial<T> p)
+			{
+				return p.Coefficients == Coefficients;
+			}
+
+			return false;
+		}
+
+		[Obsolete]
+		public override double ToDouble()
+		{
+			throw new NotImplementedException();
+		}
+
+	    public bool IsPrime()
+	    {
+		    throw new NotImplementedException();
+	    }
+
+	    public T1[] Factors<T1>() where T1 : IFactorable
+	    {
+		    if (!typeof(T1).IsSubclassOfGeneric(typeof(Polynomial<>)))
+		    {
+			    throw new FactorTypeException();
+		    }
+		    
+		    List<T1> result = new List<T1>();
+
+			foreach (var factor in Factors<Polynomial<T>>(false))
+			{
+				result.Add((T1) (IFactorable) factor);
+			}
+			
+			return result.ToArray();
+	    }
+
+	    public T1[] Factors<T1>(bool allowComplex) where T1 : Polynomial<T>
+	    {
+		    if (!allowComplex)
+		    {
+			    
+		    }
+		    
+		    throw new NotImplementedException();
+	    }
+
+	    public bool TryFactor<T1>(out T1[] factors) where T1 : IFactorable
+	    {
+		    throw new NotImplementedException();
+	    }
+
+	    public T1 Without<T1>(T1 factor) where T1 : IFactorable
+	    {
+		    throw new NotImplementedException();
+	    }
+
+		#endregion
+		
 		/**
 		 * Operators to add polynomials or multiply them
 		 */
 		#region Operators
-
+		
 		/// <summary>
 		/// Add the two polynomials together
 		/// </summary>
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static IntegerPolynomial operator +(IntegerPolynomial left, IntegerPolynomial right)
+		public static Polynomial<T> operator +(Polynomial<T> left, Polynomial<T> right)
 		{
-			Vector<Integer> newCoefficients = new Vector<Integer>(System.Math.Max(left.Degree, right.Degree) + 1);
+			Vector<T> newCoefficients = new Vector<T>(System.Math.Max(left.Degree, right.Degree) + 1);
 
 			for (int i = 0; i < newCoefficients.Dimension; i++)
 			{
-				newCoefficients[i] = (left.Degree >= i ? (int) left.Coefficients[i] : 0) +
-					(right.Degree >= i ? (int) right.Coefficients[i] : 0);
+				newCoefficients[i] = (left.Degree >= i ? left.Coefficients[i] : new T()).Add(
+					right.Degree >= i ? right.Coefficients[i] : new T());
 			}
 			
-			return new IntegerPolynomial(newCoefficients);
+			return new Polynomial<T>(newCoefficients);
 		}
 		
 		/// <summary>
@@ -134,16 +246,16 @@ namespace Math.Polynomials
 		/// </summary>
 		/// <param name="p"></param>
 		/// <returns></returns>
-		public static IntegerPolynomial operator -(IntegerPolynomial p)
+		public static Polynomial<T> operator -(Polynomial<T> p)
 		{
-			Vector<Integer> newCoefficients = new Vector<Integer>(p.Degree + 1);
+			Vector<T> newCoefficients = new Vector<T>(p.Degree + 1);
 
 			for (int i = 0; i < newCoefficients.Dimension; i++)
 			{
-				newCoefficients[i] = -p.Coefficients[i];
+				newCoefficients[i] = p.Coefficients[i].Negative<T>();
 			}
 			
-			return new IntegerPolynomial(newCoefficients);
+			return new Polynomial<T>(newCoefficients);
 		}
 		
 		/// <summary>
@@ -152,7 +264,7 @@ namespace Math.Polynomials
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static IntegerPolynomial operator -(IntegerPolynomial left, IntegerPolynomial right)
+		public static Polynomial<T> operator -(Polynomial<T> left, Polynomial<T> right)
 		{
 			return left + -right;
 		}
@@ -163,19 +275,20 @@ namespace Math.Polynomials
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static IntegerPolynomial operator *(IntegerPolynomial left, IntegerPolynomial right)
+		public static Polynomial<T> operator *(Polynomial<T> left, Polynomial<T> right)
 		{
-			Vector<Integer> newCoefficients = new Vector<Integer>(left.Degree + right.Degree + 1);
+			Vector<T> newCoefficients = new Vector<T>(left.Degree + right.Degree + 1);
 
 			for (int l = 0; l < left.Degree + 1; l++)
 			{
 				for (int r = 0; r < right.Degree + 1; r++)
 				{
-					newCoefficients[l + r] += left.Coefficients[l] * right.Coefficients[r];
+					newCoefficients[l + r] = newCoefficients[l + r].
+						Add(left.Coefficients[l].Multiply(right.Coefficients[r]));
 				}
 			}
 			
-			return new IntegerPolynomial(newCoefficients);
+			return new Polynomial<T>(newCoefficients);
 		}
 		
 		/// <summary>
@@ -184,9 +297,9 @@ namespace Math.Polynomials
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static IntegerPolynomial operator *(IntegerPolynomial left, int right)
+		public static Polynomial<T> operator *(Polynomial<T> left, T right)
 		{
-			return new IntegerPolynomial(left.Coefficients * right);
+			return new Polynomial<T>(left.Coefficients * right);
 		}
 		
 		/// <summary>
@@ -195,7 +308,7 @@ namespace Math.Polynomials
 		/// <param name="right"></param>
 		/// <param name="left"></param>
 		/// <returns></returns>
-		public static IntegerPolynomial operator *(int left, IntegerPolynomial right)
+		public static Polynomial<T> operator *(T left, Polynomial<T> right)
 		{
 			return right * left;
 		}
@@ -207,12 +320,12 @@ namespace Math.Polynomials
 		/// <param name="right"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"></exception>
-		public static IntegerPolynomial operator ^(IntegerPolynomial left, int right)
+		public static Polynomial<T> operator ^(Polynomial<T> left, int right)
 		{
 			if (right < 0) throw new ArgumentException("Exponent of a polynomial must be at least 0");
-			if (right == 0) return new IntegerPolynomial(new Vector<Integer>(new Integer[]{1}));
+			if (right == 0) return new Polynomial<T>(new []{ new T().Unit<T>() });
 			
-			IntegerPolynomial result = new IntegerPolynomial(left);
+			Polynomial<T> result = new Polynomial<T>(left);
 
 			for (int i = 1; i < right; i++)
 			{
@@ -229,12 +342,12 @@ namespace Math.Polynomials
 		 */
 		#region Conversion
 
-		public static explicit operator IntegerPolynomial(string polynomial)
+		public static explicit operator Polynomial<T>(string polynomial)
 		{
 			return Parse(polynomial);
 		}
 
-		public static IntegerPolynomial Parse(string polynomial, string variable = "x")
+		public static Polynomial<T> Parse(string polynomial, string variable = "x")
 		{
 			// First check if variable name is allowed
 			if (!Regex.IsMatch(variable, VariableNamesRegex))
@@ -245,7 +358,7 @@ namespace Math.Polynomials
 				Select(str => str.Replace(" ", "")).ToList();
 
 			// Create a constant zero polynomial
-			IntegerPolynomial result = new IntegerPolynomial(new Vector<Integer>(new Integer[]{0}));
+			Polynomial<T> result = new Polynomial<T>(new []{ new T() });
 			
 			foreach (var str in splitStrings)
 			{
@@ -270,25 +383,28 @@ namespace Math.Polynomials
 			return result;
 		}
 
-		public static IntegerPolynomial ParseMonomial(string monomial, string variable)
+		public static Polynomial<T> ParseMonomial(string monomial, string variable)
 		{
 			try
 			{
-				return new IntegerPolynomial(new Vector<Integer>(new[] {(Integer) Int32.Parse(monomial)}));
+				return new Polynomial<T>(new Vector<T>(new[] {new T().Parse(monomial)}));
 			}
 			catch (FormatException)
 			{
-				
+				// This means that the monomial isn't constant
 			}
 			
 			// First try matching it with the linear (x^1) term
 			Match linear = Regex.Match(monomial, LinearRegex(variable));
 			
-			if (linear.Success) return new IntegerPolynomial(new Vector<Integer>(new Integer[]{Int32.Parse(linear.Groups[1].ToString()), 0}));
+			if (linear.Success) return new Polynomial<T>(new []
+			{
+				new T().Parse(linear.Groups[1].ToString()), new T()
+			});
 			
 			Match mono = Regex.Match(monomial, MonomialRegex(variable));
 			
-			if (!mono.Success) return new IntegerPolynomial(new Vector<Integer>(new []{(Integer) 0}));
+			if (!mono.Success) return new Polynomial<T>(new []{ new T() });
 
 			uint exp = UInt32.Parse(mono.Groups[2].ToString());
 
@@ -296,7 +412,7 @@ namespace Math.Polynomials
 			return null;
 		}
 
-		public static explicit operator string(IntegerPolynomial polynomial)
+		public static explicit operator string(Polynomial<T> polynomial)
 		{
 			return polynomial.ToString();
 		}
@@ -316,9 +432,9 @@ namespace Math.Polynomials
 
 			for (int i = Degree; i >= 1; i--)
 			{
-				double coef = Coefficients[i];
-				if (!coef.CloseTo(0))
-					result += (coef.CloseTo(1) ? "" : $"{Coefficients[i]}") + $"{variable}" + (i != 1 ? $"^{i}" : "") + " + ";
+				T coef = Coefficients[i];
+				if (!coef.IsNull())
+					result += (coef.IsUnit() ? "" : $"{Coefficients[i]}") + $"{variable}" + (i != 1 ? $"^{i}" : "") + " + ";
 			}
 
 			result += $"{Coefficients[0]}";
@@ -327,105 +443,5 @@ namespace Math.Polynomials
 		}
 
 		#endregion
-
-		#region Overrides
-
-		public override T Negative<T>()
-		{
-			return (T) (INegatable) (-this);
-		}
-
-		public bool IsNegative()
-		{
-			return Coefficients[Degree] < 0;
-		}
-
-		internal override T Add<T>(T other)
-		{
-			if (other is IntegerPolynomial polynomial)
-			{
-				return (T) (MonoidMember) (this + polynomial);
-			}
-
-			throw new IncompatibleOperationException(GroupOperationType.Addition);
-		}
-
-		internal override T Multiply<T>(T other)
-		{
-			if (other is IntegerPolynomial polynomial)
-			{
-				return (T) (GroupMember) (this * polynomial);
-			}
-
-			throw new IncompatibleOperationException(GroupOperationType.Multiplication);
-		}
-
-		public override T Null<T>()
-		{
-			if (typeof(T) == GetType())
-			{
-				return (T) (MonoidMember) new IntegerPolynomial();
-			}
-			
-			throw new IncorrectSetException(this, "null", typeof(T));
-		}
-
-		public override T Unit<T>()
-		{
-			if (typeof(T) == GetType())
-			{
-				return (T) (MonoidMember) new IntegerPolynomial();
-			}
-			
-			throw new IncorrectSetException(this, "unit", typeof(T));
-		}
-
-		[Obsolete]
-		public override double ToDouble()
-		{
-			throw new NotImplementedException();
-		}
-
-		public override bool IsNull()
-		{
-			return Coefficients == new Vector<Integer>(new Integer[] { 0 });
-		}
-
-		public override bool IsUnit()
-		{
-			return Coefficients == new Vector<Integer>(new Integer[] { 1 });
-		}
-
-		public override bool Equals<T>(T other)
-		{
-			if (other is IntegerPolynomial p)
-			{
-				return p.Coefficients == Coefficients;
-			}
-			
-			return false;
-		}
-
-		public bool IsPrime()
-		{
-			throw new NotImplementedException();
-		}
-
-		public T[] Factors<T>() where T : IFactorable
-		{
-			throw new NotImplementedException();
-		}
-
-		public bool TryFactor<T>(out T[] factors) where T : IFactorable
-		{
-			throw new NotImplementedException();
-		}
-
-		public T Without<T>(T factor) where T : IFactorable
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion
-	}
+    }
 }

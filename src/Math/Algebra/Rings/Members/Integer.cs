@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Math.Algebra.Fields;
-using Math.Main;
 using Math.Algebra.Fields.Members;
 using Math.Algebra.Groups;
 using Math.Algebra.Groups.Members;
 using Math.Algebra.Monoids.Members;
 using Math.Exceptions;
+using Math.LinearAlgebra;
+using Math.NumberTheory;
 using Math.Rationals;
 
 namespace Math.Algebra.Rings.Members
 {
     public class Integer : RingMember, INumerical, IFactorable
     {
-        public int Value { get; set; }
+        public int Value { get; }
         
         #region Constructors
 
@@ -46,13 +48,15 @@ namespace Math.Algebra.Rings.Members
 		#region Factoring
 
 		public bool IsPrime()
-	    {
-		    throw new NotImplementedException();
-	    }
+		{
+			return IntegerMath.IsPrime(this);
+		}
 
-	    public T[] Factors<T>()
+	    public T[] Factors<T>() where T : IFactorable
 	    {
-		    throw new NotImplementedException();
+		    TryFactor(out T[] factors);
+
+		    return factors;
 	    }
 
 	    public bool TryFactor<T>(out T[] factors) where T : IFactorable
@@ -61,11 +65,17 @@ namespace Math.Algebra.Rings.Members
 
 		    if (typeof(T) == GetType())
 		    {
+			    if (IsPrime())
+			    {
+				    factors = new T[0];
+				    return false;
+			    }
+			    
 			    List<T> list = new List<T>();
 
-			    for (int i = 0; i < this; i++)
+			    for (int i = 2; i < this; i++)
 			    {
-				    if ((ToDouble() / i % 1).CloseTo(0))
+				    if (this % i == 0)
 				    {
 					    list.Add((T)(IFactorable)(Integer)i);
 				    }
@@ -80,9 +90,33 @@ namespace Math.Algebra.Rings.Members
 		    throw new FactorTypeException();
 	    }
 
-	    public T Without<T>(T factor)
+	    public T Without<T>(T factor) where T : IFactorable
 	    {
-		    throw new NotImplementedException();
+		    if (typeof(T) != GetType())
+			    throw new FactorTypeException();
+		    
+		    Integer f = (Integer) (IFactorable) factor;
+		    
+		    if (f == this)
+		    {
+			    return (T) (IFactorable) new Integer(1);
+		    }
+		    
+		    List<Integer> factors = Factors<Integer>().ToList();
+
+		    if (factors.Count == 0 || !factors.Contains(f))
+			    return (T) (IFactorable) this;
+
+		    factors.Remove(f);
+
+		    Integer result = factors[0];
+
+		    for (int i = 1; i < factors.Count; i++)
+		    {
+			    result = result.Multiply(factors[i]);
+		    }
+
+		    return (T) (IFactorable) result;
 	    }
 
 		#endregion
@@ -116,7 +150,7 @@ namespace Math.Algebra.Rings.Members
         public override T Null<T>()
         {
             if (typeof(T) == GetType())
-                return (T)(GroupMember) new Integer(0);
+                return (T)(MonoidMember) new Integer(0);
             throw new IncorrectSetException(this, "null", typeof(T));
         }
 
@@ -131,6 +165,7 @@ namespace Math.Algebra.Rings.Members
 
         public override bool IsUnit() => Value.CloseTo(1);
 
+	    [Obsolete]
         public override double ToDouble()
         {
             return this;
@@ -142,16 +177,6 @@ namespace Math.Algebra.Rings.Members
                 return Value == r;
 	        if (other is int i)
 		        return Value == i;
-            return false;
-        }
-
-        public override bool Equals(MonoidMember other)
-        {
-            if (other is Integer i)
-            {
-                return i.Value == Value;
-            }
-
             return false;
         }
 

@@ -3,7 +3,7 @@ using Math.Algebra.Fields;
 using Math.Algebra.Fields.Members;
 using Math.Exceptions;
 
-namespace Math.Main
+namespace Math.LinearAlgebra
 {
 	public class RowOperation<T> where T : FieldMember, new()
 	{

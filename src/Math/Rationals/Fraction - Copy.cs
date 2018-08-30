@@ -78,7 +78,7 @@ namespace Math.Rationals
         public override T Null<T>()
         {
             if (typeof(T) == GetType())
-                return (T)(GroupMember) new FractionCopy(0);
+                return (T)(MonoidMember) new FractionCopy(0);
             throw new IncorrectSetException(this, "null", typeof(T));
         }
 
@@ -93,6 +93,7 @@ namespace Math.Rationals
 
         public override bool IsUnit() => Num.Equals(Den);
 
+        [Obsolete]
         public override double ToDouble()
         {
             return this;
@@ -119,16 +120,6 @@ namespace Math.Rationals
         {
             return new Real(System.Math.Abs(Num) > System.Math.Abs(Den) ? Num : Den);
         }
-
-        public override bool Equals(MonoidMember other)
-        {
-			if (other is FractionCopy r)
-	        {
-		        return Factor().EqualsExactly(r.Factor());
-	        }
-
-	        return false;
-		}
 
 		#endregion
 

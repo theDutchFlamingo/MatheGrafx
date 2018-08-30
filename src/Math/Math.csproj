@@ -56,6 +56,7 @@
     <Compile Include="Algebra\Monoids\Monoid.cs" />
     <Compile Include="Algebra\Ordering\ITotallyOrdered.cs" />
     <Compile Include="Algebra\Rings\WholeNumbers.cs" />
+    <Compile Include="Algebra\Set.cs" />
     <Compile Include="Exceptions\FactorTypeException.cs" />
     <Compile Include="Exceptions\GroupOperationType.cs" />
     <Compile Include="Exceptions\IncorrectSetException.cs" />
@@ -68,6 +69,10 @@
     <Compile Include="Algebra\Rings\Members\Integer.cs" />
     <Compile Include="Algebra\Fields\Members\Matrix.cs" />
     <Compile Include="Algebra\Fields\Numerical.cs" />
+    <Compile Include="NumberTheory\IntegerMath.cs" />
+    <Compile Include="Parsing\IParsable.cs" />
+    <Compile Include="Polynomials\ComplexPolynomial.cs" />
+    <Compile Include="Polynomials\Polynomial.cs" />
     <Compile Include="Rationals\Fraction - Copy.cs" />
     <Compile Include="Rationals\IFactorable.cs" />
     <Compile Include="Rationals\Rational.cs" />
@@ -86,14 +91,15 @@
     <Compile Include="Polynomials\RootFinder.cs" />
     <Compile Include="Algebra\Rings\Members\RingMember.cs" />
     <Compile Include="Algebra\Rings\Ring.cs" />
+    <Compile Include="SubclassCheck.cs" />
     <Compile Include="VectorSpaces\Basis.cs" />
-    <Compile Include="Main\MatrixConversion.cs" />
-    <Compile Include="Main\RowOperation.cs" />
+    <Compile Include="LinearAlgebra\MatrixConversion.cs" />
+    <Compile Include="LinearAlgebra\RowOperation.cs" />
     <Compile Include="Exceptions\IncompatibleRowOperationException.cs" />
     <Compile Include="Exceptions\VectorOperationType.cs" />
     <Compile Include="Exceptions\IncompatibleOperationException.cs" />
     <Compile Include="Exceptions\MatrixOperationType.cs" />
-    <Compile Include="Main\LinearMath.cs" />
+    <Compile Include="LinearAlgebra\LinearMath.cs" />
     <Compile Include="Exceptions\InvalidRowOperationException.cs" />
     <Compile Include="Exceptions\InvalidRowOperationType.cs" />
     <Compile Include="RealMatrix.cs" />
@@ -109,6 +115,5 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

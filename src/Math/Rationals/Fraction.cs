@@ -1,5 +1,4 @@
-﻿using System;
-using Math.Algebra.Fields;
+﻿using Math.Algebra.Fields;
 using Math.Algebra.Fields.Members;
 using Math.Algebra.Rings.Members;
 
@@ -14,11 +13,14 @@ namespace Math.Rationals
             
         }
 
-        public Fraction(int numerator, int denominator)
+        public Fraction(int num, int den) : base(num, den)
         {
-            if (denominator == 0) throw new DivideByZeroException();
-            Num = denominator > 0 ? numerator : -numerator;
-            Den = denominator > 0 ? denominator : -denominator;
+            
+        }
+
+        public Fraction(Integer num, Integer den) : base(num, den)
+        {
+            
         }
 
         public Fraction(Fraction i) : this(i.Num, i.Den)

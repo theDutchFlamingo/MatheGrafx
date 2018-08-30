@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Math.Main;
 using Math.Algebra.Rings.Members;
 using Math.Exceptions;
+using Math.LinearAlgebra;
 
 namespace Math.Algebra.Fields
 {

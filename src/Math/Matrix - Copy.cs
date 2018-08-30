@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Math.Algebra.Fields.Members;
 using Math.ComplexLinearAlgebra;
-using Math.Main;
 using Math.Exceptions;
+using Math.LinearAlgebra;
 
 namespace Math
 {

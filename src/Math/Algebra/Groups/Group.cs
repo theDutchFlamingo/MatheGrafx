@@ -1,16 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Math.Algebra.Groups.Members;
+﻿using Math.Algebra.Groups.Members;
+using Math.Algebra.Monoids;
 
 namespace Math.Algebra.Groups
 {
-	public abstract class Group<T> where T : GroupMember
+	/// <summary>
+	/// A group is a monoid in which each element also has an inverse
+	/// (usually called negative in the case of additive inverses). <br></br>
+	/// In summary, a group has one operation with an identity and inverses
+	/// for every member of the group. <br></br>
+	/// An example of a group is a rubix cube group, where the elements are the moves,
+	/// the operation is the composition of two moves (one after the other),
+	/// the identity is not moving anything, and the inverse is simply the opposite move.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	public abstract class Group<T> : Monoid<T> where T : GroupMember
 	{
-		public abstract T Create(params object[] value);
+		public abstract override T Create(params object[] value);
 
-		public abstract T Null();
+		public abstract override T Null();
+
+		public T Negative(T member)
+		{
+			return member.Negative<T>();
+		}
 	}
 }

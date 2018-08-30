@@ -1,9 +1,12 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using Math.Algebra.Groups;
 using Math.Algebra.Groups.Members;
+using Math.Algebra.Monoids.Members;
 using Math.Algebra.Ordering;
+using Math.Algebra.Rings.Members;
 using Math.Exceptions;
-using Math.Main;
+using Math.LinearAlgebra;
 
 namespace Math.Algebra.Fields.Members
 {
@@ -17,7 +20,7 @@ namespace Math.Algebra.Fields.Members
 		 */
 		#region Properties
 
-		public double Value { get; }
+		private double Value { get; }
 		
 		#endregion
 
@@ -41,7 +44,7 @@ namespace Math.Algebra.Fields.Members
 		{
 			if (other is Real r)
 			{
-				return (T)(GroupMember)new Real(Value + r.Value);
+				return (T)(MonoidMember)new Real(Value + r.Value);
 			}
 			throw new IncorrectSetException(GetType(), "added", other.GetType());
 		}
@@ -54,7 +57,7 @@ namespace Math.Algebra.Fields.Members
 		internal override T Multiply<T>(T other)
 		{
 			if (other is Real c)
-				return (T)(GroupMember)new Real(Value * c.Value);
+				return (T)(RingMember)new Real(Value * c.Value);
 			throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
 		}
 
@@ -66,7 +69,7 @@ namespace Math.Algebra.Fields.Members
 		public override T Null<T>()
 		{
 			if (typeof(T) == GetType())
-				return (T)(GroupMember) new Real(0);
+				return (T)(MonoidMember) new Real(0);
 			throw new IncorrectSetException(this, "null", typeof(T));
 		}
 
@@ -101,6 +104,7 @@ namespace Math.Algebra.Fields.Members
 			throw new IncorrectSetException(GetType(), "compared", typeof(T));
 		}
 
+		[Obsolete]
 		public override double ToDouble()
 		{
 			return this;
@@ -126,16 +130,6 @@ namespace Math.Algebra.Fields.Members
 		public INumerical LongestValue()
 		{
 			return this;
-		}
-
-		public override bool Equals(FieldMember other)
-		{
-			if (other is Real r)
-			{
-				return r.Value.CloseTo(Value);
-			}
-
-			return false;
 		}
 
 		#endregion
@@ -212,7 +206,7 @@ namespace Math.Algebra.Fields.Members
 
 		public static bool operator ==(Real left, Real right)
 		{
-			return left?.Equals<Real>(right) ?? false;
+			return left?.Equals(right) ?? false;
 		}
 
 		public static bool operator !=(Real left, Real right)
@@ -239,7 +233,7 @@ namespace Math.Algebra.Fields.Members
 
 			if (other is Real r)
 			{
-				return r.Equals<Real>(this);
+				return r.Equals(this);
 			}
 
 			return false;
@@ -259,6 +253,21 @@ namespace Math.Algebra.Fields.Members
 		public static implicit operator Real(double r)
 		{
 			return new Real(r);
+		}
+
+		public static implicit operator Real(int i)
+		{
+			return new Real(i);
+		}
+
+		public static implicit operator Real(long l)
+		{
+			return new Real(l);
+		}
+
+		public static implicit operator Real(float f)
+		{
+			return new Real(f);
 		}
 
 		public override string ToString()

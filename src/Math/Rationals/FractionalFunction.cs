@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Math.Main;
 using Math.Algebra.Fields;
 using Math.Algebra.Fields.Members;
+using Math.Algebra.Groups;
+using Math.Algebra.Monoids.Members;
+using Math.Algebra.Rings.Members;
 using Math.Exceptions;
 using Math.Polynomials;
 using Math.Rationals;
@@ -15,7 +17,7 @@ namespace Math.Numeric
 	/// <summary>
 	/// A rational function is any polynomial divided by any polynomial other than the zero polynomial.
 	/// </summary>
-	public class FractionalFunction : FieldMember
+	public class FractionalFunction : Rational<RealPolynomial>
 	{
 		public RealPolynomial Num { get; set; }
 		public RealPolynomial Den { get; set; }
@@ -62,33 +64,33 @@ namespace Math.Numeric
 		{
 			if (other is Fraction r)
 			{
-				return (T)(FieldMember)new FractionalFunction(r.Num * Den + r.Den * Num, r.Den * Den);
+				return (T)(MonoidMember)new FractionalFunction(r.Num * Den + r.Den * Num, r.Den * Den);
 			}
 			throw new IncorrectSetException(GetType(), "added", other.GetType());
 		}
 
-		internal override T Negative<T>()
+		public override T Negative<T>()
 		{
-			return (T)(FieldMember)new FractionalFunction(-Num, Den);
+			return (T)(INegatable)new FractionalFunction(-Num, Den);
 		}
 
 		internal override T Multiply<T>(T other)
 		{
 			if (other is Fraction c)
-				return (T)(FieldMember)new FractionalFunction(Num * c.Num, Den * c.Den);
+				return (T)(RingMember)new FractionalFunction(Num * c.Num, Den * c.Den);
 			throw new IncorrectSetException(GetType(), "added", other.GetType());
 		}
 
-		internal override T Inverse<T>()
+		public override T Inverse<T>()
 		{
-			return (T)(FieldMember)new FractionalFunction(Den, Num);
+			return (T)(IInvertible)new FractionalFunction(Den, Num);
 		}
 
 		public override T Null<T>()
 		{
 			if (typeof(T) == GetType())
 			{
-				return (T)(FieldMember)new FractionalFunction(new RealPolynomial(new Vector<Real>(new Real[]{0})),
+				return (T)(MonoidMember)new FractionalFunction(new RealPolynomial(new Vector<Real>(new Real[]{0})),
 					new RealPolynomial(new Vector<Real>(new Real[]{1})));
 			}
 			throw new IncorrectSetException(this, "null", typeof(T));
@@ -97,7 +99,7 @@ namespace Math.Numeric
 		public override T Unit<T>()
 		{
 			if (typeof(T) == GetType())
-				return (T)(FieldMember)new Fraction(1);
+				return (T)(RingMember)new Fraction(1);
 			throw new IncorrectSetException(this, "unit", typeof(T));
 		}
 
@@ -105,6 +107,7 @@ namespace Math.Numeric
 
 		public override bool IsUnit() => Num.Equals(Den);
 
+		[Obsolete]
 		public override double ToDouble()
 		{
 			throw new InvalidOperationException("Fractional functions ");

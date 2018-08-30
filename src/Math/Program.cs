@@ -4,7 +4,7 @@ using Math.Algebra.Fields;
 using Math.Algebra.Fields.Members;
 using Math.Algebra.Rings.Members;
 using Math.ComplexLinearAlgebra;
-using Math.Main;
+using Math.LinearAlgebra;
 using Math.Numeric;
 using Math.Polynomials;
 using Math.Rationals;
@@ -15,6 +15,16 @@ namespace Math
     {
 	    private static readonly Complex i = Complex.I;
 
+	    private class D<T>
+	    {
+			
+	    }
+
+	    private class V : D<int>
+	    {
+		    
+	    }
+	    
 	    static void Main()
         {
 //			Complexity();
@@ -24,10 +34,9 @@ namespace Math
 	        //BasicTest();
 //			Polynomials();
 
-			Rational<Integer> r = new Rational<Integer>
-			{
-				DoubleConvert = x => 0
-			};
+	        V v = new V();
+	        
+	        Console.WriteLine(v.GetType().IsSubclass(typeof(D<int>)));
         }
 
 	    public static void Polynomials()

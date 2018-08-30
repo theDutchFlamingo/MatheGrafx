@@ -7,11 +7,11 @@ namespace Math.Algebra.Groups.Members
 {
 	public class Natural : MonoidMember
 	{
-		public int Value { get; set; }
+		private int Value { get; }
 
 		public Natural()
 		{
-
+			Value = 0;
 		}
 
 		public Natural(int value)
@@ -24,6 +24,8 @@ namespace Math.Algebra.Groups.Members
 			if (value > Int32.MaxValue)
 				throw new ArgumentException("Value exceeds the maximum value for integers");
 		}
+
+		#region Overrides
 
 		internal override T Add<T>(T other)
 		{
@@ -40,7 +42,14 @@ namespace Math.Algebra.Groups.Members
 			throw new IncorrectSetException(GetType(), "added", other.GetType());
 		}
 
-		public override bool Equals(MonoidMember other)
+		public override T Null<T>()
+		{
+			if (typeof(T) == GetType())
+				return (T)(MonoidMember) new Natural(0);
+			throw new IncorrectSetException(this, "null", typeof(T));
+		}
+
+		public override bool Equals<T>(T other)
 		{
 			if (other is Natural n)
 			{
@@ -49,5 +58,7 @@ namespace Math.Algebra.Groups.Members
 
 			return false;
 		}
+
+		#endregion
 	}
 }

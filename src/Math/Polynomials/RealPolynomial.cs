@@ -2,16 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Math.Main;
 using Math.Algebra.Fields;
 using Math.Algebra.Fields.Members;
+using Math.Algebra.Groups;
+using Math.Algebra.Groups.Members;
+using Math.Algebra.Monoids.Members;
+using Math.Algebra.Rings.Members;
+using Math.Exceptions;
+using Math.LinearAlgebra;
+using Math.Rationals;
 
 namespace Math.Polynomials
 {
 	/// <summary>
 	/// A polynomial with real coefficients
 	/// </summary>
-	public class RealPolynomial
+	public class RealPolynomial : RingMember, IFactorable
 	{
 		/**
 		 * Contains the regexes... regeces (?)... anyway, they can check for variable name correctness,
@@ -55,7 +61,7 @@ namespace Math.Polynomials
 		public Vector<Real> Coefficients
 		{
 			get => _coefficients;
-			set
+			private set
 			{
 				_coefficients = value;
 				// Degree of a polynomial is always the amount of coefficients minus 1,
@@ -73,6 +79,25 @@ namespace Math.Polynomials
 		public RealPolynomial(Vector<Real> coefficients)
 		{
 			Coefficients = coefficients;
+		}
+
+		/// <summary>
+		/// Construct a constant polynomial with single coefficient r
+		/// </summary>
+		/// <param name="r"></param>
+		public RealPolynomial(Real r)
+		{
+			Coefficients = new Vector<Real>(new []{r});
+		}
+
+		public RealPolynomial(Real[] coefficients)
+		{
+			Coefficients = new Vector<Real>(coefficients);
+		}
+
+		public RealPolynomial(double[] coefficients)
+		{
+			Coefficients = new RealVector(coefficients);
 		}
 
 		/// <summary>
@@ -98,18 +123,67 @@ namespace Math.Polynomials
 			return Coefficients[Degree].Equals(1);
 		}
 
-		public bool IsNull()
+		#endregion
+
+		#region Overrides
+
+		internal override T Add<T>(T other)
 		{
-			return Coefficients == new Vector<Real>(new Real[] {0});
+			if (other is RealPolynomial r)
+			{
+				return (T)(MonoidMember)new RealPolynomial(Coefficients + r.Coefficients);
+			}
+			throw new IncorrectSetException(GetType(), "added", other.GetType());
 		}
 
-		public bool IsUnit()
+		public override T Negative<T>()
 		{
-			return Coefficients == new Vector<Real>(new Real[] {1});
+			return (T)(INegatable)new RealPolynomial(-Coefficients);
+		}
+
+		internal override T Multiply<T>(T other)
+		{
+			if (other is RealPolynomial c)
+				return (T)(RingMember) (this * c);
+			throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
+		}
+
+		public override T Null<T>()
+		{
+			if (typeof(T) == GetType())
+				return (T)(MonoidMember) new RealPolynomial(0);
+			throw new IncorrectSetException(this, "null", typeof(T));
+		}
+
+		public override T Unit<T>()
+		{
+			if (typeof(T) == GetType())
+				return (T)(GroupMember)new RealPolynomial(1);
+			throw new IncorrectSetException(this, "unit", typeof(T));
+		}
+
+		public override bool IsNull() => Coefficients.Equals(new Vector<Real>(1));
+
+		public override bool IsUnit() => Coefficients.Equals(new Vector<Real>(1, 1));
+
+		public override bool Equals<T>(T other)
+		{
+			if (other is RealPolynomial p)
+			{
+				return p.Coefficients == Coefficients;
+			}
+
+			return false;
+		}
+
+		[Obsolete]
+		public override double ToDouble()
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion
-
+		
 		/**
 		 * Operators to add polynomials or multiply them
 		 */
@@ -283,17 +357,17 @@ namespace Math.Polynomials
 			}
 			catch (FormatException)
 			{
-				
+				// This means that the monomial isn't constant
 			}
 			
 			// First try matching it with the linear (x^1) term
 			Match linear = Regex.Match(monomial, LinearRegex(variable));
 			
-			if (linear.Success) return new RealPolynomial(new Vector<Real>(new Real[]{Int32.Parse(linear.Groups[1].ToString()), 0}));
+			if (linear.Success) return new RealPolynomial(new Real[]{Double.Parse(linear.Groups[1].ToString()), 0});
 			
 			Match mono = Regex.Match(monomial, MonomialRegex(variable));
 			
-			if (!mono.Success) return new RealPolynomial(new Vector<Real>(new []{(Real) 0}));
+			if (!mono.Success) return new RealPolynomial(new []{(Real) 0});
 
 			uint exp = UInt32.Parse(mono.Groups[2].ToString());
 
@@ -315,7 +389,8 @@ namespace Math.Polynomials
 		{
 			// First check if variable name is allowed
 			if (!Regex.IsMatch(variable, VariableNamesRegex))
-				throw new ArgumentException("Variable name must start with a letter and contain only letters, numbers and underscores.");
+				throw new ArgumentException("Variable name must start with a letter and contain only" +
+				                            "letters, numbers and underscores.");
 			
 			string result = "";
 
@@ -329,6 +404,26 @@ namespace Math.Polynomials
 			result += $"{Coefficients[0]}";
 
 			return result;
+		}
+
+		public bool IsPrime()
+		{
+			throw new NotImplementedException();
+		}
+
+		public T[] Factors<T>() where T : IFactorable
+		{
+			throw new NotImplementedException();
+		}
+
+		public bool TryFactor<T>(out T[] factors) where T : IFactorable
+		{
+			throw new NotImplementedException();
+		}
+
+		public T Without<T>(T factor) where T : IFactorable
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion

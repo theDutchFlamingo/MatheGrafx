@@ -6,19 +6,20 @@ using Math.Algebra.Fields.Members;
 using Math.Algebra.Groups;
 using Math.Algebra.Groups.Members;
 using Math.Algebra.Monoids.Members;
+using Math.Algebra.Rings.Members;
 using Math.Exceptions;
 
 namespace Math.Rationals
 {
-    public class Rational<T> : FieldMember where T : GroupMember, INegatable, IFactorable, new()
+    public class Rational<T> : FieldMember where T : RingMember, INegatable, IFactorable, new()
     {
-        public T Num { get; set; } = new T();
-        public T Den { get; set; } = new T().Unit<T>();
+        public T Num { get; } = new T();
+        public T Den { get; } = new T().Unit<T>();
 
 		/// <summary>
 		/// The functions which converts this rational to a double. Should be set on initialization.
 		/// </summary>
-	    public virtual Func<Rational<T>, double> DoubleConvert { get; set; }
+	    public virtual Func<Rational<T>, double> DoubleConvert { protected get; set; }
 
 	    public Rational()
 	    {
@@ -32,6 +33,9 @@ namespace Math.Rationals
 
 		public Rational(T num, T den)
 		{
+			if (den.IsNull())
+				throw new DivideByZeroException("Denominator of a rational can't be the zero member");
+			
 			Num = num;
 			Den = den;
 		}
@@ -49,7 +53,7 @@ namespace Math.Rationals
 		#region Factoring
 
 		/// <summary>
-		/// Whether this rational can be factored
+		/// Whether this rational can be factored, factors it even if it is already in lowest terms
 		/// </summary>
 		/// <param name="factored"></param>
 		/// <returns></returns>
@@ -109,7 +113,7 @@ namespace Math.Rationals
         public override T1 Null<T1>()
         {
             if (typeof(T1) == GetType())
-                return (T1)(GroupMember) new Rational<T>(new T());
+                return (T1)(MonoidMember) new Rational<T>(new T());
             throw new IncorrectSetException(this, "null", typeof(T1));
         }
 
@@ -123,12 +127,12 @@ namespace Math.Rationals
         public override bool IsNull() => Num.Equals(new T());
 
         public override bool IsUnit() => Num.Equals(Den);
-
+	    
 		/// <summary>
-		/// This method cannot be implemented yet, but to make this class non-abstract,
-		/// it throws a NotImplementedException
+		/// Try finding the closest 
 		/// </summary>
 		/// <returns></returns>
+		[Obsolete]
 	    public override double ToDouble()
 		{
 			return DoubleConvert(this);
@@ -142,16 +146,6 @@ namespace Math.Rationals
 	        }
 
             return false;
-        }
-
-        public override bool Equals(MonoidMember other)
-        {
-            if (other is Rational<T> r)
-            {
-	            return r.Equals(r);
-            }
-
-			return false;
         }
 
         #endregion

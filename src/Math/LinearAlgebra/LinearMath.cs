@@ -5,7 +5,7 @@ using Math.Algebra.Fields.Members;
 using Math.Exceptions;
 using Math.VectorSpaces;
 
-namespace Math.Main
+namespace Math.LinearAlgebra
 {
 	/// <summary>
 	/// The class which allows you to perform more complicated procedures on Matrices,

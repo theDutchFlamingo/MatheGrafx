@@ -6,19 +6,21 @@ namespace Math.Algebra.Fields.Members
 {
 	public abstract class FieldMember : RingMember, IInvertible
 	{
+		internal abstract override T Add<T>(T other);
+		
+		public abstract override T Null<T>();
+
+		public abstract override bool IsNull();
+		
 		public abstract override T Negative<T>();
+		
+		internal abstract override T Multiply<T>(T other);
+
+		public abstract override T Unit<T>();
+
+		public abstract override bool IsUnit();
 
 		public abstract T Inverse<T>() where T : IInvertible;
-
-		/// <summary>
-		/// The type of product that is used when calculating when calculating
-		/// an inner product (with vectors); defaults to normal multiplication.
-		/// For example, with complex numbers this would be left * right.Conjugate(),
-		/// for matrices, this would be the determinant.
-		/// </summary>
-		/// <param name="fieldMember"></param>
-		/// <returns></returns>
-		public virtual T Inner<T>(T fieldMember) where T : FieldMember => Multiply(fieldMember);
 
 		/// <summary>
 		/// Gets the double version of this object; not necessarily possible for all instances.

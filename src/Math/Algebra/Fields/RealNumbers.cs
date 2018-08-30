@@ -26,7 +26,7 @@ namespace Math.Algebra.Fields
 
 		public override bool Equal(Real left, Real right)
 		{
-			return left.Equals<Real>(right);
+			return left.Equals(right);
 		}
 
 		public override bool LessThan(Real left, Real right)
