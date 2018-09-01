@@ -1112,6 +1112,7 @@ namespace Math.Algebra.Fields.Members
 
 		public override bool IsUnit() => (this - new Matrix<T>(Diagonal())).IsNull() && Diagonal().All(d => d.IsUnit());
 
+		[Obsolete]
 		public override double ToDouble()
 		{
 			// Because there's no sensible other thing to do, should I maybe delete this method from GroupMember?

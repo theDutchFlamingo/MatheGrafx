@@ -5,7 +5,6 @@ using Math.Algebra.Fields.Members;
 using Math.Algebra.Rings.Members;
 using Math.ComplexLinearAlgebra;
 using Math.LinearAlgebra;
-using Math.Numeric;
 using Math.Polynomials;
 using Math.Rationals;
 

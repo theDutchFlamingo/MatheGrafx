@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Math.Algebra.Fields;
 using Math.Algebra.Fields.Members;
 using Math.Algebra.Groups;
@@ -10,9 +8,8 @@ using Math.Algebra.Monoids.Members;
 using Math.Algebra.Rings.Members;
 using Math.Exceptions;
 using Math.Polynomials;
-using Math.Rationals;
 
-namespace Math.Numeric
+namespace Math.Rationals
 {
 	/// <summary>
 	/// A rational function is any polynomial divided by any polynomial other than the zero polynomial.

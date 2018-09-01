@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Math.Algebra.Fields;
 using Math.Algebra.Fields.Members;
-using Math.Algebra.Ordering;
 
-namespace Math.Algebra.Fields
+namespace Math.Algebra.Ordering
 {
 	public abstract class OrderedField<T> : Field<T> where T : FieldMember, ITotallyOrdered
 	{

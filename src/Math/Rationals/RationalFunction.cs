@@ -6,7 +6,6 @@ using Math.Algebra.Fields.Members;
 using Math.Algebra.Groups;
 using Math.Algebra.Rings.Members;
 using Math.Exceptions;
-using Math.Numeric;
 using Math.Polynomials;
 
 namespace Math.Rationals

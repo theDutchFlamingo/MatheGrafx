@@ -1,5 +1,6 @@
 ﻿using System;
 using Math.Algebra.Fields.Members;
+using Math.Algebra.Ordering;
 
 namespace Math.Algebra.Fields
 {

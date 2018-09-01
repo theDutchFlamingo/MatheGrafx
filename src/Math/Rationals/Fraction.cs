@@ -13,6 +13,11 @@ namespace Math.Rationals
             
         }
 
+        public Fraction(int num) : base(num, 1)
+        {
+            
+        }
+
         public Fraction(int num, int den) : base(num, den)
         {
             
@@ -114,12 +119,12 @@ namespace Math.Rationals
 
         #region Conversion
 
-        public static implicit operator double(Fraction r)
+        public static explicit operator double(Fraction r)
         {
             return (double)(int)r.Num / r.Den;
         }
 
-        public static implicit operator Fraction(double r)
+        public static explicit operator Fraction(double r)
         {
             int whole = (int) (r > 0 ? System.Math.Floor(r) : System.Math.Ceiling(r));
 

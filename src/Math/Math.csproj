@@ -48,15 +48,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algebra\Fields\OrderedField.cs" />
     <Compile Include="Algebra\Fields\RationalNumbers.cs" />
     <Compile Include="Algebra\Groups\Group.cs" />
     <Compile Include="Algebra\Groups\Members\Natural.cs" />
     <Compile Include="Algebra\Monoids\Members\MonoidMember.cs" />
     <Compile Include="Algebra\Monoids\Monoid.cs" />
     <Compile Include="Algebra\Ordering\ITotallyOrdered.cs" />
+    <Compile Include="Algebra\Ordering\OrderedField.cs" />
     <Compile Include="Algebra\Rings\WholeNumbers.cs" />
     <Compile Include="Algebra\Set.cs" />
+    <Compile Include="ComplexLinearAlgebra\ComplexNumbers.cs" />
     <Compile Include="Exceptions\FactorTypeException.cs" />
     <Compile Include="Exceptions\GroupOperationType.cs" />
     <Compile Include="Exceptions\IncorrectSetException.cs" />

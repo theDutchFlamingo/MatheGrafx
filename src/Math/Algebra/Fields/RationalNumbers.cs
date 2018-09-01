@@ -9,8 +9,12 @@ namespace Math.Algebra.Fields
 		{
 			if (value == null || value.Length != 2)
 				throw new ArgumentException("Exactly two parameters must be given to create a fraction.");
-			if (value[0] is int num && value[1] is int den)
-				return new Fraction(num, den);
+			if (value[0] is int num)
+			{
+				if (value[1] is int den)
+					return new Fraction(num, den);
+				return new Fraction(num);
+			}
 			throw new ArgumentException("The two parameters must be of integer type");
 		}
 		
