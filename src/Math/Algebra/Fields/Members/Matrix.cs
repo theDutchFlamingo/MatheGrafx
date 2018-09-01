@@ -5,27 +5,22 @@ using System.Linq;
 using Math.Algebra.Groups;
 using Math.Algebra.Groups.Members;
 using Math.Algebra.Monoids.Members;
+using Math.Algebra.Rings.Members;
 using Math.ComplexLinearAlgebra;
 using Math.Exceptions;
+using Math.Settings;
 
 namespace Math.Algebra.Fields.Members
 {
 	/// <summary>
 	/// A class for matrices of any type. The generic parameter must be a subclass of
-	/// FieldMember to ensure 
+	/// RingMember to ensure that basic operations like addition, subtraction and multiplication
+	/// are possible. If the type is also IInvertible, then this matrix can have an inverse, and
+	/// scalar division is possible.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class Matrix<T> : FieldMember, IEnumerable<Vector<T>>, IEnumerable<T> where T : FieldMember, new()
+	public class Matrix<T> : FieldMember, IEnumerable<Vector<T>>, IEnumerable<T> where T : RingMember, new()
 	{
-		#region Static
-		/// <summary>
-		/// When no explicit VectorType is given, this default will be selected
-		/// </summary>
-		// ReSharper disable once StaticMemberInGenericType
-		public static VectorType DefaultVectorType { get; set; } = VectorType.Column;
-
-		#endregion
-
 		/**
 		 * All fields and properties: the indices of the matrix, the height and width,
 		 * and the vector type that this matrix is described by.
@@ -40,9 +35,9 @@ namespace Math.Algebra.Fields.Members
 			{
 				var indices = new T[Height, Width];
 
-				for (int i = 0; i < Height; i++)
+				for (var i = 0; i < Height; i++)
 				{
-					for (int j = 0; j < Width; j++)
+					for (var j = 0; j < Width; j++)
 					{
 						indices[i, j] = _indices[i, j];
 					}
@@ -57,9 +52,9 @@ namespace Math.Algebra.Fields.Members
 
 				var indices = new T[Height, Width];
 
-				for (int i = 0; i < Height; i++)
+				for (var i = 0; i < Height; i++)
 				{
-					for (int j = 0; j < Width; j++)
+					for (var j = 0; j < Width; j++)
 					{
 						indices[i, j] = value[i, j];
 					}
@@ -73,7 +68,7 @@ namespace Math.Algebra.Fields.Members
 		public int Width { get; protected set; }
 		public int Height { get; protected set; }
 
-		public VectorType Type { get; set; } = DefaultVectorType;
+		public VectorType Type { get; set; } = ConversionSettings.DefaultVectorType;
 
 		#endregion
 
@@ -82,6 +77,14 @@ namespace Math.Algebra.Fields.Members
 		 * two for diagonal matrices, one for unit matrices and one for null matrices.
 		 */
 		#region Constructors
+		
+		/// <summary>
+		/// Constructor of a MatrixBase with no arguments: simply generates a 1x1 null matrix.
+		/// </summary>
+		public Matrix()
+		{
+			Indices = new [,]{{ new T() }};
+		}
 
 		/// <summary>
 		/// Constructor of a MatrixBase
@@ -102,9 +105,9 @@ namespace Math.Algebra.Fields.Members
 
 			// Copies the indices per individual double to make a clone
 			// (not another pointer to the same object)
-			for (int i = 0; i < m.Height; i++)
+			for (var i = 0; i < m.Height; i++)
 			{
-				for (int j = 0; j < m.Width; j++)
+				for (var j = 0; j < m.Width; j++)
 				{
 					_indices[i, j] = m.Indices[i, j];
 				}
@@ -116,7 +119,7 @@ namespace Math.Algebra.Fields.Members
 		/// can be columns or rows based on type
 		/// </summary>
 		/// <param name="vectors"></param>
-		public Matrix(Vector<T>[] vectors) : this(vectors, DefaultVectorType)
+		public Matrix(Vector<T>[] vectors) : this(vectors, ConversionSettings.DefaultVectorType)
 		{
 
 		}
@@ -144,7 +147,7 @@ namespace Math.Algebra.Fields.Members
 		{
 			Indices = new T[diagonal.Dimension, diagonal.Dimension];
 
-			for (int k = 0; k < diagonal.Dimension; k++)
+			for (var k = 0; k < diagonal.Dimension; k++)
 			{
 				Indices[k, k] = diagonal[k];
 			}
@@ -156,11 +159,11 @@ namespace Math.Algebra.Fields.Members
 		/// <param name="diagonal"></param>
 		public Matrix(T[] diagonal)
 		{
-			int size = diagonal.Length;
+			var size = diagonal.Length;
 
 			Indices = new T[size, size];
 
-			for (int i = 0; i < size; i++)
+			for (var i = 0; i < size; i++)
 			{
 				Indices[i, i] = diagonal[i];
 			}
@@ -174,7 +177,7 @@ namespace Math.Algebra.Fields.Members
 		{
 			Indices = new T[size, size];
 
-			for (int k = 0; k < size; k++)
+			for (var k = 0; k < size; k++)
 			{
 				Indices[k, k] = new T().Unit<T>();
 			}
@@ -189,9 +192,9 @@ namespace Math.Algebra.Fields.Members
 		{
 			Indices = new T[height, width];
 
-			for (int i = 0; i < height; i++)
+			for (var i = 0; i < height; i++)
 			{
-				for (int j = 0; j < width; j++)
+				for (var j = 0; j < width; j++)
 				{
 					_indices[i, j] = new T();
 				}
@@ -213,16 +216,20 @@ namespace Math.Algebra.Fields.Members
 		public T Determinant()
 		{
 			if (!IsSquare())
+			{
 				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
+			}
 
 			if (Width == 1)
+			{
 				return Indices[0, 0];
+			}
 
-			T result = new T();
+			var result = new T();
 
-			int i = 0;
+			var i = 0;
 
-			for (int j = 0; j < Width; j++)
+			for (var j = 0; j < Width; j++)
 			{
 				result = result.Add(Indices[i, j].Multiply(Cofactor(i, j)));
 			}
@@ -237,7 +244,9 @@ namespace Math.Algebra.Fields.Members
 		public Matrix<T> Inverse()
 		{
 			if (!IsSquare() || Determinant().IsNull())
+			{
 				throw new IncompatibleOperationException(MatrixOperationType.Inverse);
+			}
 
 			return Adjugate() / Determinant();
 		}
@@ -248,11 +257,11 @@ namespace Math.Algebra.Fields.Members
 		/// <returns></returns>
 		public Matrix<T> Transpose()
 		{
-			T[,] indices = new T[Width, Height];
+			var indices = new T[Width, Height];
 
-			for (int i = 0; i < Height; i++)
+			for (var i = 0; i < Height; i++)
 			{
-				for (int j = 0; j < Width; j++)
+				for (var j = 0; j < Width; j++)
 				{
 					indices[j, i] = Indices[i, j];
 				}
@@ -269,20 +278,26 @@ namespace Math.Algebra.Fields.Members
 		/// <returns></returns>
 		public Matrix<T> SubMatrix(int m, int n)
 		{
-			T[,] indices = new T[Height - 1, Width - 1];
+			var indices = new T[Height - 1, Width - 1];
 
 			if (m >= Height || n >= Width)
+			{
 				throw new IndexOutOfRangeException();
+			}
 
-			for (int i = 0; i < Height; i++)
+			for (var i = 0; i < Height; i++)
 			{
 				if (i == m)
+				{
 					continue;
+				}
 
-				for (int j = 0; j < Width; j++)
+				for (var j = 0; j < Width; j++)
 				{
 					if (j == n)
+					{
 						continue;
+					}
 
 					indices[i > m ? i - 1 : i, j > n ? j - 1 : j] = Indices[i, j];
 				}
@@ -300,7 +315,9 @@ namespace Math.Algebra.Fields.Members
 		public T Minor(int m, int n)
 		{
 			if (!IsSquare())
+			{
 				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
+			}
 
 			return SubMatrix(m, n).Determinant();
 		}
@@ -312,13 +329,15 @@ namespace Math.Algebra.Fields.Members
 		public Matrix<T> MatrixOfMinors()
 		{
 			if (!IsSquare())
-				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
-
-			T[,] indices = Indices;
-
-			for (int i = 0; i < Height; i++)
 			{
-				for (int j = 0; j < Width; j++)
+				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
+			}
+
+			var indices = Indices;
+
+			for (var i = 0; i < Height; i++)
+			{
+				for (var j = 0; j < Width; j++)
 				{
 					indices[i, j] = Minor(i, j);
 				}
@@ -336,7 +355,9 @@ namespace Math.Algebra.Fields.Members
 		public T Cofactor(int i, int j)
 		{
 			if (!IsSquare())
+			{
 				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
+			}
 
 			return (i + j) % 2 == 0 ? Minor(i, j) : Minor(i, j).Negative<T>();
 		}
@@ -349,13 +370,15 @@ namespace Math.Algebra.Fields.Members
 		public Matrix<T> CofactorMatrix()
 		{
 			if (!IsSquare())
-				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
-
-			T[,] indices = Indices;
-
-			for (int i = 0; i < Height; i++)
 			{
-				for (int j = 0; j < Width; j++)
+				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
+			}
+
+			var indices = Indices;
+
+			for (var i = 0; i < Height; i++)
+			{
+				for (var j = 0; j < Width; j++)
 				{
 					indices[i, j] = Cofactor(i, j);
 				}
@@ -371,18 +394,23 @@ namespace Math.Algebra.Fields.Members
 		public Matrix<T> Adjugate()
 		{
 			if (!IsSquare())
+			{
 				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
+			}
 
 			return CofactorMatrix().Transpose();
 		}
 
 		public Vector<T> Diagonal()
 		{
-			if (!IsSquare()) throw new IncompatibleOperationException(MatrixOperationType.Diagonal);
-			
-			Vector<T> diag = new Vector<T>(Width);
+			if (!IsSquare())
+			{
+				throw new IncompatibleOperationException(MatrixOperationType.Diagonal);
+			}
 
-			for (int i = 0; i < Width; i++)
+			var diag = new Vector<T>(Width);
+
+			for (var i = 0; i < Width; i++)
 			{
 				diag[i] = this[i, i];
 			}
@@ -392,11 +420,14 @@ namespace Math.Algebra.Fields.Members
 
 		public T Trace()
 		{
-			if (!IsSquare()) throw new IncompatibleOperationException(MatrixOperationType.Trace);
-			
-			T result = new T();
+			if (!IsSquare())
+			{
+				throw new IncompatibleOperationException(MatrixOperationType.Trace);
+			}
 
-			for (int i = 0; i < Width; i++)
+			var result = new T();
+
+			for (var i = 0; i < Width; i++)
 			{
 				result = result.Add(this[i, i]);
 			}
@@ -533,10 +564,15 @@ namespace Math.Algebra.Fields.Members
 				{
 					case VectorType.Column:
 						if (n >= Width)
+						{
 							throw new IndexOutOfRangeException($"Index was {n}, max is {Width - 1}");
+						}
+
 						if (value.Dimension != Height)
+						{
 							throw new ArgumentException("Vector does not have the correct size" +
 							                            $", should be: {Height}");
+						}
 
 						j = n;
 
@@ -576,34 +612,36 @@ namespace Math.Algebra.Fields.Members
 					case VectorType.Column:
 						result = new Vector<T>[Width];
 
-						for (int j = 0; j < result.Length; j++)
+						for (var j = 0; j < result.Length; j++)
 						{
 							result[j] = new Vector<T>(Height);
 						}
 
-						for (int i = 0; i < Height; i++)
+						for (var i = 0; i < Height; i++)
 						{
-							for (int j = 0; j < Width; j++)
+							for (var j = 0; j < Width; j++)
 							{
 								result[j][i] = Indices[i, j];
 							}
 						}
+
 						return result;
 					case VectorType.Row:
 						result = new Vector<T>[Height];
 
-						for (int i = 0; i < result.Length; i++)
+						for (var i = 0; i < result.Length; i++)
 						{
 							result[i] = new Vector<T>(Width);
 						}
 
-						for (int i = 0; i < Height; i++)
+						for (var i = 0; i < Height; i++)
 						{
-							for (int j = 0; j < Width; j++)
+							for (var j = 0; j < Width; j++)
 							{
 								result[i][j] = Indices[i, j];
 							}
 						}
+
 						return result;
 					default:
 						throw new ArgumentException("Given argument was not a vectortype");
@@ -616,24 +654,26 @@ namespace Math.Algebra.Fields.Members
 					case VectorType.Column:
 						Indices = new T[value[0].Dimension, value.Length];
 
-						for (int j = 0; j < value.Length; j++)
+						for (var j = 0; j < value.Length; j++)
 						{
-							for (int i = 0; i < value[0].Dimension; i++)
+							for (var i = 0; i < value[0].Dimension; i++)
 							{
 								Indices[i, j] = value[j][i];
 							}
 						}
+
 						break;
 					case VectorType.Row:
 						Indices = new T[value.Length, value[0].Dimension];
 
-						for (int i = 0; i < value.Length; i++)
+						for (var i = 0; i < value.Length; i++)
 						{
-							for (int j = 0; j < value[0].Dimension; j++)
+							for (var j = 0; j < value[0].Dimension; j++)
 							{
 								Indices[i, j] = value[i][j];
 							}
 						}
+
 						break;
 				}
 			}
@@ -654,16 +694,21 @@ namespace Math.Algebra.Fields.Members
 		/// <returns></returns>
 		public override string ToString()
 		{
-			string result = "{ ";
+			return ToString(ConversionSettings.DefaultStringDelimiter);
+		}
+
+		public string ToString(char delimiter)
+		{
+			var result = delimiter + " ";
 
 			foreach (var vector in this[VectorType.Row])
 			{
-				result += vector + ", ";
+				result += vector.ToString(delimiter) + ", ";
 			}
 
 			result = result.Remove(result.Length - 2, 1);
 
-			result += "}";
+			result += "" + delimiter.MatchingDelimiter();
 
 			return result;
 		}
@@ -673,12 +718,13 @@ namespace Math.Algebra.Fields.Members
 		/// </summary>
 		/// <param name="precision"></param>
 		/// <param name="spacing"></param>
+		/// <param name="wholeNumbers"></param>
 		/// <returns></returns>
 		public string ToTable(int precision, int spacing = 1, bool wholeNumbers = false)
 		{
-			string result = "";
+			var result = "";
 
-			int padding = this[VectorType.Row].Select(v => v.Padding(precision)).Max();
+			var padding = this[VectorType.Row].Select(v => v.Padding(precision)).Max();
 
 			foreach (var vector in this[VectorType.Row])
 			{
@@ -700,13 +746,16 @@ namespace Math.Algebra.Fields.Members
 		/// <returns></returns>
 		public string ToDeterminant(int precision, bool addResult = false, int spacing = 1)
 		{
-			if (!IsSquare()) throw new IncompatibleOperationException(MatrixOperationType.Determinant);
+			if (!IsSquare())
+			{
+				throw new IncompatibleOperationException(MatrixOperationType.Determinant);
+			}
 
-			string result = "";
+			var result = "";
 
-			int middle = (int)System.Math.Floor((double)Height / 2);
-			int i = 0;
-			int padding = this[VectorType.Row].Select(v => v.Padding(precision)).Max();
+			var middle = (int)System.Math.Floor((double)Height / 2);
+			var i = 0;
+			var padding = this[VectorType.Row].Select(v => v.Padding(precision)).Max();
 
 			foreach (var vector in this[VectorType.Row])
 			{
@@ -735,11 +784,20 @@ namespace Math.Algebra.Fields.Members
 		public override bool Equals(object obj)
 		{
 			if (ReferenceEquals(null, obj))
+			{
 				return false;
+			}
+
 			if (ReferenceEquals(this, obj))
+			{
 				return true;
+			}
+
 			if (obj.GetType() != GetType())
+			{
 				return false;
+			}
+
 			return Equals((RealMatrix)obj);
 		}
 
@@ -765,16 +823,26 @@ namespace Math.Algebra.Fields.Members
 		{
 			// If the property width is null, the matrix must also be null
 			if (left?.Width == null && right?.Width == null)
+			{
 				return true;
-			if (left?.Width == null || right?.Width == null)
-				return false;
-			if (!left.Addable(right))
-				return false;
+			}
 
-			for (int k = 0; k < left.Height * left.Width; k++)
+			if (left?.Width == null || right?.Width == null)
+			{
+				return false;
+			}
+
+			if (!left.Addable(right))
+			{
+				return false;
+			}
+
+			for (var k = 0; k < left.Height * left.Width; k++)
 			{
 				if (left.GetIndices().ToList()[k] != right.GetIndices().ToList()[k])
+				{
 					return false;
+				}
 			}
 
 			return true;
@@ -801,11 +869,11 @@ namespace Math.Algebra.Fields.Members
 		{
 			if (left.Addable(right))
 			{
-				T[,] indices = new T[left.Width, left.Height];
+				var indices = new T[left.Width, left.Height];
 
-				for (int i = 0; i < left.Width; i++)
+				for (var i = 0; i < left.Width; i++)
 				{
-					for (int j = 0; j < left.Height; j++)
+					for (var j = 0; j < left.Height; j++)
 					{
 						indices[i, j] = left.Indices[i, j].Add(right.Indices[i, j]);
 					}
@@ -823,11 +891,11 @@ namespace Math.Algebra.Fields.Members
 		/// <returns></returns>
 		public static Matrix<T> operator -(Matrix<T> m)
 		{
-			T[,] indices = new T[m.Width, m.Height];
+			var indices = new T[m.Width, m.Height];
 
-			for (int i = 0; i < m.Width; i++)
+			for (var i = 0; i < m.Width; i++)
 			{
-				for (int j = 0; j < m.Height; j++)
+				for (var j = 0; j < m.Height; j++)
 				{
 					indices[i, j] = m.Indices[i, j].Negative<T>();
 				}
@@ -848,6 +916,7 @@ namespace Math.Algebra.Fields.Members
 			{
 				return left + -right;
 			}
+
 			throw new IncompatibleOperationException(MatrixOperationType.Addition,
 				"The two matrices could not be subtracted because their dimensions were unequal.");
 		}
@@ -861,13 +930,15 @@ namespace Math.Algebra.Fields.Members
 		public static Matrix<T> operator *(Matrix<T> left, Matrix<T> right)
 		{
 			if (!left.Multipliable(right))
-				throw new IncompatibleOperationException(MatrixOperationType.Multiplication);
-
-			T[,] indices = new T[left.Height, right.Width];
-
-			for (int i = 0; i < left.Height; i++)
 			{
-				for (int j = 0; j < right.Width; j++)
+				throw new IncompatibleOperationException(MatrixOperationType.Multiplication);
+			}
+
+			var indices = new T[left.Height, right.Width];
+
+			for (var i = 0; i < left.Height; i++)
+			{
+				for (var j = 0; j < right.Width; j++)
 				{
 					indices[i, j] = left[i, VectorType.Row] * right[j, VectorType.Column];
 				}
@@ -885,17 +956,23 @@ namespace Math.Algebra.Fields.Members
 		public static Matrix<T> operator ^(Matrix<T> left, int right)
 		{
 			if (!left.IsSquare())
+			{
 				throw new IncompatibleOperationException(MatrixOperationType.Multiplication);
+			}
 
 			if (right == 0)
+			{
 				return new Matrix<T>(left.Width);
+			}
 
 			if (right < 0)
-				return left.Inverse() ^ (-right);
+			{
+				return left.Inverse() ^ -right;
+			}
 
-			Matrix<T> m = left;
+			var m = left;
 
-			for (int i = 1; i < right; i++)
+			for (var i = 1; i < right; i++)
 			{
 				m = m * left;
 			}
@@ -911,11 +988,11 @@ namespace Math.Algebra.Fields.Members
 		/// <returns></returns>
 		public static Matrix<T> operator *(Matrix<T> left, T right)
 		{
-			T[,] indices = left.Indices;
+			var indices = left.Indices;
 
-			for (int i = 0; i < left.Height; i++)
+			for (var i = 0; i < left.Height; i++)
 			{
-				for (int j = 0; j < left.Width; j++)
+				for (var j = 0; j < left.Width; j++)
 				{
 					indices[i, j] = indices[i, j].Multiply(right);
 				}
@@ -943,7 +1020,12 @@ namespace Math.Algebra.Fields.Members
 		/// <returns></returns>
 		public static Matrix<T> operator /(Matrix<T> left, T right)
 		{
-			return left * right.Inverse<T>();
+			if (right is IInvertible i)
+			{
+				return left * (T) i.Inverse<IInvertible>();
+			}
+
+			throw new IncompatibleOperationException(MatrixOperationType.Division);
 		}
 
 		#endregion
@@ -961,7 +1043,7 @@ namespace Math.Algebra.Fields.Members
 
 		IEnumerator<T> IEnumerable<T>.GetEnumerator()
 		{
-			int position = 0;
+			var position = 0;
 
 			while (position < Width * Height)
 			{
@@ -972,7 +1054,7 @@ namespace Math.Algebra.Fields.Members
 
 		IEnumerator<Vector<T>> IEnumerable<Vector<T>>.GetEnumerator()
 		{
-			int position = 0;
+			var position = 0;
 
 			switch (Type)
 			{
@@ -1045,7 +1127,7 @@ namespace Math.Algebra.Fields.Members
 			{
 				return new RealMatrix(indices);
 			}
-			
+
 			throw new InvalidOperationException("Can't convert this matrix to a real matrix");
 		}
 
@@ -1055,7 +1137,7 @@ namespace Math.Algebra.Fields.Members
 			{
 				return new ComplexMatrix(complexIndices);
 			}
-			
+
 			throw new InvalidOperationException("Can't convert this matrix to a complex matrix");
 		}
 
@@ -1095,22 +1177,40 @@ namespace Math.Algebra.Fields.Members
 
 		public override T1 Null<T1>()
 		{
-			if (typeof(T1) == GetType())
+			if (typeof(T1) == typeof(T))
+			{
 				return (T1)(MonoidMember)new Matrix<T>(Height, Width);
+			}
+
 			throw new IncorrectSetException(this, "null", typeof(T1));
 		}
 
 		public override T1 Unit<T1>()
 		{
-			if (!IsSquare()) throw new IncompatibleOperationException(MatrixOperationType.Unit);
-			if (typeof(T1) == GetType())
-				return (T1)(GroupMember)new Real(1);
+			if (!IsSquare())
+			{
+				throw new IncompatibleOperationException(MatrixOperationType.Unit);
+			}
+
+			if (typeof(T1) == typeof(T))
+			{
+				return (T1)
+					(GroupMember)
+					new Real(1);
+			}
+
 			throw new IncorrectSetException(this, "unit", typeof(T1));
 		}
 
-		public override bool IsNull() => GetRows().All(i => i.IsNull());
+		public override bool IsNull()
+		{
+			return GetRows().All(i => i.IsNull());
+		}
 
-		public override bool IsUnit() => (this - new Matrix<T>(Diagonal())).IsNull() && Diagonal().All(d => d.IsUnit());
+		public override bool IsUnit()
+		{
+			return (this - new Matrix<T>(Diagonal())).IsNull() && Diagonal().All(d => d.IsUnit());
+		}
 
 		[Obsolete]
 		public override double ToDouble()
@@ -1122,7 +1222,10 @@ namespace Math.Algebra.Fields.Members
 		public override bool Equals<T1>(T1 other)
 		{
 			if (other is Matrix<T> r)
+			{
 				return this == r;
+			}
+
 			return false;
 		}
 

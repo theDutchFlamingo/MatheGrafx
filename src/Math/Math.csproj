@@ -70,6 +70,7 @@
     <Compile Include="Algebra\Rings\Members\Integer.cs" />
     <Compile Include="Algebra\Fields\Members\Matrix.cs" />
     <Compile Include="Algebra\Fields\Numerical.cs" />
+    <Compile Include="Latex\LatexExtensions.cs" />
     <Compile Include="NumberTheory\IntegerMath.cs" />
     <Compile Include="Parsing\IParsable.cs" />
     <Compile Include="Polynomials\ComplexPolynomial.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Polynomials\RootFinder.cs" />
     <Compile Include="Algebra\Rings\Members\RingMember.cs" />
     <Compile Include="Algebra\Rings\Ring.cs" />
+    <Compile Include="Settings\ConversionSettings.cs" />
     <Compile Include="SubclassCheck.cs" />
     <Compile Include="VectorSpaces\Basis.cs" />
     <Compile Include="LinearAlgebra\MatrixConversion.cs" />

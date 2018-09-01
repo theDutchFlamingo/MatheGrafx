@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Math.Algebra.Fields.Members;
 using Math.Algebra.Rings.Members;
 using Math.Exceptions;
 using Math.LinearAlgebra;
+using Math.Settings;
 
 namespace Math.Algebra.Fields
 {
@@ -138,7 +140,12 @@ namespace Math.Algebra.Fields
 
 		public override string ToString()
 		{
-			string result = "{";
+			return ToString(ConversionSettings.DefaultStringDelimiter);
+		}
+
+		public string ToString(char delimiter)
+		{
+			string result = "" + delimiter;
 
 			foreach (var d in this)
 			{
@@ -147,7 +154,7 @@ namespace Math.Algebra.Fields
 
 			result = result.Remove(result.Length - 2);
 
-			result += "}";
+			result += "" + delimiter.MatchingDelimiter();
 
 			return result;
 		}
@@ -423,6 +430,51 @@ namespace Math.Algebra.Fields
 		public static explicit operator Vector<T>(T[] l)
 		{
 			return new Vector<T>(l);
+		}
+
+		/// <summary>
+		/// Comverts this vector to a matrix, according to the default vector type
+		/// </summary>
+		/// <param name="v"></param>
+		public static implicit operator Matrix<T>(Vector<T> v)
+		{
+			return v.ToMatrix(ConversionSettings.DefaultVectorType);
+		}
+
+		/// <summary>
+		/// Converts this vector to a 1-by-n or n-by-1 matrix, depending on the given vector type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public Matrix<T> ToMatrix(VectorType type)
+		{
+			switch (type)
+			{
+				case VectorType.Column:
+				{
+					T[,] indices = new T[Dimension, 1];
+
+					for (int i = 0; i < Dimension; i++)
+					{
+						indices[i, 0] = Indices[i];
+					}
+
+					return new Matrix<T>(indices);
+				}
+				case VectorType.Row:
+				{
+					T[,] indices = new T[1, Dimension];
+
+					for (int j = 0; j < Dimension; j++)
+					{
+						indices[0, j] = Indices[j];
+					}
+
+					return new Matrix<T>(indices);
+				}
+			}
+			
+			throw new ArgumentException("Given vector type doesn't exist...");
 		}
 
 		#endregion

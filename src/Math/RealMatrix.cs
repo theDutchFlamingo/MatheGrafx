@@ -3,6 +3,7 @@ using System.Security.Cryptography.X509Certificates;
 using Math.Algebra.Fields.Members;
 using Math.Exceptions;
 using Math.LinearAlgebra;
+using Math.Settings;
 
 namespace Math
 {
@@ -13,6 +14,14 @@ namespace Math
 	public class RealMatrix : Matrix<Real>
 	{
 		#region Constructors
+
+		/// <summary>
+		/// Empty constructor generates a 1x1 null matrix
+		/// </summary>
+		public RealMatrix()
+		{
+
+		}
 
 		/// <summary>
 		/// Constructor of a MatrixBase
@@ -71,7 +80,7 @@ namespace Math
 		/// can be columns or rows based on type
 		/// </summary>
 		/// <param name="vectors"></param>
-		public RealMatrix(RealVector[] vectors) : this(vectors, DefaultVectorType)
+		public RealMatrix(RealVector[] vectors) : this(vectors, ConversionSettings.DefaultVectorType)
 		{
 
 		}

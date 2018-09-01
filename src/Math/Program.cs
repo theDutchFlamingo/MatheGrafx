@@ -4,6 +4,7 @@ using Math.Algebra.Fields;
 using Math.Algebra.Fields.Members;
 using Math.Algebra.Rings.Members;
 using Math.ComplexLinearAlgebra;
+using Math.Latex;
 using Math.LinearAlgebra;
 using Math.Polynomials;
 using Math.Rationals;
@@ -14,16 +15,6 @@ namespace Math
     {
 	    private static readonly Complex i = Complex.I;
 
-	    private class D<T>
-	    {
-			
-	    }
-
-	    private class V : D<int>
-	    {
-		    
-	    }
-	    
 	    static void Main()
         {
 //			Complexity();
@@ -33,12 +24,34 @@ namespace Math
 	        //BasicTest();
 //			Polynomials();
 
-	        V v = new V();
-	        
-	        Console.WriteLine(v.GetType().IsSubclass(typeof(D<int>)));
-        }
+	        Fraction r = new Fraction(22, 7);
 
-	    public static void Polynomials()
+			Console.WriteLine(r);
+
+	        RealMatrix m = new RealMatrix(6,6)
+	        {
+		        Indices = new Real[,] { { 1, 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1, 2 }, { 1, 1, 1, 1, 2, 3 }, { 1, 1, 1, 2, 3, 4 }, { 1, 1, 2, 3, 4, 5 }, { 1, 2, 3, 4, 5, 6 } }
+	        };
+
+			Matrix<Fraction> f = new Matrix<Fraction>
+			{
+				Indices = new [,]
+				{
+					{ new Fraction(1, 3) },
+					{ (Integer) 1 / 4 },
+					{ (Integer) 4 / 7 },
+					{ (Integer) 3 / 4 }
+				}
+			};
+
+			Console.WriteLine(f.ToLatex(fraction => fraction.ToLatex()));
+
+	        m.Unit<Real>();
+
+			Console.WriteLine((new Vector<Fraction>(3, 1) / 3).ToLatex());
+		}
+
+		public static void Polynomials()
 	    {
 			IntegerPolynomial p = new IntegerPolynomial(new Vector<Integer>(new Integer[] { 1, 1 }));
 
@@ -121,7 +134,7 @@ namespace Math
 	    {
 			Real r = new Real(5);
 
-			Console.WriteLine(r.ToDouble());
+			Console.WriteLine(r);
 	    }
 
 	    private static void LinAlg()

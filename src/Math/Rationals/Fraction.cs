@@ -1,6 +1,10 @@
 ﻿using Math.Algebra.Fields;
 using Math.Algebra.Fields.Members;
+using Math.Algebra.Groups;
+using Math.Algebra.Groups.Members;
+using Math.Algebra.Monoids.Members;
 using Math.Algebra.Rings.Members;
+using Math.Exceptions;
 
 namespace Math.Rationals
 {
@@ -33,11 +37,56 @@ namespace Math.Rationals
             
         }
 
-        #endregion
+		#endregion
 
-        #region Overrides
+		#region Overrides
 
-        public INumerical Round()
+		internal override T1 Add<T1>(T1 other)
+	    {
+		    if (other is Fraction r)
+		    {
+			    return (T1)(MonoidMember)
+				    new Fraction(r.Num.Multiply(Den).Add(r.Den.Multiply(Num)), r.Den.Multiply(Den));
+		    }
+		    throw new IncorrectSetException(GetType(), "added", other.GetType());
+	    }
+
+	    public override T1 Negative<T1>()
+	    {
+		    return (T1)(INegatable)new Fraction(-Num, Den);
+	    }
+
+	    internal override T1 Multiply<T1>(T1 other)
+	    {
+		    if (other is Fraction c)
+			    return (T1)(GroupMember)new Fraction(Num.Multiply(c.Num), Den.Multiply(c.Den));
+		    throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
+	    }
+
+	    public override T1 Inverse<T1>()
+	    {
+		    return (T1)(IInvertible)new Fraction(Den, Num);
+	    }
+
+	    public override T1 Null<T1>()
+	    {
+		    if (typeof(T1) == GetType())
+			    return (T1)(MonoidMember)new Fraction(0);
+		    throw new IncorrectSetException(this, "null", typeof(T1));
+	    }
+
+	    public override T1 Unit<T1>()
+	    {
+		    if (typeof(T1) == GetType())
+			    return (T1)(GroupMember)new Fraction(1);
+		    throw new IncorrectSetException(this, "unit", typeof(T1));
+	    }
+
+	    public override bool IsNull() => Num.Equals(0);
+
+	    public override bool IsUnit() => Num.Equals(Den);
+
+		public INumerical Round()
         {
 	        // ReSharper disable once PossibleLossOfFraction
 	        return new Real(System.Math.Round((double) ((int) Num / (int) Den)));
@@ -104,22 +153,60 @@ namespace Math.Rationals
             return left.Multiply(right);
         }
 
-        /// <summary>
-        /// Divide one FieldMember&lt;V&gt; by another
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        public static Fraction operator /(Fraction left, Fraction right)
+	    /// <summary>
+	    /// Multiply the two together
+	    /// </summary>
+	    /// <param name="left"></param>
+	    /// <param name="right"></param>
+	    /// <returns></returns>
+	    public static Fraction operator *(Integer left, Fraction right)
+	    {
+		    return new Fraction(left * right.Num, right.Den);
+	    }
+
+	    /// <summary>
+	    /// Multiply the two together
+	    /// </summary>
+	    /// <param name="left"></param>
+	    /// <param name="right"></param>
+	    /// <returns></returns>
+	    public static Fraction operator *(Fraction left, Integer right)
+	    {
+		    return right * left;
+	    }
+
+		/// <summary>
+		/// Divide one Fraction by another
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static Fraction operator /(Fraction left, Fraction right)
         {
             return left * right.Inverse<Fraction>();
         }
 
-        #endregion
+	    /// <summary>
+	    /// Divide one Fraction by another
+	    /// </summary>
+	    /// <param name="left"></param>
+	    /// <param name="right"></param>
+	    /// <returns></returns>
+	    public static Fraction operator /(Fraction left, Integer right)
+	    {
+		    return left * (1 / right);
+	    }
 
-        #region Conversion
+	    public static Fraction operator /(Integer left, Fraction right)
+	    {
+		    return left * ((Fraction) 1 / right);
+	    }
 
-        public static explicit operator double(Fraction r)
+		#endregion
+
+		#region Conversion
+
+		public static explicit operator double(Fraction r)
         {
             return (double)(int)r.Num / r.Den;
         }
@@ -133,9 +220,14 @@ namespace Math.Rationals
             return new Fraction(whole * den + num, den);
         }
 
+	    public static implicit operator Fraction(int i)
+	    {
+			return new Fraction(i);
+	    }
+
         public override string ToString()
         {
-            return $"{Num}/{Den}";
+            return Num == 0 || Den == 1 ? $"{Num}" : $"{Num}/{Den}";
         }
 
         public string ToString(string format)

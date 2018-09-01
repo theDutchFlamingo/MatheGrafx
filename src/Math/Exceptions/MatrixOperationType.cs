@@ -4,6 +4,7 @@
 	{
 		Addition,
 		Diagonal,
+		Division,
 		Multiplication,
 		Determinant,
 		Inverse,

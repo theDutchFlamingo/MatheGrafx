@@ -223,13 +223,13 @@ namespace Math.Algebra.Rings.Members
         }
 
         /// <summary>
-        /// Negative of this FieldMember
+        /// Negative of this ringmember
         /// </summary>
-        /// <param name="fieldMember"></param>
+        /// <param name="ringMember"></param>
         /// <returns></returns>
-        public static Integer operator -(Integer fieldMember)
+        public static Integer operator -(Integer ringMember)
         {
-            return fieldMember.Negative<Integer>();
+            return ringMember.Negative<Integer>();
         }
 
         /// <summary>
