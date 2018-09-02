@@ -1,6 +1,4 @@
-﻿using System;
-using Math.Algebra.Structures.Groups.Members;
-using Math.Algebra.Structures.Rings.Members;
+﻿using Math.Algebra.Structures.Rings.Members;
 
 namespace Math.Algebra.Structures.Fields.Members
 {

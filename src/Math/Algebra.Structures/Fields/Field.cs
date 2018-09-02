@@ -1,6 +1,5 @@
 ﻿using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Rings;
-using Math.Rationals;
 
 namespace Math.Algebra.Structures.Fields
 {

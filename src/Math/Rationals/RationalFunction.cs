@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Math.Algebra.Structures.Fields;
-using Math.Algebra.Structures.Fields.Members;
-using Math.Algebra.Structures.Groups;
 using Math.Algebra.Structures.Rings.Members;
-using Math.Exceptions;
 using Math.Polynomials;
 
 namespace Math.Rationals

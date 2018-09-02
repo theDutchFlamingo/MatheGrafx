@@ -1,5 +1,4 @@
 ﻿using Math.Algebra.Structures.Groups;
-using Math.Algebra.Structures.Groups;
 using Math.Algebra.Structures.Rings.Members;
 
 namespace Math.Algebra.Structures.Rings

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Math.Algebra.Structures.Monoids.Members
+﻿namespace Math.Algebra.Structures.Monoids.Members
 {
 	public abstract class MonoidMember
 	{

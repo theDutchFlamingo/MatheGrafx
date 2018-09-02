@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Math.Algebra.Structures.Fields.Members;
+﻿using Math.Algebra.Structures.Fields.Members;
 using Math.Exceptions;
 
 namespace Math.ComplexLinearAlgebra

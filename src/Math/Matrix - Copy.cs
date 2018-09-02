@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Math.Algebra.Structures.Fields.Members;
-using Math.ComplexLinearAlgebra;
 using Math.Exceptions;
 using Math.LinearAlgebra;
 

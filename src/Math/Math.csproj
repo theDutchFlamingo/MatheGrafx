@@ -48,8 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algebra.Expressions\Definitions\NamedObjects.cs" />
     <Compile Include="Algebra.Expressions\Expression.cs" />
-    <Compile Include="Algebra.Expressions\NotationConversions.cs" />
+    <Compile Include="Algebra.Expressions\ExpressionConversions.cs" />
+    <Compile Include="Algebra.Expressions\NotationType.cs" />
     <Compile Include="Algebra.Structures\Fields\RationalNumbers.cs" />
     <Compile Include="Algebra.Structures\Groups\Group.cs" />
     <Compile Include="Algebra.Structures\Groups\Members\Natural.cs" />

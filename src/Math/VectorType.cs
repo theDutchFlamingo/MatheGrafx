@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Math
+﻿namespace Math
 {
 	/// <summary>
 	/// Used in conversions between matrices and arrays of vectors. This simple enum

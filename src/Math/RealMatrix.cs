@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography.X509Certificates;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Exceptions;
 using Math.LinearAlgebra;
