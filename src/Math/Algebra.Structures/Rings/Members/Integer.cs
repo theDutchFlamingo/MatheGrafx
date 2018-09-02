@@ -7,6 +7,7 @@ using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Groups;
 using Math.Algebra.Structures.Groups.Members;
 using Math.Algebra.Structures.Monoids.Members;
+using Math.Algebra.Structures.Ordering;
 using Math.Exceptions;
 using Math.LinearAlgebra;
 using Math.NumberTheory;
@@ -14,7 +15,7 @@ using Math.Rationals;
 
 namespace Math.Algebra.Structures.Rings.Members
 {
-    public class Integer : RingMember, INumerical, IFactorable
+    public class Integer : RingMember, INumerical, IFactorable, ITotallyOrdered
     {
         public int Value { get; }
         
@@ -171,7 +172,47 @@ namespace Math.Algebra.Structures.Rings.Members
             return this;
         }
 
-        public override bool Equals<T>(T other)
+	    public bool LessThan<T>(T other)
+	    {
+		    if (other is Integer i)
+		    {
+			    return this < i;
+		    }
+
+		    if (other is int i2)
+		    {
+			    return this < i2;
+		    }
+
+		    if (other is double d)
+		    {
+				return this < d;
+		    }
+
+		    throw new IncorrectSetException(GetType(), "compared", typeof(T));
+	    }
+
+	    public bool GreaterThan<T>(T other)
+	    {
+			if (other is Integer i)
+		    {
+			    return this > i;
+		    }
+
+		    if (other is int i2)
+		    {
+			    return this > i2;
+		    }
+
+		    if (other is double d)
+		    {
+			    return this > d;
+		    }
+
+		    throw new IncorrectSetException(GetType(), "compared", typeof(T));
+		}
+
+	    public override bool Equals<T>(T other)
         {
             if (other is Integer r)
                 return Value == r;

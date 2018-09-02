@@ -6,6 +6,7 @@ using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Groups;
 using Math.Algebra.Structures.Groups.Members;
 using Math.Algebra.Structures.Monoids.Members;
+using Math.Algebra.Structures.Ordering;
 using Math.Algebra.Structures.Rings.Members;
 using Math.Exceptions;
 using Math.LinearAlgebra;
@@ -310,7 +311,10 @@ namespace Math.Polynomials
 		{
 			// First check if variable name is allowed
 			if (!Regex.IsMatch(variable, VariableNamesRegex))
-				throw new ArgumentException("Variable name must start with a letter and contain only letters, numbers and underscores.");
+			{
+				throw new ArgumentException("Variable name must start with a letter and contain only " +
+				                            "letters, numbers and underscores.");
+			}
 			
 			string result = "";
 
@@ -318,7 +322,13 @@ namespace Math.Polynomials
 			{
 				double coef = Coefficients[i];
 				if (!coef.CloseTo(0))
-					result += (coef.CloseTo(1) ? "" : $"{Coefficients[i]}") + $"{variable}" + (i != 1 ? $"^{i}" : "") + " + ";
+				{
+					if (Coefficients[i - 1] is ITotallyOrdered b)
+						string sign = Coefficients[i - 1]. " + ";
+					
+					result += (coef.CloseTo(1) ? "" : $"{Coefficients[i]}") + $"{variable}" +
+					          (i != 1 ? $"^{i}" : "") + " + ";
+				}
 			}
 
 			result += $"{Coefficients[0]}";

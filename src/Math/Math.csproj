@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algebra.Expressions\Definitions\NamedObjects.cs" />
+    <Compile Include="Algebra.Expressions\Definitions\Quantities.cs" />
     <Compile Include="Algebra.Expressions\Expression.cs" />
     <Compile Include="Algebra.Expressions\ExpressionConversions.cs" />
     <Compile Include="Algebra.Expressions\NotationType.cs" />

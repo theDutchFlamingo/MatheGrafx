@@ -5,8 +5,29 @@ namespace Math.Algebra.Structures.Ordering
 {
 	public abstract class OrderedField<T> : Field<T> where T : FieldMember, ITotallyOrdered
 	{
-		public abstract bool Equal(T left, T right);
+		public bool Equal(T left, T right)
+		{
+			return left.Equals(right);
+		}
 
-		public abstract bool LessThan(T left, T right);
+		public bool LessThan(T left, T right)
+		{
+			return left.LessThan(right);
+		}
+
+		public bool GreaterThan(T left, T right)
+		{
+			return left.GreaterThan(right);
+		}
+
+		public bool IsPositive(T member)
+		{
+			return member.GreaterThan(Null());
+		}
+
+		public bool IsNegative(T member)
+		{
+			return member.LessThan(Null());
+		}
 	}
 }

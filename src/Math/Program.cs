@@ -1,4 +1,5 @@
 ﻿using System;
+using Math.Algebra.Expressions.Definitions;
 using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Rings.Members;
@@ -16,45 +17,25 @@ namespace Math
 
 	    static void Main()
         {
-//			Complexity();
-//			Test();
-//			LinAlg();
-//			ComplexLinAlg();
-	        //BasicTest();
-//			Polynomials();
+			//			Complexity();
+			//			Test();
+			//			LinAlg();
+			//			ComplexLinAlg();
+			//BasicTest();
+			Polynomials();
 
-	        Fraction r = new Fraction(22, 7);
+			Console.WriteLine("abc".SetValue(new Real(123)));
 
-			Console.WriteLine(r);
+			Console.WriteLine("abc".SetValue(12345));
 
-	        RealMatrix m = new RealMatrix(6,6)
-	        {
-		        Indices = new Real[,] { { 1, 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1, 2 }, { 1, 1, 1, 1, 2, 3 }, { 1, 1, 1, 2, 3, 4 }, { 1, 1, 2, 3, 4, 5 }, { 1, 2, 3, 4, 5, 6 } }
-	        };
-
-			Matrix<Fraction> f = new Matrix<Fraction>
-			{
-				Indices = new [,]
-				{
-					{ new Fraction(1, 3) },
-					{ (Integer) 1 / 4 },
-					{ (Integer) 4 / 7 },
-					{ (Integer) 3 / 4 }
-				}
-			};
-
-			Console.WriteLine(f.ToLatex(fraction => fraction.ToLatex()));
-
-	        m.Unit<Real>();
-
-			Console.WriteLine((new Vector<Fraction>(3, 1) / 3).ToLatex());
+	        Console.WriteLine(Quantities.Constants["pi"]);
 		}
 
 		public static void Polynomials()
 	    {
-			IntegerPolynomial p = new IntegerPolynomial(new Vector<Integer>(new Integer[] { 1, 1 }));
+			IntegerPolynomial p = new IntegerPolynomial(new Vector<Integer>(new Integer[] { 1, -1 }));
 
-			Console.WriteLine((p ^ 3) + (p ^ 2));
+			Console.WriteLine((p ^ 2));
 		}
 	    
 	    private static void ComplexLinAlg()
