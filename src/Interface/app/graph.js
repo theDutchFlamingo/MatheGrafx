@@ -1,7 +1,7 @@
 'use strict';
 
-var graph = angular.module('GraphClass', []);
-var app = angular.module('GraphApp')
+var app = angular.module('GraphApp');
+var svc = app.service('GraphService');
 
 var canvas, ctx,
     functions,
@@ -10,22 +10,36 @@ var canvas, ctx,
 
 var x0, y0, x1, y1;
 var centerX, centerY;
-
 var width, height;
 
-function init() {
-    console.log("Hello world!");
-    var txt = document.getElementById('txt');
+app.controller('CanvasController', function(GraphService){
+    init(GraphService);
+});
 
-    var ctrl = app.ctrl;
-    txt.value = toString(ctrl);
+function init(svc) {
+    console.log("Hello world!");
+    console.log(cl);
+
+    console.log(svc);
+
+    var ctrl = svc.ctrl;
+
+    console.log(ctrl);
+
+    ctrl = app.ctrl;
+
+    console.log(ctrl);
+
+    console.log(app.decorator);
+
+    var graph = ctrl.Graph;
 
     var canvas = document.getElementById('can');
     ctx = canvas.getContext('2d');
     width = canvas.width;
     height = canvas.height;
-    functions = ctrl.Functions;
-    gridSpacing = ctrl.gridSpacing;
+    functions = graph.Functions;
+    gridSpacing = graph.gridSpacing;
 
     canvas.addEventListener("mousemove", function(e) {
         move("move", e)

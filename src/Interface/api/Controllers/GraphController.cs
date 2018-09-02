@@ -6,7 +6,7 @@ namespace api.Controllers
 	[Route("api/[controller]")]
 	public class GraphController : Controller
 	{
-		public static List<string> Spacings = new List<string>
+		public static readonly List<string> Spacings = new List<string>
 		{
 			"2", "5", "10" 
 		};
@@ -23,7 +23,7 @@ namespace api.Controllers
 				new {X = 0, Y = 0},
 				new {X = 1, Y = 1},
 				new {X = 2, Y = 4},
-				new {X = 3, Y = 9}
+				new {X = 300, Y = 900}
 			};
 
 			//dynamic points = new dynamic[20]; // Amount of points
