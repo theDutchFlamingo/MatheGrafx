@@ -1,4 +1,4 @@
-﻿using Math.Algebra.Rings.Members;
+﻿using Math.Algebra.Structures.Rings.Members;
 
 namespace Math.NumberTheory
 {

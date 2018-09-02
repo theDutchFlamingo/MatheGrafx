@@ -1,6 +1,6 @@
 ﻿using System;
-using Math.Algebra.Fields;
-using Math.Algebra.Fields.Members;
+using Math.Algebra.Structures.Fields;
+using Math.Algebra.Structures.Fields.Members;
 
 namespace Math.ComplexLinearAlgebra
 {

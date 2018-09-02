@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Math.Algebra.Fields;
-using Math.Algebra.Fields.Members;
-using Math.Algebra.Groups;
-using Math.Algebra.Monoids.Members;
-using Math.Algebra.Rings.Members;
+using Math.Algebra.Structures.Fields;
+using Math.Algebra.Structures.Fields.Members;
+using Math.Algebra.Structures.Groups;
+using Math.Algebra.Structures.Monoids.Members;
+using Math.Algebra.Structures.Rings.Members;
 using Math.Exceptions;
 using Math.Polynomials;
 

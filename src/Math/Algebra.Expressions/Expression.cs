@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Math.Algebra.Expressions
+{
+	/// <summary>
+	/// An class which serves as an expression, that is, a collection of numbers and
+	/// operations which combine to form a single value. An expression may depend
+	/// on several unknowns, which are given in the list of strings with the name variables.
+	/// </summary>
+	public class Expression
+	{
+		public List<string> Variables { get; set; }
+
+		public string Prefix { get; }
+
+		public Expression(string expression)
+		{
+			Prefix = 
+		}
+	}
+}
