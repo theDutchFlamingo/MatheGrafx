@@ -32,7 +32,7 @@ namespace Math
 					{
 						new Matrix<Real>
 						{
-							Indices = new Real[,] { {1, 3}, {0, 0} }
+							Indices = new Real[,] { {1, 3}, {0, 1} }
 						},
 						new Matrix<Real>
 						{
@@ -42,7 +42,7 @@ namespace Math
 					{
 						new Matrix<Real>
 						{
-							Indices = new Real[,] { {1, 2}, {1, 2} }
+							Indices = new Real[,] { {1, 2}, {1, 3} }
 						},
 						new Matrix<Real>
 						{
@@ -55,7 +55,7 @@ namespace Math
 			Latex(m);
 
 			Console.WriteLine();
-			Console.WriteLine(m.ToReducedEchelonForm(() => new Matrix<Real>(2, 2)).
+			Console.WriteLine(m.ToReducedEchelonForm(() => new Matrix<Real>(2, 2), 1).
 				ToLatex(mat => mat.ToLatex()));
 		}
 

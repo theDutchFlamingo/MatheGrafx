@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Math.Exceptions
 {
@@ -11,7 +7,12 @@ namespace Math.Exceptions
 	/// </summary>
 	public class ImpossibleEchelonFormException : Exception
 	{
-		public ImpossibleEchelonFormException(string message) : base(message)
+		public const string Msg = "Inverse of one of the elements does not exist," +
+		                          " so the matrix has no (reduced) echelon form.\n" +
+		                          "Only if all inner elements have an inverse is the" +
+		                          "(reduced) echelon form guaranteed to exist.";
+
+		public ImpossibleEchelonFormException() : base(Msg)
 		{
 
 		}

@@ -13,24 +13,25 @@ namespace Math.LinearAlgebra
 		/// </summary>
 		/// <param name="m"></param>
 		/// <param name="constructor"></param>
-		/// <param name="amountToIgnore"></param>
+		/// <param name="toIgnore"></param>
 		/// <returns></returns>
-		private static Matrix<T> SortNullRows<T>(this Matrix<T> m, Func<T> constructor, int amountToIgnore = 0)
+		private static Matrix<T> SortNullRows<T>(
+			this Matrix<T> m, Func<T> constructor, int toIgnore = 0)
 			where  T : FieldMember, new()
 		{
 			// First clone the matrix so that the original is not changed
 			Matrix<T> n = new Matrix<T>(m);
 
 			// Put all null rows on the bottom of the matrix
-			while (!n.AreNullRowsBelow(constructor, amountToIgnore))
+			while (!n.AreNullRowsBelow(constructor, toIgnore))
 			{
-				List<int> toSwitch = n.MisplacedNullRows(constructor, amountToIgnore);
+				List<int> toSwitch = n.MisplacedNullRows(constructor, toIgnore);
 
 				int next = toSwitch.First();
 
 				// Switch the null row with the last non-null row
 				RowOperation<T>.SwitchingOperation(next, n.Height + toSwitch.Count -
-				                                      n.AmountOfNullRows(amountToIgnore) - 1).ActOn(n);
+				                                      n.AmountOfNullRows(toIgnore) - 1).ActOn(n);
 			}
 
 			return n;
@@ -41,24 +42,25 @@ namespace Math.LinearAlgebra
 		/// </summary>
 		/// <param name="m"></param>
 		/// <param name="constructor">The constructor for a null element of T</param>
-		/// <param name="amountToIgnore"></param>
+		/// <param name="toIgnore"></param>
 		/// <returns></returns>
-		private static Matrix<T> ToSortedForm<T>(this Matrix<T> m, Func<T> constructor, int amountToIgnore = 0)
+		private static Matrix<T> ToSortedForm<T>(
+			this Matrix<T> m, Func<T> constructor, int toIgnore = 0)
 			where T : FieldMember, new()
 		{
-			Matrix<T> n = m.SortNullRows(constructor, amountToIgnore);
+			Matrix<T> n = m.SortNullRows(constructor, toIgnore);
 
 			int rowsSorted = -1;
 
 			// Sort all the rows by switching
-			while (!n.IsSorted(constructor, amountToIgnore))
+			while (!n.IsSorted(constructor, toIgnore))
 			{
 				rowsSorted++;
 
 				List<int> rows = Enumerable.Range(rowsSorted,
-						n.Height - n.AmountOfNullRows(amountToIgnore) - rowsSorted).ToList();
-				int min = rows.Select(i => n.GetPivot(i,constructor, amountToIgnore)).Min();
-				int next = rows.First(i => n.GetPivot(i, constructor, amountToIgnore) == min);
+						n.Height - n.AmountOfNullRows(toIgnore) - rowsSorted).ToList();
+				int min = rows.Select(i => n.GetPivot(i,constructor, toIgnore)).Min();
+				int next = rows.First(i => n.GetPivot(i, constructor, toIgnore) == min);
 
 				if (next == rowsSorted)
 				{
@@ -75,19 +77,19 @@ namespace Math.LinearAlgebra
 		/// Converts the given matrix to echelon form
 		/// </summary>
 		/// <param name="m"></param>
-		/// <param name="amountToIgnore">The amount of rows on the right that should not
+		/// <param name="toIgnore">The amount of rows on the right that should not
 		/// be considered when converting to echelon (amount of auxiliary columns)</param>
 		/// <returns></returns>
-		public static Matrix<T> ToEchelonForm<T>(this Matrix<T> m, int amountToIgnore = 0)
+		public static Matrix<T> ToEchelonForm<T>(this Matrix<T> m, int toIgnore = 0)
 			where T : FieldMember, new()
 		{
-			return m.ToEchelonForm(() => new T(), amountToIgnore);
+			return m.ToEchelonForm(() => new T(), toIgnore);
 		}
 
 		public static Matrix<T> ToEchelonForm<T>(
 			this Matrix<T> m,
 			Func<T> constructor,
-			int amountToIgnore = 0)
+			int toIgnore = 0)
 			where T : FieldMember, new()
 		{
 			Matrix<T> n = m.ToSortedForm(constructor);
@@ -95,41 +97,40 @@ namespace Math.LinearAlgebra
 			int from = -1;
 
 			// Put the rows in echelon form (some substitution will be required)
-			while (!n.IsEchelon(constructor, amountToIgnore))
+			while (!n.IsEchelon(constructor, toIgnore))
 			{
 				from++;
 				// Substitution can unsort the rows
-				if (!n.IsSorted(constructor, amountToIgnore))
-					n = n.ToSortedForm(constructor, amountToIgnore);
+				if (!n.IsSorted(constructor, toIgnore))
+					n = n.ToSortedForm(constructor, toIgnore);
 
 				List<int> rows = Enumerable.Range(from + 1,
-					n.Height - n.AmountOfNullRows(amountToIgnore) - from - 1).ToList();
-				int pivot = n.GetPivot(from, constructor, amountToIgnore);
+					n.Height - n.AmountOfNullRows(toIgnore) - from - 1).ToList();
+				int pivot = n.GetPivot(from, constructor, toIgnore);
 
 				foreach (var to in rows)
 				{
-					if (n.GetPivot(from, constructor, amountToIgnore) <
-					    n.GetPivot(to, constructor, amountToIgnore))
+					if (n.GetPivot(from, constructor, toIgnore) <
+					    n.GetPivot(to, constructor, toIgnore))
 					{
 						continue;
 					}
-					if (n.GetPivot(from, constructor, amountToIgnore) ==
-					    n.GetPivot(to, constructor, amountToIgnore))
+					if (n.GetPivot(from, constructor, toIgnore) ==
+					    n.GetPivot(to, constructor, toIgnore))
 					{
 						try
 						{
 							T scale = n[to, pivot].Negative<T>().Multiply(n[from, pivot].Inverse<T>());
 							RowOperation<T>.SubstitutionOperation(from, to, scale).ActOn(n);
 						}
-						catch (InvalidOperationException)
+						catch (IncompatibleOperationException)
 						{
-							throw new ImpossibleEchelonFormException("Inverse of one of the elements does not exist," +
-							                                         " so the matrix has no reduced echelon form.");
+							throw new ImpossibleEchelonFormException();
 						}
 					}
-					if (n.GetPivot(from, constructor, amountToIgnore) >
-					    n.GetPivot(to, constructor, amountToIgnore) &&
-					    n.GetPivot(to, constructor, amountToIgnore) != -1)
+					if (n.GetPivot(from, constructor, toIgnore) >
+					    n.GetPivot(to, constructor, toIgnore) &&
+					    n.GetPivot(to, constructor, toIgnore) != -1)
 					{
 						RowOperation<T>.SwitchingOperation(from, to).ActOn(n);
 					}
@@ -144,18 +145,19 @@ namespace Math.LinearAlgebra
 		/// </summary>
 		/// <param name="m"></param>
 		/// <param name="constructor"></param>
-		/// <param name="amountToIgnore"></param>
+		/// <param name="toIgnore"></param>
 		/// <returns></returns>
-		private static Matrix<T> ToUnitPivots<T>(this Matrix<T> m, Func<T> constructor, int amountToIgnore = 0)
+		private static Matrix<T> ToUnitPivots<T>(
+			this Matrix<T> m, Func<T> constructor, int toIgnore = 0)
 			where T : FieldMember, new()
 		{
-			Matrix<T> n = m.ToEchelonForm(constructor, amountToIgnore);
+			Matrix<T> n = m.ToEchelonForm(constructor, toIgnore);
 
 			int i = 0;
 
 			foreach (var vector in n[VectorType.Row])
 			{
-				if (n.GetPivot(i, constructor, amountToIgnore) == -1)
+				if (n.GetPivot(i, constructor, toIgnore) == -1)
 				{
 					continue;
 				}
@@ -163,13 +165,12 @@ namespace Math.LinearAlgebra
 				try
 				{
 					T scale = constructor().Unit<T>()
-						.Multiply(vector[n.GetPivot(i, constructor, amountToIgnore)].Inverse<T>());
+						.Multiply(vector[n.GetPivot(i, constructor, toIgnore)].Inverse<T>());
 					RowOperation<T>.ScaleOperation(i, scale).ActOn(n);
 				}
-				catch (InvalidOperationException)
+				catch (IncompatibleOperationException)
 				{
-					throw new ImpossibleEchelonFormException("Inverse of one of the elements does not exist," +
-					                                         " so the matrix has no reduced echelon form.");
+					throw new ImpossibleEchelonFormException();
 				}
 
 				i++;
@@ -182,12 +183,12 @@ namespace Math.LinearAlgebra
 		/// Convert the Matrix to reduced echelon form
 		/// </summary>
 		/// <param name="m"></param>
-		/// <param name="amountToIgnore"></param>
+		/// <param name="toIgnore">The amount of rows that needn't be considered when converting.</param>
 		/// <returns></returns>
-		public static Matrix<T> ToReducedEchelonForm<T>(this Matrix<T> m, int amountToIgnore = 0)
+		public static Matrix<T> ToReducedEchelonForm<T>(this Matrix<T> m, int toIgnore = 0)
 			where T : FieldMember, new()
 		{
-			return m.ToReducedEchelonForm(() => new T(), amountToIgnore);
+			return m.ToReducedEchelonForm(() => new T(), toIgnore);
 		}
 
 		/// <summary>
@@ -195,28 +196,28 @@ namespace Math.LinearAlgebra
 		/// </summary>
 		/// <param name="m"></param>
 		/// <param name="constructor">The constructor to make a null instance of T</param>
-		/// <param name="amountToIgnore"></param>
+		/// <param name="toIgnore">The amount of rows that needn't be considered when converting.</param>
 		/// <returns></returns>
 		public static Matrix<T> ToReducedEchelonForm<T>(
 			this Matrix<T> m,
 			Func<T> constructor,
-			int amountToIgnore = 0)
+			int toIgnore = 0)
 			where T : FieldMember, new()
 		{
 			// First convert to normal echelon form
-			Matrix<T> n = m.ToUnitPivots(constructor, amountToIgnore);
+			Matrix<T> n = m.ToUnitPivots(constructor, toIgnore);
 
-			int from = n.Height - n.AmountOfNullRows(amountToIgnore);
+			int from = n.Height - n.AmountOfNullRows(toIgnore);
 
 			// Put the rows in echelon form (some substitution will be required)
-			while (!n.IsReducedEchelon(constructor, amountToIgnore))
+			while (!n.IsReducedEchelon(constructor, toIgnore))
 			{
 				from--;
 
 				List<int> rows = Enumerable.Range(0, from).ToList();
 				// Go from the bottom to the top
 				rows.Reverse();
-				int pivot = n.GetPivot(from, constructor, amountToIgnore);
+				int pivot = n.GetPivot(from, constructor, toIgnore);
 
 				foreach (var to in rows)
 				{
@@ -227,10 +228,9 @@ namespace Math.LinearAlgebra
 							T scale = n[to, pivot].Negative<T>().Multiply(n[from, pivot].Inverse<T>());
 							RowOperation<T>.SubstitutionOperation(from, to, scale).ActOn(n);
 						}
-						catch (InvalidOperationException)
+						catch (IncompatibleOperationException)
 						{
-							throw new ImpossibleEchelonFormException("Inverse of one of the elements does not exist," +
-							                                         " so the matrix has no reduced echelon form.");
+							throw new ImpossibleEchelonFormException();
 						}
 					}
 				}
@@ -244,12 +244,12 @@ namespace Math.LinearAlgebra
 		/// </summary>
 		/// <param name="m"></param>
 		/// <param name="constructor"></param>
-		/// <param name="amountToIgnore"></param>
+		/// <param name="toIgnore"></param>
 		/// <returns></returns>
-		private static bool AreNullRowsBelow<T>(this Matrix<T> m, Func<T> constructor, int amountToIgnore)
+		private static bool AreNullRowsBelow<T>(this Matrix<T> m, Func<T> constructor, int toIgnore)
 			where T : FieldMember, new()
 		{
-			return m.MisplacedNullRows(constructor, amountToIgnore).Count == 0;
+			return m.MisplacedNullRows(constructor, toIgnore).Count == 0;
 		}
 
 		/// <summary>
@@ -258,9 +258,9 @@ namespace Math.LinearAlgebra
 		/// </summary>
 		/// <param name="m"></param>
 		/// <param name="constructor"></param>
-		/// <param name="amountToIgnore"></param>
+		/// <param name="toIgnore"></param>
 		/// <returns></returns>
-		private static bool IsSorted<T>(this Matrix<T> m, Func<T> constructor, int amountToIgnore)
+		private static bool IsSorted<T>(this Matrix<T> m, Func<T> constructor, int toIgnore)
 			where T : FieldMember, new()
 		{
 			int maxPivot = -1;
@@ -268,16 +268,16 @@ namespace Math.LinearAlgebra
 			// Make sure pivot positions are increasing
 			for (int i = 0; i < m.Height; i++)
 			{
-				if (m.GetPivot(i, constructor, amountToIgnore) <
-				    maxPivot && m.GetPivot(i, constructor, amountToIgnore) != -1)
+				if (m.GetPivot(i, constructor, toIgnore) <
+				    maxPivot && m.GetPivot(i, constructor, toIgnore) != -1)
 				{
 					return false;
 				}
 
-				maxPivot = m.GetPivot(i, constructor, amountToIgnore);
+				maxPivot = m.GetPivot(i, constructor, toIgnore);
 			}
 
-			return m.AreNullRowsBelow(constructor, amountToIgnore);
+			return m.AreNullRowsBelow(constructor, toIgnore);
 		}
 
 		/// <summary>
@@ -285,16 +285,17 @@ namespace Math.LinearAlgebra
 		/// </summary>
 		/// <param name="m"></param>
 		/// <param name="constructor">The constructor for a null element of T</param>
-		/// <param name="amountToIgnore"></param>
+		/// <param name="toIgnore"></param>
 		/// <returns></returns>
-		private static List<int> MisplacedNullRows<T>(this Matrix<T> m, Func<T> constructor, int amountToIgnore)
+		private static List<int> MisplacedNullRows<T>(
+			this Matrix<T> m, Func<T> constructor, int toIgnore)
 			where T : FieldMember, new()
 		{
 			List<int> result = new List<int>();
 
-			for (int i = 0; i < m.Height - m.AmountOfNullRows(amountToIgnore); i++)
+			for (int i = 0; i < m.Height - m.AmountOfNullRows(toIgnore); i++)
 			{
-				if (m.GetPivot(i, constructor, amountToIgnore) == -1)
+				if (m.GetPivot(i, constructor, toIgnore) == -1)
 				{
 					result.Add(i);
 				}
@@ -308,12 +309,12 @@ namespace Math.LinearAlgebra
 		/// also increases the pivot position
 		/// </summary>
 		/// <param name="m"></param>
-		/// <param name="amountToIgnore"></param>
+		/// <param name="toIgnore"></param>
 		/// <returns></returns>
-		public static bool IsEchelon<T>(this Matrix<T> m, int amountToIgnore = 0)
+		public static bool IsEchelon<T>(this Matrix<T> m, int toIgnore = 0)
 			where T : FieldMember, new()
 		{
-			return m.IsEchelon(() => new T(), amountToIgnore);
+			return m.IsEchelon(() => new T(), toIgnore);
 		}
 
 		/// <summary>
@@ -322,9 +323,9 @@ namespace Math.LinearAlgebra
 		/// </summary>
 		/// <param name="m"></param>
 		/// <param name="constructor"></param>
-		/// <param name="amountToIgnore"></param>
+		/// <param name="toIgnore"></param>
 		/// <returns></returns>
-		public static bool IsEchelon<T>(this Matrix<T> m, Func<T> constructor, int amountToIgnore = 0)
+		public static bool IsEchelon<T>(this Matrix<T> m, Func<T> constructor, int toIgnore = 0)
 			where T : FieldMember, new()
 		{
 			int maxPivot = -1;
@@ -332,16 +333,16 @@ namespace Math.LinearAlgebra
 			// Make sure pivot positions are strictly increasing
 			for (int i = 0; i < m.Height; i++)
 			{
-				if (m.GetPivot(i, constructor, amountToIgnore) <=
-				    maxPivot && m.GetPivot(i, constructor, amountToIgnore) != -1)
+				if (m.GetPivot(i, constructor, toIgnore) <=
+				    maxPivot && m.GetPivot(i, constructor, toIgnore) != -1)
 				{
 					return false;
 				}
 
-				maxPivot = m.GetPivot(i, constructor, amountToIgnore);
+				maxPivot = m.GetPivot(i, constructor, toIgnore);
 			}
 
-			return m.AreNullRowsBelow(constructor, amountToIgnore);
+			return m.AreNullRowsBelow(constructor, toIgnore);
 		}
 
 		/// <summary>
@@ -350,12 +351,12 @@ namespace Math.LinearAlgebra
 		/// each pivot are zeroes.
 		/// </summary>
 		/// <param name="m"></param>
-		/// <param name="amountToIgnore"></param>
+		/// <param name="toIgnore"></param>
 		/// <returns></returns>
-		public static bool IsReducedEchelon<T>(this Matrix<T> m, int amountToIgnore = 0)
+		public static bool IsReducedEchelon<T>(this Matrix<T> m, int toIgnore = 0)
 			where T : FieldMember, new()
 		{
-			return m.IsReducedEchelon(() => new T(), amountToIgnore);
+			return m.IsReducedEchelon(() => new T(), toIgnore);
 		}
 
 		/// <summary>
@@ -365,12 +366,12 @@ namespace Math.LinearAlgebra
 		/// </summary>
 		/// <param name="m"></param>
 		/// <param name="constructor"></param>
-		/// <param name="amountToIgnore"></param>
+		/// <param name="toIgnore"></param>
 		/// <returns></returns>
-		public static bool IsReducedEchelon<T>(this Matrix<T> m, Func<T> constructor, int amountToIgnore = 0)
+		public static bool IsReducedEchelon<T>(this Matrix<T> m, Func<T> constructor, int toIgnore = 0)
 			where T : FieldMember, new()
 		{
-			if (!m.IsEchelon(constructor, amountToIgnore))
+			if (!m.IsEchelon(constructor, toIgnore))
 			{
 				return false;
 			}
@@ -378,29 +379,29 @@ namespace Math.LinearAlgebra
 			// Make sure pivots are 1 and above the pivots there are only zeroes.
 			for (int i = 0; i < m.Height; i++)
 			{
-				if (m.GetPivot(i, constructor, amountToIgnore) != -1 &&
-				    (!m[i, VectorType.Row][m.GetPivot(i, constructor, amountToIgnore)].IsUnit() ||
-				     m.Transpose().GetPivot(m.GetPivot(i, constructor, amountToIgnore), constructor) != i))
+				if (m.GetPivot(i, constructor, toIgnore) != -1 &&
+				    (!m[i, VectorType.Row][m.GetPivot(i, constructor, toIgnore)].IsUnit() ||
+				     m.Transpose().GetPivot(m.GetPivot(i, constructor, toIgnore), constructor) != i))
 				{
 					return false;
 				}
 			}
 
-			return m.AreNullRowsBelow(constructor, amountToIgnore);
+			return m.AreNullRowsBelow(constructor, toIgnore);
 		}
 
 		/// <summary>
 		/// Returns the amount of rows in the given matrix which are completely zero
 		/// </summary>
 		/// <param name="m"></param>
-		/// <param name="amountToIgnore"></param>
+		/// <param name="toIgnore"></param>
 		/// <returns></returns>
-		public static int AmountOfNullRows<T>(this Matrix<T> m, int amountToIgnore = 0)
+		public static int AmountOfNullRows<T>(this Matrix<T> m, int toIgnore = 0)
 			where T : FieldMember, new()
 		{
 			Matrix<T> n = new Matrix<T>(m);
 
-			for (int j = m.Width - 1; j >= m.Width - amountToIgnore; j--)
+			for (int j = m.Width - 1; j >= m.Width - toIgnore; j--)
 			{
 				n = n.WithoutColumn(j);
 			}
@@ -446,16 +447,16 @@ namespace Math.LinearAlgebra
 		/// </summary>
 		/// <param name="m">The matrix to evaluate</param>
 		/// <param name="i">Which row to get a pivot from</param>
-		/// <param name="amountToIgnore">Amount of columns on the right
+		/// <param name="toIgnore">Amount of columns on the right
 		/// to ignore when searching non-zero values</param>
 		/// <returns></returns>
-		public static int GetPivot<T>(this Matrix<T> m, int i, int amountToIgnore = 0)
+		public static int GetPivot<T>(this Matrix<T> m, int i, int toIgnore = 0)
 			where T : FieldMember, new()
 		{
-			return m.GetPivot(i, () => new T(), amountToIgnore);
+			return m.GetPivot(i, () => new T(), toIgnore);
 		}
 
-		public static int GetPivot<T>(this Matrix<T> m, int i, Func<T> constructor, int amountToIgnore = 0)
+		public static int GetPivot<T>(this Matrix<T> m, int i, Func<T> constructor, int toIgnore = 0)
 			where T : FieldMember, new()
 		{
 			if (i >= m.Height)
@@ -463,7 +464,7 @@ namespace Math.LinearAlgebra
 				throw new IndexOutOfRangeException(
 					"Row index was greater than or equal to the height of the matrix");}
 
-			for (int j = 0; j < m.Width - amountToIgnore; j++)
+			for (int j = 0; j < m.Width - toIgnore; j++)
 			{
 				if (!m[i, j].Equals(constructor()))
 				{
