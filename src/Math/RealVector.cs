@@ -1,6 +1,7 @@
 ﻿using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Exceptions;
+using Math.Exceptions.Operations;
 
 namespace Math
 {

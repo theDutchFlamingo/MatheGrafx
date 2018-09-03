@@ -6,7 +6,6 @@ using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Groups;
 using Math.Algebra.Structures.Groups.Members;
 using Math.Algebra.Structures.Monoids.Members;
-using Math.Algebra.Structures.Ordering;
 using Math.Algebra.Structures.Rings.Members;
 using Math.Exceptions;
 using Math.LinearAlgebra;
@@ -360,7 +359,7 @@ namespace Math.Polynomials
 				return (T) (MonoidMember) (this + polynomial);
 			}
 
-			throw new IncompatibleOperationException(GroupOperationType.Addition);
+			throw new IncorrectSetException(GetType(), "added", typeof(T));
 		}
 
 		internal override T Multiply<T>(T other)
@@ -370,7 +369,7 @@ namespace Math.Polynomials
 				return (T) (GroupMember) (this * polynomial);
 			}
 
-			throw new IncompatibleOperationException(GroupOperationType.Multiplication);
+			throw new IncorrectSetException(GetType(), "added", typeof(T));
 		}
 
 		public override T Null<T>()

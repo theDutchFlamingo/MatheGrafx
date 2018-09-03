@@ -63,7 +63,6 @@
     <Compile Include="Algebra.Structures\Set.cs" />
     <Compile Include="ComplexLinearAlgebra\ComplexNumbers.cs" />
     <Compile Include="Exceptions\FactorTypeException.cs" />
-    <Compile Include="Exceptions\GroupOperationType.cs" />
     <Compile Include="Exceptions\ImpossibleEchelonForm.cs" />
     <Compile Include="Exceptions\IncorrectSetException.cs" />
     <Compile Include="Algebra.Structures\Fields\Members\Complex.cs" />
@@ -103,13 +102,13 @@
     <Compile Include="VectorSpaces\Basis.cs" />
     <Compile Include="LinearAlgebra\MatrixConversion.cs" />
     <Compile Include="LinearAlgebra\RowOperation.cs" />
-    <Compile Include="Exceptions\IncompatibleRowOperationException.cs" />
-    <Compile Include="Exceptions\VectorOperationType.cs" />
-    <Compile Include="Exceptions\IncompatibleOperationException.cs" />
-    <Compile Include="Exceptions\MatrixOperationType.cs" />
+    <Compile Include="Exceptions\Operations\IncompatibleRowOperationException.cs" />
+    <Compile Include="Exceptions\Operations\VectorOperationType.cs" />
+    <Compile Include="Exceptions\Operations\IncompatibleOperationException.cs" />
+    <Compile Include="Exceptions\Operations\MatrixOperationType.cs" />
     <Compile Include="LinearAlgebra\LinearMath.cs" />
-    <Compile Include="Exceptions\InvalidRowOperationException.cs" />
-    <Compile Include="Exceptions\InvalidRowOperationType.cs" />
+    <Compile Include="Exceptions\Operations\InvalidRowOperationException.cs" />
+    <Compile Include="Exceptions\Operations\InvalidRowOperationType.cs" />
     <Compile Include="RealMatrix.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

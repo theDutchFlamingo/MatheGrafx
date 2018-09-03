@@ -5,6 +5,7 @@ using System.Linq;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Rings.Members;
 using Math.Exceptions;
+using Math.Exceptions.Operations;
 using Math.LinearAlgebra;
 using Math.Settings;
 

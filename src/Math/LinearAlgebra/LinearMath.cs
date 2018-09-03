@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Exceptions;
+using Math.Exceptions.Operations;
 using Math.VectorSpaces;
 
 namespace Math.LinearAlgebra

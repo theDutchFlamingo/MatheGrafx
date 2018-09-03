@@ -1,4 +1,4 @@
-﻿namespace Math.Exceptions
+﻿namespace Math.Exceptions.Operations
 {
 	public enum MatrixOperationType
 	{

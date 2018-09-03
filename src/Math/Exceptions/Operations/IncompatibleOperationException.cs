@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Math.Exceptions
+namespace Math.Exceptions.Operations
 {
 	/**
 	 * When two matrices are multiplied or added, or a determinant or an inverse is taken,
@@ -10,18 +10,6 @@ namespace Math.Exceptions
 	{
 		public MatrixOperationType MatrixType { get; }
 		public VectorOperationType VectorType { get; }
-		public GroupOperationType GroupType { get; }
-
-		public IncompatibleOperationException(GroupOperationType type) : base(GetMessage(type))
-		{
-			GroupType = type;
-		}
-
-		public IncompatibleOperationException(GroupOperationType type, string message)
-			: base(message)
-		{
-			GroupType = type;
-		}
 
 		public IncompatibleOperationException(MatrixOperationType type) : base(GetMessage(type))
 		{
@@ -91,18 +79,6 @@ namespace Math.Exceptions
 			}
 
 			throw new ArgumentException("The given VectorOperationType was " +
-			                            "not a valid object.");
-		}
-
-		public static string GetMessage(GroupOperationType groupType)
-		{
-			switch (groupType)
-			{
-				case GroupOperationType.Addition:
-					return "";
-			}
-
-			throw new ArgumentException("The given GroupOperationType was " +
 			                            "not a valid object.");
 		}
 	}
