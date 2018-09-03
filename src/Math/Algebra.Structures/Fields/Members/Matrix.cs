@@ -29,22 +29,13 @@ namespace Math.Algebra.Structures.Fields.Members
 
 		private T[,] _indices;
 
+		/// <summary>
+		/// Getter and setter for the _indices. Getter gets directly, but setter copies values one by one
+		/// so that unexpected situations with objects and pointers etc. are avoided.
+		/// </summary>
 		public T[,] Indices
 		{
-			get
-			{
-				var indices = new T[Height, Width];
-
-				for (var i = 0; i < Height; i++)
-				{
-					for (var j = 0; j < Width; j++)
-					{
-						indices[i, j] = _indices[i, j];
-					}
-				}
-
-				return indices;
-			}
+			get => _indices;
 			set
 			{
 				Height = value.GetLength(0);
@@ -143,13 +134,11 @@ namespace Math.Algebra.Structures.Fields.Members
 		/// Creates a diagonal matrix with the given vector on the diagonal
 		/// </summary>
 		/// <param name="diagonal"></param>
-		public Matrix(Vector<T> diagonal)
+		public Matrix(Vector<T> diagonal) : this(diagonal.Dimension, diagonal.Dimension)
 		{
-			Indices = new T[diagonal.Dimension, diagonal.Dimension];
-
 			for (var k = 0; k < diagonal.Dimension; k++)
 			{
-				Indices[k, k] = diagonal[k];
+				_indices[k, k] = diagonal[k];
 			}
 		}
 
@@ -157,26 +146,21 @@ namespace Math.Algebra.Structures.Fields.Members
 		/// Creates a diagonal matrix with the given array on the diagonal
 		/// </summary>
 		/// <param name="diagonal"></param>
-		public Matrix(T[] diagonal)
+		public Matrix(T[] diagonal) : this(diagonal.Length, diagonal.Length)
 		{
-			var size = diagonal.Length;
-
-			Indices = new T[size, size];
-
-			for (var i = 0; i < size; i++)
+			for (var i = 0; i < diagonal.Length; i++)
 			{
-				Indices[i, i] = diagonal[i];
+				_indices[i, i] = diagonal[i];
 			}
 		}
 
 		/// <summary>
-		/// Create a unit matrix with the given size
+		/// Create a unit matrix with the given size, calls the other constructor
+		/// just to initialize all the other indices as null values.
 		/// </summary>
 		/// <param name="size"></param>
-		public Matrix(int size)
+		public Matrix(int size) : this(size, size)
 		{
-			Indices = new T[size, size];
-
 			for (var k = 0; k < size; k++)
 			{
 				Indices[k, k] = new T().Unit<T>();
@@ -837,11 +821,14 @@ namespace Math.Algebra.Structures.Fields.Members
 				return false;
 			}
 
-			for (var k = 0; k < left.Height * left.Width; k++)
+			for (var i = 0; i < left.Height; i++)
 			{
-				if (left.GetIndices().ToList()[k] != right.GetIndices().ToList()[k])
+				for (var j = 0; j < left.Width; j++)
 				{
-					return false;
+					if (!left[i, j].Equals(right[i, j]))
+					{
+						return false;
+					}
 				}
 			}
 
@@ -1192,11 +1179,11 @@ namespace Math.Algebra.Structures.Fields.Members
 				throw new IncompatibleOperationException(MatrixOperationType.Unit);
 			}
 
-			if (typeof(T1) == typeof(T))
+			if (typeof(T1) == GetType())
 			{
 				return (T1)
 					(GroupMember)
-					new Real(1);
+					new Matrix<T>(Width);
 			}
 
 			throw new IncorrectSetException(this, "unit", typeof(T1));

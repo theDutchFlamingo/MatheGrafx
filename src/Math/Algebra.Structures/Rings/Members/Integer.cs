@@ -194,14 +194,14 @@ namespace Math.Algebra.Structures.Rings.Members
 
 	    public bool GreaterThan<T>(T other)
 	    {
-			if (other is Integer i)
+			if (other is Integer integer)
 		    {
-			    return this > i;
+			    return this > integer;
 		    }
 
-		    if (other is int i2)
+		    if (other is int i)
 		    {
-			    return this > i2;
+			    return this > i;
 		    }
 
 		    if (other is double d)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Math.Algebra.Expressions.Definitions;
 using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
@@ -17,19 +18,51 @@ namespace Math
 
 	    static void Main()
         {
-			//			Complexity();
-			//			Test();
-			//			LinAlg();
-			//			ComplexLinAlg();
+			//Complexity();
+			//Test();
+			//LinAlg();
+			//ComplexLinAlg();
 			//BasicTest();
-			Polynomials();
+			//Polynomials();
 
-			Console.WriteLine("abc".SetValue(new Real(123)));
+			Matrix<Matrix<Real>> m = new Matrix<Matrix<Real>>
+			{
+				Indices = new [,]
+				{
+					{
+						new Matrix<Real>
+						{
+							Indices = new Real[,] { {1, 3}, {0, 0} }
+						},
+						new Matrix<Real>
+						{
+							Indices = new Real[,] { {0, 0}, {0, 0} }
+						}
+					},
+					{
+						new Matrix<Real>
+						{
+							Indices = new Real[,] { {1, 2}, {1, 2} }
+						},
+						new Matrix<Real>
+						{
+							Indices = new Real[,] { {1, 0}, {0, 1} }
+						}
+					}
+				}
+			};
 
-			Console.WriteLine("abc".SetValue(12345));
+			Latex(m);
 
-	        Console.WriteLine(Quantities.Constants["pi"]);
+			Console.WriteLine();
+			Console.WriteLine(m.ToReducedEchelonForm(() => new Matrix<Real>(2, 2)).
+				ToLatex(mat => mat.ToLatex()));
 		}
+
+	    public static void Latex(Matrix<Matrix<Real>> m)
+	    {
+			Console.WriteLine(m.ToLatex('[', mat => mat.ToLatex()));
+	    }
 
 		public static void Polynomials()
 	    {
@@ -59,7 +92,8 @@ namespace Math
 	    {
 			RealMatrix m = new RealMatrix(4, 4)
 			{
-				Indices = new Real[,] { { 1, 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1, 2 }, { 1, 1, 1, 1, 2, 3 }, { 1, 1, 1, 2, 3, 4}, {1, 1, 2, 3, 4, 5}, {1, 2, 3, 4, 5, 6} }
+				Indices = new Real[,] { { 1, 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1, 2 }, { 1, 1, 1, 1, 2, 3 },
+					{ 1, 1, 1, 2, 3, 4}, {1, 1, 2, 3, 4, 5}, {1, 2, 3, 4, 5, 6} }
 			};
 
 //		    m[0, VectorType.Row] = m[1, VectorType.Row];
@@ -98,7 +132,8 @@ namespace Math
 
 			Console.WriteLine(result);
 
-			Console.WriteLine(1*(System.Math.Sin(System.Math.PI/3) * Complex.I + System.Math.Cos(System.Math.PI/3)));
+			Console.WriteLine(1*(System.Math.Sin(System.Math.PI/3) * Complex.I +
+				System.Math.Cos(System.Math.PI/3)));
 
 			Console.Write("Input here: ");
 		    if (Complex.TryParse(Console.ReadLine(), out var c))
@@ -154,8 +189,6 @@ namespace Math
 		    Console.WriteLine();
 		    Console.WriteLine("The matrix e, in all its glory: \n" + e.ToTable(3));
 		    Console.WriteLine(n);
-		    Console.WriteLine();
-		    Console.WriteLine(LinearMath.NullMatrix(5, 9).ToDeterminant(3));
 		}
     }
 }

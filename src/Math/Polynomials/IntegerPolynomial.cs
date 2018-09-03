@@ -323,11 +323,14 @@ namespace Math.Polynomials
 				double coef = Coefficients[i];
 				if (!coef.CloseTo(0))
 				{
-					if (Coefficients[i - 1] is ITotallyOrdered b)
-						string sign = Coefficients[i - 1]. " + ";
+					string sign = " + ";
+					if (Coefficients[i - 1].LessThan(0))
+					{
+						sign = " - ";
+					}
 					
 					result += (coef.CloseTo(1) ? "" : $"{Coefficients[i]}") + $"{variable}" +
-					          (i != 1 ? $"^{i}" : "") + " + ";
+					          (i != 1 ? $"^{i}" : "") + sign;
 				}
 			}
 

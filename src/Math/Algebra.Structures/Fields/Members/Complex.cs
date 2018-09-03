@@ -137,8 +137,56 @@ namespace Math.Algebra.Structures.Fields.Members
 		/// <returns></returns>
 		public string ToString(bool exponential, string format = "")
 		{
-			if (exponential) return $"{Modulus.ToString(format)}*e^({Argument.ToString(format)}i)";
-			return $"{Real.ToString(format)} + {Imaginary.ToString(format)}i";
+			if (exponential)
+			{
+				return $"{Modulus.ToString(format)}*e^({Argument.ToString(format)}i)";
+			}
+
+			if (Real.CloseTo(0) && Imaginary.CloseTo(0))
+			{
+				return "0";
+			}
+
+			if (Real.CloseTo(0))
+			{
+				if (Imaginary.CloseTo(1))
+				{
+					return "i";
+				}
+
+				if (Imaginary.CloseTo(-1))
+				{
+					return "-i";
+				}
+
+				return Imaginary >= 0
+					? $"{Imaginary.ToString(format)}i"
+					: $"-{System.Math.Abs(Imaginary).ToString(format)}i";
+			}
+
+			if (Imaginary.CloseTo(0))
+			{
+				return Real.ToString(format);
+			}
+
+			string result = "";
+
+			result += Real.ToString(format);
+
+			if (Imaginary.CloseTo(1))
+			{
+				return result + " + i";
+			}
+
+			if (Imaginary.CloseTo(-1))
+			{
+				return result + " - i";
+			}
+
+			result += Imaginary >= 0 ? $" + {Imaginary.ToString(format)}i"
+				: $" - {System.Math.Abs(Imaginary).ToString(format)}i";
+
+			return result;
 		}
 
 		#endregion
@@ -230,7 +278,7 @@ namespace Math.Algebra.Structures.Fields.Members
 		/// <returns></returns>
 		public static Complex operator /(double left, Complex right)
 		{
-			return right.Conjugate() * left / right.Modulus;
+			return right.Conjugate() * left / System.Math.Pow(right.Modulus, 2);
 		}
 
 		/// <summary>

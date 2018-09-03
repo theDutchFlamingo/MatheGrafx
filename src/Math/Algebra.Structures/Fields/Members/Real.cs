@@ -69,14 +69,18 @@ namespace Math.Algebra.Structures.Fields.Members
 		public override T Null<T>()
 		{
 			if (typeof(T) == GetType())
+			{
 				return (T)(MonoidMember) new Real(0);
+			}
 			throw new IncorrectSetException(this, "null", typeof(T));
 		}
 
 		public override T Unit<T>()
 		{
 			if (typeof(T) == GetType())
+			{
 				return (T)(GroupMember)new Real(1);
+			}
 			throw new IncorrectSetException(this, "unit", typeof(T));
 		}
 

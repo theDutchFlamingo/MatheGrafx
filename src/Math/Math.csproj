@@ -64,6 +64,7 @@
     <Compile Include="ComplexLinearAlgebra\ComplexNumbers.cs" />
     <Compile Include="Exceptions\FactorTypeException.cs" />
     <Compile Include="Exceptions\GroupOperationType.cs" />
+    <Compile Include="Exceptions\ImpossibleEchelonForm.cs" />
     <Compile Include="Exceptions\IncorrectSetException.cs" />
     <Compile Include="Algebra.Structures\Fields\Members\Complex.cs" />
     <Compile Include="ComplexLinearAlgebra\ComplexMath.cs" />
