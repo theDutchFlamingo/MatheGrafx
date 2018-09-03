@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Math.Algebra.Expressions;
 using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Groups;
 using Math.Algebra.Structures.Groups.Members;
@@ -24,11 +25,6 @@ namespace Math.Polynomials
 		 */
 		#region Static
 
-		/// <summary>
-		/// The regex to determine if a variable name is allowed
-		/// </summary>
-		private const string VariableNamesRegex = @"^[a-zA-Z][a-zA-Z_0-9]*$";
-		
 		/// <summary>
 		/// The regex to match a monomial
 		/// </summary>
@@ -237,7 +233,7 @@ namespace Math.Polynomials
 		public static IntegerPolynomial Parse(string polynomial, string variable = "x")
 		{
 			// First check if variable name is allowed
-			if (!Regex.IsMatch(variable, VariableNamesRegex))
+			if (!Regex.IsMatch(variable, ExpressionConversions.VariableNamesRegex))
 				throw new ArgumentException("Variable name must start with a letter and contain only letters, numbers and underscores.");
 			
 			// Split the strings on + signs, change - to +- (to be sure that all negatives are the same) and remove all spaces
@@ -309,7 +305,7 @@ namespace Math.Polynomials
 		public string ToString(string variable)
 		{
 			// First check if variable name is allowed
-			if (!Regex.IsMatch(variable, VariableNamesRegex))
+			if (!Regex.IsMatch(variable, ExpressionConversions.VariableNamesRegex))
 			{
 				throw new ArgumentException("Variable name must start with a letter and contain only " +
 				                            "letters, numbers and underscores.");

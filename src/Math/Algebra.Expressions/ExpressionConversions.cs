@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
+using Math.Latex;
+using Math.Settings;
+using static System.Char;
 
 namespace Math.Algebra.Expressions
 {
@@ -13,34 +17,111 @@ namespace Math.Algebra.Expressions
 		/// <summary>
 		/// The regex to determine if a variable name is allowed
 		/// </summary>
-		public const string VariableNamesRegex = @"[a-zA-Z][a-zA-Z_0-9]*";
+		public const string VariableNamesRegex = @"[a-zA-Z][a-zA-Z_]*";
+
+		public static readonly List<string> DisallowedSymbols = new List<string>
+		{
+			"#", "$", "&", "`", "'", "\"", "~", "\\", "<", ">", "?", ";", "..", ".,", ",.", ",,"
+		};
 
 		public static bool HasNotationType(this string expression, NotationType type)
 		{
+			if (!expression.CheckSyntax())
+			{
+				return false;
+			}
+
 			switch (type)
 			{
 				case NotationType.Infix:
-					return expression.IsInfix();
+					return expression.IsInfixExpression();
 				case NotationType.Prefix:
-					return expression.IsPrefix();
+					return expression.IsPrefixExpression();
 				case NotationType.Postfix:
-					return expression.IsPostfix();
+					return expression.IsPostfixExpression();
 				default:
 					return false;
 			}
 		}
 
-		private static bool IsInfix(this string expression)
+		/// <summary>
+		/// A basic check for syntax correctness that is shared by all notation types
+		/// </summary>
+		/// <param name="expression"></param>
+		/// <returns></returns>
+		private static bool CheckSyntax(this string expression)
+		{
+			foreach (string s in DisallowedSymbols)
+			{
+				if (expression.Contains(s))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Whether this char is a number or a part of a number ('.' and ',' are allowed).
+		/// </summary>
+		/// <param name="test"></param>
+		/// <returns></returns>
+		private static bool IsntNumber(char test)
+		{
+			return IsNumber(test) || test == '.' || test == ',';
+		}
+
+		private static bool IsInfixExpression(this string expression)
+		{
+			// If there are more closing delimiters than opening delimiters,
+			// the expression cannot be evaluated.
+			foreach (char ch in LatexExtensions.Delimiters)
+			{
+				if (expression.Count(c => c == ch.MatchingDelimiter()) > expression.Count(c => c == ch))
+				{
+					return false;
+				}
+			}
+
+			int i = 0;
+			bool recentNumber = false; // Whether the last read piece of the string was a number
+
+			while (expression.Length > i)
+			{
+				if (IsNumber(expression[i]))
+				{
+					if (recentNumber)
+					{
+						// If two numbers follow each other without operator,
+						// then this expression is not infix
+						return false;
+					}
+
+					if (expression.Length > i + 1)
+					{
+						int end = expression.First(IsntNumber);
+						expression = expression.Remove(i, end - i);
+					}
+
+					recentNumber = true;
+					continue;
+				}
+
+				recentNumber = false;
+
+				i++;
+			}
+
+			throw new NotImplementedException();
+		}
+
+		private static bool IsPrefixExpression(this string expression)
 		{
 			throw new NotImplementedException();
 		}
 
-		private static bool IsPrefix(this string expression)
-		{
-			throw new NotImplementedException();
-		}
-
-		private static bool IsPostfix(this string expression)
+		private static bool IsPostfixExpression(this string expression)
 		{
 			throw new NotImplementedException();
 		}
