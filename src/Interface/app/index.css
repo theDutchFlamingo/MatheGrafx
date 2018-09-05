@@ -8,6 +8,17 @@ body {
     height: 100%;
 }
 
+#double {
+    display: block;
+    margin: 10px;
+}
+#double span {
+    display: block;
+    float: right;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 #graph {
     background-color: white;
     width: 100%;

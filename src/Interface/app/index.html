@@ -11,6 +11,7 @@
 <body>
     <div class="container" ng-app="GraphApp" ng-controller="GraphController as ctrl">
         <h1>{{Title}}</h1>
+        <p id="double">This text is left. <span>This text is right.</span></p>
         <canvas id="graph" style="border:1px solid #000000;" ng-controller="CanvasController as cnvCtrl">
              {{Draw()}}
         </canvas>
