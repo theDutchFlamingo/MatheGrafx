@@ -2,6 +2,6 @@
 {
     public interface IParsable<out T>
     {
-        T Parse(params string[] value);
+        T Parse(string value);
     }
 }

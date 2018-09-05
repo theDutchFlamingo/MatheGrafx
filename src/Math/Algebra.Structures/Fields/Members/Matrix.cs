@@ -210,9 +210,9 @@ namespace Math.Algebra.Structures.Fields.Members
 				return Indices[0, 0];
 			}
 
-			var result = new T();
+			T result = this[0, 0].Null<T>();
 
-			var i = 0;
+			const int i = 0;
 
 			for (var j = 0; j < Width; j++)
 			{
@@ -453,6 +453,15 @@ namespace Math.Algebra.Structures.Fields.Members
 		public bool IsAntiSymmetric()
 		{
 			return this == -Transpose();
+		}
+
+		/// <summary>
+		/// Check if this matrix is orthogonal, that is, its transpose is its inverse.
+		/// </summary>
+		/// <returns></returns>
+		public bool IsOrthogonal()
+		{
+			return Transpose() == Inverse();
 		}
 
 		/// <summary>
@@ -1165,7 +1174,7 @@ namespace Math.Algebra.Structures.Fields.Members
 
 		public override T1 Null<T1>()
 		{
-			if (typeof(T1) == typeof(T))
+			if (typeof(T1) == GetType())
 			{
 				return (T1)(MonoidMember)new Matrix<T>(Height, Width);
 			}

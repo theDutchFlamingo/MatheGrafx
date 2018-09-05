@@ -74,7 +74,7 @@ namespace Math.Algebra.Structures.Rings.Members
 			    
 			    List<T> list = new List<T>();
 
-			    for (int i = 2; i < this; i++)
+			    for (int i = 2; i < (int)this / 2; i++)
 			    {
 				    if (this % i == 0)
 				    {
@@ -172,53 +172,44 @@ namespace Math.Algebra.Structures.Rings.Members
             return this;
         }
 
-	    public bool LessThan<T>(T other)
+	    public bool LessThan<T>(T other) where T : ITotallyOrdered
 	    {
-		    if (other is Integer i)
-		    {
-			    return this < i;
-		    }
-
-		    if (other is int i2)
-		    {
-			    return this < i2;
-		    }
-
-		    if (other is double d)
-		    {
-				return this < d;
+		    switch (other) {
+			    case Integer i:
+				    return (int)this < (int)i;
+			    case Fraction f:
+				    return this < (double)f;
+				case Real r:
+					return this < r;
 		    }
 
 		    throw new IncorrectSetException(GetType(), "compared", typeof(T));
 	    }
 
-	    public bool GreaterThan<T>(T other)
-	    {
-			if (other is Integer integer)
-		    {
-			    return this > integer;
-		    }
+	    public bool GreaterThan<T>(T other) where T : ITotallyOrdered
+		{
+			switch (other) {
+				case Integer integer:
+					return (int)this > (int)integer;
+				case Fraction f:
+					return this > (double)f;
+				case Real r:
+					return this > r;
+			}
 
-		    if (other is int i)
-		    {
-			    return this > i;
-		    }
-
-		    if (other is double d)
-		    {
-			    return this > d;
-		    }
-
-		    throw new IncorrectSetException(GetType(), "compared", typeof(T));
+			throw new IncorrectSetException(GetType(), "compared", typeof(T));
 		}
 
 	    public override bool Equals<T>(T other)
-        {
-            if (other is Integer r)
-                return Value == r;
-	        if (other is int i)
-		        return Value == i;
-            return false;
+		{
+            switch (other) {
+	            case Integer r:
+		            return Value == r;
+	            case int i:
+		            return Value == i;
+            }
+
+			return false;
         }
 
 	    #endregion
@@ -306,11 +297,61 @@ namespace Math.Algebra.Structures.Rings.Members
             return new Fraction(left, right);
         }
 
-        #endregion
+	    public static bool operator <(Integer left, Integer right)
+	    {
+		    return left.LessThan(right);
+	    }
 
-        #region Conversion
+	    public static bool operator >(Integer left, Integer right)
+	    {
+		    return left.GreaterThan(right);
+	    }
 
-        public static implicit operator int(Integer r)
+	    public static bool operator <(Integer left, int right)
+	    {
+		    return (int) left < right;
+	    }
+
+	    public static bool operator >(Integer left, int right)
+	    {
+		    return (int)left > right;
+	    }
+
+	    public static bool operator <(int left, Integer right)
+	    {
+		    return left < (int)right;
+	    }
+
+	    public static bool operator >(int left, Integer right)
+	    {
+		    return left > (int)right;
+	    }
+
+		public static bool operator <(Integer left, Fraction right)
+	    {
+		    return left.LessThan(right);
+	    }
+
+	    public static bool operator >(Integer left, Fraction right)
+	    {
+		    return left.GreaterThan(right);
+	    }
+
+	    public static bool operator <(Fraction left, Integer right)
+	    {
+		    return left.LessThan(right);
+	    }
+
+	    public static bool operator >(Fraction left, Integer right)
+	    {
+		    return left.GreaterThan(right);
+	    }
+
+		#endregion
+
+		#region Conversion
+
+		public static implicit operator int(Integer r)
         {
             return r.Value;
         }

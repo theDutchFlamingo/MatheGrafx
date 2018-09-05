@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Text.RegularExpressions;
 using Math.Algebra.Expressions.Definitions;
 using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
@@ -23,52 +24,59 @@ namespace Math
 			//LinAlg();
 			//ComplexLinAlg();
 			//BasicTest();
-			//Polynomials();
+			Polynomials();
 
-			Matrix<Matrix<Real>> m = new Matrix<Matrix<Real>>
-			{
-				Indices = new [,]
-				{
-					{
-						new Matrix<Real>
-						{
-							Indices = new Real[,] { {1, 3}, {0, 1} }
-						},
-						new Matrix<Real>
-						{
-							Indices = new Real[,] { {0, 0}, {0, 0} }
-						}
-					},
-					{
-						new Matrix<Real>
-						{
-							Indices = new Real[,] { {1, 2}, {1, 3} }
-						},
-						new Matrix<Real>
-						{
-							Indices = new Real[,] { {1, 0}, {0, 1} }
-						}
-					}
-				}
-			};
+	        
+        }
 
-			Latex(m);
+	    public static void Latex()
+	    {
+		    Matrix<Matrix<Real>> m = new Matrix<Matrix<Real>>
+		    {
+			    Indices = new[,]
+			    {
+				    {
+					    new Matrix<Real>
+					    {
+						    Indices = new Real[,] { {1, 3}, {0, 1} }
+					    },
+					    new Matrix<Real>
+					    {
+						    Indices = new Real[,] { {0, 0}, {0, 0} }
+					    }
+				    },
+				    {
+					    new Matrix<Real>
+					    {
+						    Indices = new Real[,] { {1, 2}, {1, 3} }
+					    },
+					    new Matrix<Real>
+					    {
+						    Indices = new Real[,] { {1, 0}, {0, 1} }
+					    }
+				    }
+			    }
+		    };
+
+		    Console.WriteLine(m.Inverse().ToLatex(mat => mat.ToLatex('[')));
+		    Console.WriteLine();
+
+			Console.WriteLine(m.ToLatex('[', mat => mat.ToLatex()));
 
 			Console.WriteLine();
-			Console.WriteLine(m.ToReducedEchelonForm(() => new Matrix<Real>(2, 2), 1).
-				ToLatex(mat => mat.ToLatex()));
-		}
-
-	    public static void Latex(Matrix<Matrix<Real>> m)
-	    {
-			Console.WriteLine(m.ToLatex('[', mat => mat.ToLatex()));
+		    Console.WriteLine(m.ToReducedEchelonForm(() => new Matrix<Real>(2, 2), 1).
+			    ToLatex(mat => mat.ToLatex()));
 	    }
 
 		public static void Polynomials()
 	    {
-			IntegerPolynomial p = new IntegerPolynomial(new Vector<Integer>(new Integer[] { 1, -1 }));
+			IntegerPolynomial p = new IntegerPolynomial(new Integer[] { 1, 0,0,0,0,0,0,1, -1 });
+			Polynomial<Real> p2 = new Polynomial<Real>(new Real[] { 0, 0, -1, 1, 5, -2 });
+			Polynomial<Fraction> f = new Polynomial<Fraction>();
 
-			Console.WriteLine((p ^ 2));
+			Console.WriteLine(new Fraction().Parse("12/5/20/1"));
+
+			Console.WriteLine("(" + p2.ToLatex() + ")^2 = " + (p2 ^ 2).ToLatex() + ".");
 		}
 	    
 	    private static void ComplexLinAlg()

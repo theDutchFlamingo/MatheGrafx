@@ -1,14 +1,18 @@
-﻿using Math.Algebra.Structures.Fields;
+﻿using System.Text.RegularExpressions;
+using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Groups;
 using Math.Algebra.Structures.Groups.Members;
 using Math.Algebra.Structures.Monoids.Members;
+using Math.Algebra.Structures.Ordering;
 using Math.Algebra.Structures.Rings.Members;
 using Math.Exceptions;
+using Math.Parsing;
+using static System.Int32;
 
 namespace Math.Rationals
 {
-    public class Fraction : Rational<Integer>, INumerical
+    public class Fraction : Rational<Integer>, INumerical, ITotallyOrdered, IParsable<Fraction>
     {
         #region Constructors
 
@@ -71,20 +75,65 @@ namespace Math.Rationals
 	    public override T1 Null<T1>()
 	    {
 		    if (typeof(T1) == GetType())
+		    {
 			    return (T1)(MonoidMember)new Fraction(0);
+		    }
 		    throw new IncorrectSetException(this, "null", typeof(T1));
 	    }
 
 	    public override T1 Unit<T1>()
 	    {
 		    if (typeof(T1) == GetType())
+		    {
 			    return (T1)(GroupMember)new Fraction(1);
+		    }
 		    throw new IncorrectSetException(this, "unit", typeof(T1));
 	    }
 
-	    public override bool IsNull() => Num.Equals(0);
+	    public override bool IsNull() => Num.Equals((Integer)0);
 
 	    public override bool IsUnit() => Num.Equals(Den);
+
+	    public bool GreaterThan<T>(T other) where T : ITotallyOrdered
+	    {
+		    if (other is Fraction f)
+		    {
+			    return (double) this > (double) f;
+		    }
+
+		    if (other is Integer i)
+		    {
+			    return (double) this > i;
+		    }
+
+		    return false;
+	    }
+
+	    public bool LessThan<T>(T other) where T : ITotallyOrdered
+		{
+		    if (other is Fraction f)
+		    {
+				return (double) this < (double) f;
+		    }
+
+		    if (other is Integer d)
+		    {
+			    return (double) this < d;
+		    }
+
+		    return false;
+		}
+
+	    public Fraction Parse(string value)
+	    {
+		    TryParse(Regex.Match(value, @"(\d+)/").Groups[1].Value, out int num);
+		    if (!TryParse(Regex.Match(value, @"/(\d+)").Groups[1].Value, out int den))
+		    {
+			    den = 1;
+		    }
+
+		    return new Fraction(num, den);
+	    }
 
 		public INumerical Round()
         {
@@ -225,7 +274,7 @@ namespace Math.Rationals
 			return new Fraction(i);
 	    }
 
-        public override string ToString()
+	    public override string ToString()
         {
             return Num == 0 || Den == 1 ? $"{Num}" : $"{Num}/{Den}";
         }

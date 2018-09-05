@@ -1,5 +1,5 @@
 ﻿using System;
-using Math.Latex;
+using System.Collections.Generic;
 using static System.String;
 
 namespace Math.Settings
@@ -25,6 +25,16 @@ namespace Math.Settings
 		/// </summary>
 		public static char DefaultStringDelimiter = '{';
 
+		public static readonly List<char> OpenDelimiters = new List<char>
+		{
+			'(', '[', '{', '|'
+		};
+
+		public static readonly List<char> CloseDelimiters = new List<char>
+		{
+			')', ']', '}', '|'
+		};
+
 		/// <summary>
 		/// When converting from and to string, delimiters must be used (or parsed).
 		/// This method helps out by quickly finding the matching delimiter.
@@ -46,7 +56,7 @@ namespace Math.Settings
 			}
 
 			throw new ArgumentException("Delimiter for a matrix must be one of: '" +
-			                            Join("', '", LatexExtensions.Delimiters) + "'.");
+			                            Join("', '", OpenDelimiters) + "'.");
 		}
 	}
 }

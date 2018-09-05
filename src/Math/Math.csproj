@@ -51,6 +51,7 @@
     <Compile Include="Algebra.Expressions\Definitions\Quantities.cs" />
     <Compile Include="Algebra.Expressions\Expression.cs" />
     <Compile Include="Algebra.Expressions\ExpressionConversions.cs" />
+    <Compile Include="Algebra.Expressions\InvalidExpressionType.cs" />
     <Compile Include="Algebra.Expressions\NotationType.cs" />
     <Compile Include="Algebra.Structures\Fields\RationalNumbers.cs" />
     <Compile Include="Algebra.Structures\Groups\Group.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Algebra.Structures\Fields\Members\Matrix.cs" />
     <Compile Include="Algebra.Structures\Fields\Numerical.cs" />
     <Compile Include="Latex\LatexExtensions.cs" />
+    <Compile Include="LinearAlgebra\Diagonalization.cs" />
     <Compile Include="NumberTheory\IntegerMath.cs" />
     <Compile Include="Parsing\IParsable.cs" />
     <Compile Include="Polynomials\ComplexPolynomial.cs" />
@@ -100,7 +102,7 @@
     <Compile Include="Settings\ConversionSettings.cs" />
     <Compile Include="SubclassCheck.cs" />
     <Compile Include="VectorSpaces\Basis.cs" />
-    <Compile Include="LinearAlgebra\MatrixConversion.cs" />
+    <Compile Include="LinearAlgebra\GaussElimination.cs" />
     <Compile Include="LinearAlgebra\RowOperation.cs" />
     <Compile Include="Exceptions\Operations\IncompatibleRowOperationException.cs" />
     <Compile Include="Exceptions\Operations\VectorOperationType.cs" />

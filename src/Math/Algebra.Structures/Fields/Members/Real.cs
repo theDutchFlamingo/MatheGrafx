@@ -7,13 +7,15 @@ using Math.Algebra.Structures.Ordering;
 using Math.Algebra.Structures.Rings.Members;
 using Math.Exceptions;
 using Math.LinearAlgebra;
+using Math.Parsing;
+using Math.Rationals;
 
 namespace Math.Algebra.Structures.Fields.Members
 {
 	/// <summary>
 	/// A class that represents real numbers
 	/// </summary>
-	public class Real : FieldMember, INumerical, ITotallyOrdered
+	public class Real : FieldMember, INumerical, ITotallyOrdered, IParsable<Real>
 	{
 		/**
 		 * Contains the double value of this real number
@@ -88,21 +90,29 @@ namespace Math.Algebra.Structures.Fields.Members
 
 		public override bool IsUnit() => Value.CloseTo(1);
 
-		public bool GreaterThan<T>(T other)
+		public bool GreaterThan<T>(T other) where T : ITotallyOrdered
 		{
-			if (other is Real r)
-			{
-				return Value > r.Value;
+			switch (other) {
+				case Real r:
+					return Value > r.Value;
+				case Integer i:
+					return Value > i;
+				case Fraction r:
+					return Value > (double)r;
 			}
 
 			throw new IncorrectSetException(GetType(), "compared", typeof(T));
 		}
 
-		public bool LessThan<T>(T other)
+		public bool LessThan<T>(T other) where T : ITotallyOrdered
 		{
-			if (other is Real r)
-			{
-				return Value < r.Value;
+			switch (other) {
+				case Real r:
+					return Value < r.Value;
+				case Integer i:
+					return Value < i;
+				case Fraction r:
+					return Value < (double) r;
 			}
 
 			throw new IncorrectSetException(GetType(), "compared", typeof(T));
@@ -116,8 +126,17 @@ namespace Math.Algebra.Structures.Fields.Members
 
 		public override bool Equals<T>(T other)
 		{
-			if (other is Real r)
-				return this.CloseTo(r);
+			switch (other) {
+				case Real r:
+					return this.CloseTo(r);
+				case Integer i:
+					return ((double)this).CloseTo(i);
+				case Fraction f:
+					return this.CloseTo((double)f);
+				case double d:
+					return this.CloseTo(d);
+			}
+
 			return false;
 		}
 
@@ -134,6 +153,11 @@ namespace Math.Algebra.Structures.Fields.Members
 		public INumerical LongestValue()
 		{
 			return this;
+		}
+
+		public Real Parse(string value)
+		{
+			return Set.Reals.Create(value);
 		}
 
 		#endregion

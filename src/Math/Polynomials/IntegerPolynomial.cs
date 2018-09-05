@@ -11,6 +11,7 @@ using Math.Algebra.Structures.Rings.Members;
 using Math.Exceptions;
 using Math.LinearAlgebra;
 using Math.Rationals;
+using static System.Math;
 
 namespace Math.Polynomials
 {
@@ -48,7 +49,8 @@ namespace Math.Polynomials
 		
 		private Vector<Integer> _coefficients;
 
-		public int Degree { get; private set; }
+		public int Degree { get;
+			private set; }
 
 		/// <summary>
 		/// The getter and setter of the coefficitents vector, setter automatically sets the degree
@@ -61,7 +63,7 @@ namespace Math.Polynomials
 				_coefficients = value;
 				// Degree of a polynomial is always the amount of coefficients minus 1,
 				// check it for yourself if you don't believe me
-				Degree = value.Dimension - 1;
+				Degree = _coefficients.Dimension - 1;
 			}
 		}
 
@@ -74,6 +76,11 @@ namespace Math.Polynomials
 		public IntegerPolynomial(Vector<Integer> coefficients)
 		{
 			Coefficients = coefficients;
+		}
+
+		public IntegerPolynomial(Integer[] coefficients) : this(new Vector<Integer>(coefficients))
+		{
+			
 		}
 
 		/// <summary>
@@ -114,7 +121,8 @@ namespace Math.Polynomials
 		/// <returns></returns>
 		public static IntegerPolynomial operator +(IntegerPolynomial left, IntegerPolynomial right)
 		{
-			Vector<Integer> newCoefficients = new Vector<Integer>(System.Math.Max(left.Degree, right.Degree) + 1);
+			Vector<Integer> newCoefficients =
+				new Vector<Integer>(Max(left.Degree, right.Degree) + 1);
 
 			for (int i = 0; i < newCoefficients.Dimension; i++)
 			{
@@ -205,8 +213,15 @@ namespace Math.Polynomials
 		/// <exception cref="ArgumentException"></exception>
 		public static IntegerPolynomial operator ^(IntegerPolynomial left, int right)
 		{
-			if (right < 0) throw new ArgumentException("Exponent of a polynomial must be at least 0");
-			if (right == 0) return new IntegerPolynomial(new Vector<Integer>(new Integer[]{1}));
+			if (right < 0)
+			{
+				throw new ArgumentException("Exponent of a polynomial must be at least 0");
+			}
+
+			if (right == 0)
+			{
+				return new IntegerPolynomial(new Integer[]{1});
+			}
 			
 			IntegerPolynomial result = new IntegerPolynomial(left);
 
@@ -234,9 +249,13 @@ namespace Math.Polynomials
 		{
 			// First check if variable name is allowed
 			if (!Regex.IsMatch(variable, ExpressionConversions.VariableNamesRegex))
-				throw new ArgumentException("Variable name must start with a letter and contain only letters, numbers and underscores.");
+			{
+				throw new ArgumentException("Variable name must start with a letter and contain only" +
+				                            "letters, numbers and underscores.");
+			}
 			
-			// Split the strings on + signs, change - to +- (to be sure that all negatives are the same) and remove all spaces
+			// Split the strings on + signs, change - to +- (to be sure that all
+			// negatives are the same) and remove all spaces
 			List<string> splitStrings = polynomial.Split('+').Select(str => str.Replace("-", "+-")).
 				Select(str => str.Replace(" ", "")).ToList();
 
@@ -245,21 +264,34 @@ namespace Math.Polynomials
 			
 			foreach (var str in splitStrings)
 			{
-				if (str == "") continue;
+				if (str == "")
+				{
+					continue;
+				}
 
 				// Remove double negatives and format all minuses as +- for simplicity
 				string newStr = str.Replace("--", "+").Replace("-", "+-");
 
 				// Continue with the string without double negatives
-				foreach (var clean in newStr.Split('+'))
+				foreach (string clean in newStr.Split('+'))
 				{
-					if (str == "") continue;
-					
-					if (clean.Contains('-') && clean.Split('-')[0] == "") result -= ParseMonomial(clean.Split('-')[1], variable);
+					if (str == "")
+					{
+						continue;
+					}
+
+					if (clean.Contains('-') && clean.Split('-')[0] == "")
+					{
+						result -= ParseMonomial(clean.Split('-')[1], variable);
+					}
 					else if (clean.Contains('-'))
+					{
 						result += ParseMonomial(clean.Split('-')[0], variable)
-							- ParseMonomial(clean.Split('-')[1], variable);
-					else result += ParseMonomial(clean, variable);
+							- ParseMonomial(clean.Split('-')[1], variable);}
+					else
+					{
+						result += ParseMonomial(clean, variable);
+					}
 				}
 			}
 			
@@ -279,8 +311,11 @@ namespace Math.Polynomials
 			
 			// First try matching it with the linear (x^1) term
 			Match linear = Regex.Match(monomial, LinearRegex(variable));
-			
-			if (linear.Success) return new IntegerPolynomial(new Vector<Integer>(new Integer[]{Int32.Parse(linear.Groups[1].ToString()), 0}));
+
+			if (linear.Success)
+			{
+				return new IntegerPolynomial(new Integer[]{Int32.Parse(linear.Groups[1].ToString()), 0});
+			}
 			
 			Match mono = Regex.Match(monomial, MonomialRegex(variable));
 			
@@ -305,28 +340,43 @@ namespace Math.Polynomials
 		public string ToString(string variable)
 		{
 			// First check if variable name is allowed
-			if (!Regex.IsMatch(variable, ExpressionConversions.VariableNamesRegex))
+			if (!Regex.IsMatch(variable, "^" + ExpressionConversions.VariableNamesRegex + "$"))
 			{
 				throw new ArgumentException("Variable name must start with a letter and contain only " +
-				                            "letters, numbers and underscores.");
+				                            "letters and underscores.");
 			}
-			
-			string result = "";
+
+			var result = "";
 
 			for (int i = Degree; i >= 1; i--)
 			{
-				double coef = Coefficients[i];
-				if (!coef.CloseTo(0))
+				int coef = Coefficients[i];
+				if (coef.CloseTo(0))
 				{
-					string sign = " + ";
-					if (Coefficients[i - 1].LessThan(0))
-					{
-						sign = " - ";
-					}
-					
-					result += (coef.CloseTo(1) ? "" : $"{Coefficients[i]}") + $"{variable}" +
-					          (i != 1 ? $"^{i}" : "") + sign;
+					continue;
 				}
+
+				var sign = " + ";
+				if (Coefficients[i - 1].LessThan(new Integer(0)))
+				{
+					sign = " - ";
+				}
+
+				if (coef == 1)
+				{
+					result += $"{variable}" + (i != 1 ? $"^{{{i}}}" : "") + sign;
+					continue;
+				}
+
+				if (i != Degree)
+				{
+					result += (coef == 1 ? "" : $"{Abs(Coefficients[i])}") + $"{variable}" +
+					          (i != 1 ? $"^{i}" : "") + sign;
+					continue;
+				}
+
+				result += (coef == 1 ? "" : $"{Coefficients[i]}") + $"{variable}" +
+				          (i != 1 ? $"^{i}" : "") + sign;
 			}
 
 			result += $"{Coefficients[0]}";

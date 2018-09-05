@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
-using Math.Exceptions;
+using Math.ComplexLinearAlgebra;
 using Math.Exceptions.Operations;
 using Math.VectorSpaces;
 
@@ -24,17 +25,36 @@ namespace Math.LinearAlgebra
 		/// </summary>
 		/// <param name="m"></param>
 		/// <returns></returns>
-		public static RealVector EigenValues(this RealMatrix m)
+		public static RealVector RealEigenValues(this RealMatrix m)
 		{
-			return null;
+			if (!m.IsSquare())
+			{
+				throw new IncompatibleOperationException(MatrixOperationType.Eigenvalue);
+			}
+			
+			ComplexVector values = new ComplexVector(m.Width);
+
+			
+
+			throw new NotImplementedException();
+		}
+
+		public static ComplexVector ComplexEigenValues(this RealMatrix m)
+		{
+			throw new NotImplementedException();
+		}
+
+		public static ComplexVector ComplexEigenValues(this ComplexMatrix m)
+		{
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
-		/// Gets the eigenvectors of the given matrix.
+		/// Gets the eigenbasis of the given matrix and eigenvalue l.
 		/// </summary>
 		/// <param name="m"></param>
 		/// <returns></returns>
-		public static RealVector[] EigenVectors(this RealMatrix m)
+		public static Basis EigenBasis(this RealMatrix m, Real l)
 		{
 			return null;
 		}
@@ -42,15 +62,27 @@ namespace Math.LinearAlgebra
 		public static bool LinearlyDependent(RealVector[] vectors)
 		{
 			if (vectors.Select(v => v.Dimension).Distinct().Count() > 1)
+			{
 				throw new IncompatibleOperationException(VectorOperationType.Dimension);
+			}
 
 			// If the amount of vectors is greater than the dimension they're
 			// automatically linearly dependent.
-			if (vectors[0].Dimension < vectors.Length) return true;
+			if (vectors[0].Dimension < vectors.Length)
+			{
+				return true;
+			}
 
+			var m = new RealMatrix(vectors);
 
+			if (m.IsSquare())
+			{
+				return m.Determinant().Equals(0);
+			}
 
-			return false;
+			m = m.ToReducedEchelonForm().ToRealMatrix();
+
+			return m.AmountOfNullRows() != 0;
 		}
 
 		/// <summary>

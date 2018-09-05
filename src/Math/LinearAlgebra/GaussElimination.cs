@@ -7,7 +7,10 @@ using Math.Exceptions.Operations;
 
 namespace Math.LinearAlgebra
 {
-	public static class MatrixConversion
+	/// <summary>
+	/// A class for convering a matrix to echelon or reduced echelon form.
+	/// </summary>
+	public static class GaussElimination
 	{
 		/// <summary>
 		/// Put all the null rows on the bottom of the matrix

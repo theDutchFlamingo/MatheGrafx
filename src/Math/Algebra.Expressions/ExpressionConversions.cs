@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Math.Latex;
@@ -22,6 +23,19 @@ namespace Math.Algebra.Expressions
 		public static readonly List<string> DisallowedSymbols = new List<string>
 		{
 			"#", "$", "&", "`", "'", "\"", "~", "\\", "<", ">", "?", ";", "..", ".,", ",.", ",,"
+		};
+
+		/// <summary>
+		/// All the binary operators in the correct order of operations
+		/// </summary>
+		public static readonly List<string> BinaryOperators = new List<string>
+		{
+			"^", "*", "/", ":", "%", "+", "-"
+		};
+
+		public static readonly List<string> UnaryOperators = new List<string>
+		{
+			"|", "!", "-"
 		};
 
 		public static bool HasNotationType(this string expression, NotationType type)
@@ -69,14 +83,14 @@ namespace Math.Algebra.Expressions
 		/// <returns></returns>
 		private static bool IsntNumber(char test)
 		{
-			return IsNumber(test) || test == '.' || test == ',';
+			return !(IsNumber(test) || test == '.' || test == ',');
 		}
 
 		private static bool IsInfixExpression(this string expression)
 		{
 			// If there are more closing delimiters than opening delimiters,
 			// the expression cannot be evaluated.
-			foreach (char ch in LatexExtensions.Delimiters)
+			foreach (char ch in ConversionSettings.OpenDelimiters)
 			{
 				if (expression.Count(c => c == ch.MatchingDelimiter()) > expression.Count(c => c == ch))
 				{
@@ -84,10 +98,9 @@ namespace Math.Algebra.Expressions
 				}
 			}
 
-			int i = 0;
 			bool recentNumber = false; // Whether the last read piece of the string was a number
 
-			while (expression.Length > i)
+			for (int i = 0; i < expression.Length; i++)
 			{
 				if (IsNumber(expression[i]))
 				{
@@ -101,6 +114,14 @@ namespace Math.Algebra.Expressions
 					if (expression.Length > i + 1)
 					{
 						int end = expression.First(IsntNumber);
+
+						if (expression.Substring(i, end - i).Count(','.Equals) +
+						    expression.Substring(i, end - i).Count('.'.Equals) > 1)
+						{
+							// If one number contains two periods, it isn't a number, and isn't infix
+							return false;
+						}
+
 						expression = expression.Remove(i, end - i);
 					}
 
@@ -108,9 +129,54 @@ namespace Math.Algebra.Expressions
 					continue;
 				}
 
-				recentNumber = false;
+				if (ConversionSettings.OpenDelimiters.Contains(expression[i]))
+				{
+					// TODO make a for loop instead of this, the last closing delimiter might not be correct
+					string delims = expression[i] + "";
+					int j = 0;
+					for (j = i + 1; j < expression.Length && delims != ""; j++)
+					{
+						if (expression[j] == delims.LastOrDefault().MatchingDelimiter())
+						{
+							// If the last opening delimiter matches the current closing delimiter, remove it
+							delims.Remove(delims.Length - 1);
+						}
 
-				i++;
+						else if (ConversionSettings.CloseDelimiters.Contains(expression[j]))
+						{
+							// If a closing delimiter is found that does not match the last opening delimiter,
+							// this is not a valid expression.
+							return false;
+						}
+
+						if (ConversionSettings.OpenDelimiters.Contains(expression[j]))
+						{
+							delims += expression[j];
+						}
+
+						string bracketed = delims == ""
+							? expression.Substring(i + 1, j - i - 1)
+							: expression.Substring(i + 1); // If not all closing delimiters
+                                      // are found, parse rest of string
+
+						if (!bracketed.IsInfixExpression())
+						{
+							return false;
+						}
+
+						expression = expression.Replace(bracketed, "");
+					}
+				}
+
+				if (BinaryOperators.Contains("" + expression[i]))
+				{
+					if (!recentNumber)
+					{
+						return false;
+					}
+				}
+
+				recentNumber = false;
 			}
 
 			throw new NotImplementedException();

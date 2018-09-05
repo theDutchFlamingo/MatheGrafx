@@ -268,30 +268,6 @@ namespace Math
 
 		#endregion
 
-		/**
-		 * Some tests which cannot be performed on matrices in general, like orthogonality
-		 */
-		#region Tests
-
-		public bool IsOrthogonal()
-		{
-			RealVector[] columns = this[VectorType.Column];
-
-			// For loop with x and y to indicate that they do not refer to indices of the matrix
-			for (int x = 0; x < columns.Length; x++)
-			{
-				for (int y = 0; y < columns.Length; y++)
-				{
-					if (x == y && !(columns[x] * columns[y]).CloseTo(1)) return false;
-					if (x != y && !(columns[x] * columns[y]).CloseTo(0)) return false;
-				}
-			}
-
-			return true;
-		}
-
-		#endregion
-
 		#region Operators
 
 		/// <summary>

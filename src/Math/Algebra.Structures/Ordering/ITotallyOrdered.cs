@@ -2,9 +2,9 @@
 {
 	public interface ITotallyOrdered
 	{
-		bool LessThan<T>(T other);
+		bool LessThan<T>(T other) where T : ITotallyOrdered;
 
-		bool GreaterThan<T>(T other);
+		bool GreaterThan<T>(T other) where T : ITotallyOrdered;
 
 		bool Equals<T>(T other);
 	}

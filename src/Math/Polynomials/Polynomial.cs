@@ -77,23 +77,27 @@ namespace Math.Polynomials
 		/// Construct a constant polynomial with single coefficient r
 		/// </summary>
 		/// <param name="r"></param>
-		public Polynomial(T r)
+		public Polynomial(T r) : this(new []{r})
 		{
-			Coefficients = new Vector<T>(new []{r});
+			
 		}
 
-		public Polynomial(T[] coefficients)
+		/// <summary>
+		/// Construct a polynomial with an array of coefficients.
+		/// </summary>
+		/// <param name="coefficients"></param>
+		public Polynomial(params T[] coefficients) : this(new Vector<T>(coefficients))
 		{
-			Coefficients = new Vector<T>(coefficients);
+			
 		}
 
 		/// <summary>
 		/// Create a polynomial with another polynomial
 		/// </summary>
 		/// <param name="p"></param>
-		public Polynomial(Polynomial<T> p)
+		public Polynomial(Polynomial<T> p) : this(p.Coefficients)
 		{
-			Coefficients = new Vector<T>(p.Coefficients);
+			
 		}
 
 		public Polynomial()
@@ -366,13 +370,24 @@ namespace Math.Polynomials
 				// Continue with the string without double negatives
 				foreach (var clean in newStr.Split('+'))
 				{
-					if (str == "") continue;
-					
-					if (clean.Contains('-') && clean.Split('-')[0] == "") result -= ParseMonomial(clean.Split('-')[1], variable);
+					if (str == "")
+					{
+						continue;
+					}
+
+					if (clean.Contains('-') && clean.Split('-')[0] == "")
+					{
+						result -= ParseMonomial(clean.Split('-')[1], variable);
+					}
 					else if (clean.Contains('-'))
+					{
 						result += ParseMonomial(clean.Split('-')[0], variable)
 							- ParseMonomial(clean.Split('-')[1], variable);
-					else result += ParseMonomial(clean, variable);
+					}
+					else
+					{
+						result += ParseMonomial(clean, variable);
+					}
 				}
 			}
 			
@@ -383,7 +398,7 @@ namespace Math.Polynomials
 		{
 			try
 			{
-				return new Polynomial<T>(new Vector<T>(new[] {new T().Parse(monomial)}));
+				return new Polynomial<T>(new T().Parse(monomial));
 			}
 			catch (FormatException)
 			{
@@ -393,14 +408,20 @@ namespace Math.Polynomials
 			// First try matching it with the linear (x^1) term
 			Match linear = Regex.Match(monomial, LinearRegex(variable));
 			
-			if (linear.Success) return new Polynomial<T>(new []
+			if (linear.Success)
 			{
-				new T().Parse(linear.Groups[1].ToString()), new T()
-			});
+				return new Polynomial<T>(new []
+				{
+					new T().Parse(linear.Groups[1].ToString()), new T()
+				});
+			}
 			
 			Match mono = Regex.Match(monomial, MonomialRegex(variable));
-			
-			if (!mono.Success) return new Polynomial<T>(new []{ new T() });
+
+			if (!mono.Success)
+			{
+				return new Polynomial<T>(new []{ new T() });
+			}
 
 			uint exp = UInt32.Parse(mono.Groups[2].ToString());
 
@@ -422,20 +443,33 @@ namespace Math.Polynomials
 		{
 			// First check if variable name is allowed
 			if (!Regex.IsMatch(variable, "^" + ExpressionConversions.VariableNamesRegex + "$"))
-				throw new ArgumentException("Variable name must start with a letter and contain only letters, numbers and underscores.");
+			{
+				throw new ArgumentException("Variable name must start with a letter and contain only " +
+				                            "letters and underscores.");
+			}
 			
-			string result = "";
+			var result = "";
 
 			for (int i = Degree; i >= 1; i--)
 			{
 				T coef = Coefficients[i];
 				if (!coef.IsNull())
+				{
 					result += (coef.IsUnit() ? "" : $"{Coefficients[i]}") + $"{variable}" + (i != 1 ? $"^{i}" : "") + " + ";
+				}
 			}
 
-			result += $"{Coefficients[0]}";
+			if (!Coefficients[0].Equals(new T()))
+			{
+				result += $"{Coefficients[0]}";
+			}
+			else
+			{
+				result = result.Remove(result.Length - 3);
+			}
 
-			return result;
+			return result.Replace("+ -", "- ");
+			// No need to check for negative values if you can easily replace all '+ -' with '- '
 		}
 
 		#endregion

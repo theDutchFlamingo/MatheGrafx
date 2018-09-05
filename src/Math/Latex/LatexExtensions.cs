@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Math.Algebra.Expressions;
 using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Rings.Members;
+using Math.Parsing;
+using Math.Polynomials;
 using Math.Rationals;
 using Math.Settings;
 using static System.String;
@@ -12,14 +16,67 @@ namespace Math.Latex
 {
 	public static class LatexExtensions
 	{
-		public static readonly List<char> Delimiters = new List<char>
-		{
-			'(', '[', '{', '|'
-		};
-
 		public static string ToLatex<T>(this Rational<T> r) where T : RingMember, IFactorable, new()
 		{
-			return @"\frac{" + r.Num + "}{" + r.Den + "}";
+			return r.ToLatex(t => t.ToString());
+		}
+
+		public static string ToLatex<T>(this Rational<T> r, Func<T, string> inner)
+			where T : RingMember, IFactorable, new()
+		{
+			return @"\frac{" + inner(r.Num) + "}{" + inner(r.Den) + "}";
+		}
+
+		public static string ToLatex<T>(this Polynomial<T> p, string variable = "x")
+			where T : RingMember, IParsable<T>, new()
+		{
+			string result = p.ToString(variable);
+
+			MatchCollection m = Regex.Matches(result, @"\^([\d]+)");
+
+			foreach (Match match in m)
+			{
+				result = result.Replace("^" + match.Groups[1].Value, "^{" + match.Groups[1].Value + "}");
+			}
+
+			return result;
+;		}
+
+		public static string ToLatex<T>(this Polynomial<T> p, Func<T, string> inner, string variable = "x")
+			where T : RingMember, IParsable<T>, new()
+		{
+			// First check if variable name is allowed
+			if (!Regex.IsMatch(variable, "^" + ExpressionConversions.VariableNamesRegex + "$"))
+			{
+				throw new ArgumentException("Variable name must start with a letter and contain only " +
+				                            "letters and underscores.");
+			}
+
+			var result = "";
+
+			for (int i = p.Degree; i >= 1; i--)
+			{
+				T coef = p.Coefficients[i];
+				if (!coef.IsNull())
+				{
+					result += (coef.IsUnit() ? "" : $"{inner(coef)}") +
+					          $"{variable}" + (i != 1 ? $"^{{{i}}}" : "") + " + ";
+				}
+			}
+
+			if (!p.Coefficients[0].Equals(new T()))
+			{
+				result += $"{inner(p.Coefficients[0])}";
+			}
+			else
+			{
+				result = result.Remove(result.Length - 3);
+			}
+
+			result = result.Replace("+ -", "- ");
+			// No need to check for negative values if you can easily replace all '+ -' with '- '
+
+			return result;
 		}
 
 		public static string ToLatex<T>(this Matrix<T> m, Func<T, string> inner)
@@ -41,10 +98,10 @@ namespace Math.Latex
 		public static string ToLatex<T>(this Matrix<T> m, char delimiter, Func<T, string> inner)
 			where T : FieldMember, new()
 		{
-			if (!Delimiters.Contains(delimiter))
+			if (!ConversionSettings.OpenDelimiters.Contains(delimiter))
 			{
 				throw new ArgumentException("Delimiter for a matrix must be one of: '" +
-				                            Join("', '", Delimiters) + "'.");
+				                            Join("', '", ConversionSettings.OpenDelimiters) + "'.");
 			}
 
 			string result = @"\left" + delimiter + @" \begin{array}{" +
