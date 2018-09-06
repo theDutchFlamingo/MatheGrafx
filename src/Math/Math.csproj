@@ -62,6 +62,7 @@
     <Compile Include="Algebra.Structures\Ordering\OrderedField.cs" />
     <Compile Include="Algebra.Structures\Rings\WholeNumbers.cs" />
     <Compile Include="Algebra.Structures\Set.cs" />
+    <Compile Include="Bytes\ByteExtensions.cs" />
     <Compile Include="ComplexLinearAlgebra\ComplexNumbers.cs" />
     <Compile Include="Exceptions\FactorTypeException.cs" />
     <Compile Include="Exceptions\ImpossibleEchelonForm.cs" />

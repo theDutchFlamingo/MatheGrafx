@@ -136,7 +136,9 @@ namespace Math.Polynomials
 		internal override T1 Multiply<T1>(T1 other)
 		{
 			if (other is Polynomial<T> c)
+			{
 				return (T1)(RingMember) (this * c);
+			}
 			throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
 		}
 

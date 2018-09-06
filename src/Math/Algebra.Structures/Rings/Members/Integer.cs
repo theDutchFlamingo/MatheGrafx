@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Groups;
@@ -12,14 +14,19 @@ using Math.Exceptions;
 using Math.LinearAlgebra;
 using Math.NumberTheory;
 using Math.Rationals;
+using static System.BitConverter;
 
 namespace Math.Algebra.Structures.Rings.Members
 {
     public class Integer : RingMember, INumerical, IFactorable, ITotallyOrdered
     {
-        public int Value { get; }
-        
-        #region Constructors
+	    private bool Positive { get; } = true;
+
+        private readonly Natural _value = new Natural();
+
+	    public long Value => _value;
+
+	    #region Constructors
 
         public Integer()
         {
@@ -28,13 +35,30 @@ namespace Math.Algebra.Structures.Rings.Members
 
         public Integer(int i)
         {
-            Value = i;
+            _value = i;
+
         }
 
         public Integer(Integer i)
         {
-            Value = i.Value;
+            _value = i.Value;
         }
+
+	    private Integer(byte[] value)
+	    {
+
+	    }
+
+	    public Integer(string value, bool hex = true)
+	    {
+		    if (value.StartsWith("-"))
+		    {
+			    Positive = false;
+			    value = value.Substring(1);
+		    }
+
+		    _value = new Natural(value, hex);
+	    }
 
 		#endregion
 
@@ -64,28 +88,32 @@ namespace Math.Algebra.Structures.Rings.Members
 	    {
 		    factors = null;
 
-		    if (typeof(T) == GetType())
+		    if (typeof(T) != GetType())
 		    {
-			    if (IsPrime())
-			    {
-				    factors = new T[0];
-				    return false;
-			    }
+			    throw new FactorTypeException();
+		    }
+
+		    if (IsPrime())
+		    {
+			    factors = new T[0];
+			    return false;
+		    }
 			    
-			    List<T> list = new List<T>();
+		    List<T> list = new List<T>();
 
-			    for (int i = 2; i < (int)this / 2; i++)
+		    for (int i = 2; i < (int)this / 2; i++)
+		    {
+			    if (this % i == 0)
 			    {
-				    if (this % i == 0)
-				    {
-					    list.Add((T)(IFactorable)(Integer)i);
-				    }
+				    list.Add((T)(IFactorable)(Integer)i);
 			    }
+		    }
 
-			    factors = list.ToArray();
+		    factors = list.ToArray();
 
-			    if (factors.Length != 0)
-				    return true;
+		    if (factors.Length != 0)
+		    {
+			    return true;
 		    }
 
 		    throw new FactorTypeException();
@@ -94,7 +122,9 @@ namespace Math.Algebra.Structures.Rings.Members
 	    public T Without<T>(T factor) where T : IFactorable
 	    {
 		    if (typeof(T) != GetType())
+		    {
 			    throw new FactorTypeException();
+		    }
 		    
 		    Integer f = (Integer) (IFactorable) factor;
 		    
@@ -106,7 +136,9 @@ namespace Math.Algebra.Structures.Rings.Members
 		    List<Integer> factors = Factors<Integer>().ToList();
 
 		    if (factors.Count == 0 || !factors.Contains(f))
+		    {
 			    return (T) (IFactorable) this;
+		    }
 
 		    factors.Remove(f);
 
@@ -131,20 +163,20 @@ namespace Math.Algebra.Structures.Rings.Members
         {
             if (other is Integer r)
             {
-                return (T)(MonoidMember)new Integer(Value + r.Value);
+                return (T)(MonoidMember)new Integer(_value + r._value);
             }
             throw new IncorrectSetException(GetType(), "added", other.GetType());
         }
 
         public override T Negative<T>()
         {
-            return (T)(INegatable)new Integer(-Value);
+            return (T)(INegatable)new Integer(-_value);
         }
 
         internal override T Multiply<T>(T other)
         {
             if (other is Integer c)
-                return (T)(GroupMember)new Integer(Value * c.Value);
+                return (T)(GroupMember)new Integer(_value * c._value);
             throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
         }
 
@@ -162,9 +194,9 @@ namespace Math.Algebra.Structures.Rings.Members
             throw new IncorrectSetException(this, "unit", typeof(T));
         }
 
-        public override bool IsNull() => Value.CloseTo(0);
+        public override bool IsNull() => _value.Equals(0);
 
-        public override bool IsUnit() => Value.CloseTo(1);
+        public override bool IsUnit() => _value.Equals(1);
 
 	    [Obsolete]
         public override double ToDouble()
@@ -204,9 +236,9 @@ namespace Math.Algebra.Structures.Rings.Members
 		{
             switch (other) {
 	            case Integer r:
-		            return Value == r;
+		            return _value == r;
 	            case int i:
-		            return Value == i;
+		            return _value == i;
             }
 
 			return false;
@@ -221,12 +253,12 @@ namespace Math.Algebra.Structures.Rings.Members
 
 		public INumerical Round()
 	    {
-		    return new Integer(Value);
+		    return new Integer(_value);
 	    }
 
 	    public INumerical Log10()
 	    {
-		    return new Real(System.Math.Log10(Value));
+		    return new Real(System.Math.Log10(_value));
 	    }
 
 	    public INumerical LongestValue()
@@ -353,7 +385,12 @@ namespace Math.Algebra.Structures.Rings.Members
 
 		public static implicit operator int(Integer r)
         {
-            return r.Value;
+	        if (r.Positive)
+	        {
+		        return r._value;
+	        }
+
+			return -r._value;
         }
 
         public static implicit operator Integer(int r)
@@ -363,14 +400,14 @@ namespace Math.Algebra.Structures.Rings.Members
 
         public override string ToString()
         {
-            return Value.ToString(CultureInfo.InvariantCulture);
+	        throw new NotImplementedException();
         }
 
 	    public string ToString(string format)
         {
-            return Value.ToString(format);
-        }
+			throw new NotImplementedException();
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

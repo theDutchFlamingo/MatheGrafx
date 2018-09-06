@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using Math.Algebra.Expressions.Definitions;
 using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Rings.Members;
+using Math.Bytes;
 using Math.ComplexLinearAlgebra;
 using Math.Latex;
 using Math.LinearAlgebra;
@@ -24,9 +26,15 @@ namespace Math
 			//LinAlg();
 			//ComplexLinAlg();
 			//BasicTest();
-			Polynomials();
+			//Polynomials();
+//	        Pascal();
 
-	        
+			byte[] l = {0, 0, 0,1, 255, 255};
+	        byte[] r = {0, 0, 0, 254, 255, 255};
+
+	        byte[] sum = l.Add(r);
+
+	        Console.WriteLine(String.Join(", ", sum));
         }
 
 	    public static void Latex()
@@ -70,14 +78,45 @@ namespace Math
 
 		public static void Polynomials()
 	    {
-			IntegerPolynomial p = new IntegerPolynomial(new Integer[] { 1, 0,0,0,0,0,0,1, -1 });
-			Polynomial<Real> p2 = new Polynomial<Real>(0, 0, -1, 1, 5, -2 );
-			Polynomial<Fraction> f = new Polynomial<Fraction>();
+			IntegerPolynomial p = new IntegerPolynomial(1,0,0,0,0,0,0,0,1);
+			Polynomial<Real> p2 = new Polynomial<Real>(0, 0, -1, 1, 5, -2);
+			Polynomial<Fraction> f = new Polynomial<Fraction>(
+				(Integer)1/2,
+				(Integer)2/3,
+				(Integer)3/4,
+				(Integer)4/5,
+				(Integer)5/6,
+				(Integer)6/7,
+				(Integer)7/8				
+				);
 
 			Console.WriteLine(new Fraction().Parse("12/5/20/1"));
 
-			Console.WriteLine("(" + p2.ToLatex() + ")^2 = " + (p2 ^ 2).ToLatex() + ".");
+			Console.WriteLine(f^20);
 		}
+
+	    public static void Pascal()
+	    {
+		    int n = 20;
+		    
+		    IntegerPolynomial p = new IntegerPolynomial(1, 1);
+			IntegerPolynomial curr = new IntegerPolynomial(1);
+
+		    string total = "";
+
+		    int length = String.Join(" ", (p ^ (n - 1)).Coefficients.Select(d => d.ToString())).Length; 
+
+		    for (int i = 0; i < n; i++)
+		    {
+			    string line = String.Join(" ", (p ^ i).Coefficients.Select(d => d.ToString()));
+			    
+			    total += line.PadCenter(length) + "\n";
+			    
+			    curr = curr * p;
+		    }
+		    
+		    Console.WriteLine(total);
+	    }
 	    
 	    private static void ComplexLinAlg()
 	    {
@@ -198,5 +237,13 @@ namespace Math
 		    Console.WriteLine("The matrix e, in all its glory: \n" + e.ToTable(3));
 		    Console.WriteLine(n);
 		}
+	    
+	    public static string PadCenter(this string source, int length)
+	    {
+		    int spaces = length - source.Length;
+		    int padLeft = spaces/2 + source.Length;
+		    return source.PadLeft(padLeft).PadRight(length);
+
+	    }
     }
 }

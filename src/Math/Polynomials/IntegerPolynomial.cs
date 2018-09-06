@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Math.Algebra.Expressions;
-using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Groups;
 using Math.Algebra.Structures.Groups.Members;
 using Math.Algebra.Structures.Monoids.Members;
@@ -58,7 +57,7 @@ namespace Math.Polynomials
 		public Vector<Integer> Coefficients
 		{
 			get => _coefficients;
-			set
+			private set
 			{
 				_coefficients = value;
 				// Degree of a polynomial is always the amount of coefficients minus 1,
@@ -78,7 +77,7 @@ namespace Math.Polynomials
 			Coefficients = coefficients;
 		}
 
-		public IntegerPolynomial(Integer[] coefficients) : this(new Vector<Integer>(coefficients))
+		public IntegerPolynomial(params Integer[] coefficients) : this(new Vector<Integer>(coefficients))
 		{
 			
 		}

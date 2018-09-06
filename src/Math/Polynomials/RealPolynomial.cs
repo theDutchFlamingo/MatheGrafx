@@ -319,6 +319,11 @@ namespace Math.Polynomials
 			return new RealPolynomial((RealVector) polynomial.Coefficients);
 		}
 
+		public static explicit operator RealPolynomial(Polynomial<Fraction> polynomial)
+		{
+			return new RealPolynomial((RealVector) polynomial.Coefficients);
+		}
+
 		public static RealPolynomial Parse(string polynomial, string variable = "x")
 		{
 			// First check if variable name is allowed

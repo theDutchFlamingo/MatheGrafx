@@ -3,11 +3,12 @@ using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Rings.Members;
 using Math.Exceptions.Operations;
+using Math.Rationals;
 
 namespace Math.LinearAlgebra
 {
 	/// <summary>
-	/// Specific implementation of VectorBase&lt;Real&gt; because real vectors are by far the most common ones
+	/// Specific implementation of Vector&lt;Real&gt; because real vectors are by far the most common ones
 	/// </summary>
 	public class RealVector : Vector<Real>
     {
@@ -201,6 +202,11 @@ namespace Math.LinearAlgebra
 	    public static explicit operator RealVector(Vector<Integer> vector)
 	    {
 		    return new RealVector(vector.Select(i => new Real(i)).ToArray());
+	    }
+
+	    public static explicit operator RealVector(Vector<Fraction> vector)
+	    {
+		    return new RealVector(vector.Select(f => new Real((double) f)).ToArray());
 	    }
 
 	    #endregion
