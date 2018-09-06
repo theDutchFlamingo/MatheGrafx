@@ -71,7 +71,7 @@ namespace Math
 		public static void Polynomials()
 	    {
 			IntegerPolynomial p = new IntegerPolynomial(new Integer[] { 1, 0,0,0,0,0,0,1, -1 });
-			Polynomial<Real> p2 = new Polynomial<Real>(new Real[] { 0, 0, -1, 1, 5, -2 });
+			Polynomial<Real> p2 = new Polynomial<Real>(0, 0, -1, 1, 5, -2 );
 			Polynomial<Fraction> f = new Polynomial<Fraction>();
 
 			Console.WriteLine(new Fraction().Parse("12/5/20/1"));

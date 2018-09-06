@@ -53,7 +53,10 @@ namespace Math.ComplexLinearAlgebra
 				}
 			}
 
-			if (valid) return new Complex(real, imaginary);
+			if (valid)
+			{
+				return new Complex(real, imaginary);
+			}
 			throw new ArgumentException("Given string did not seem to contain any valid (complex) numbers.");
 		}
 

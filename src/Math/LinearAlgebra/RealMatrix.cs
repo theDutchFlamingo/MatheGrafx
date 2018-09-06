@@ -1,11 +1,9 @@
 ﻿using System;
 using Math.Algebra.Structures.Fields.Members;
-using Math.Exceptions;
 using Math.Exceptions.Operations;
-using Math.LinearAlgebra;
 using Math.Settings;
 
-namespace Math
+namespace Math.LinearAlgebra
 {
 	/// <inheritdoc />
 	/// <summary>

@@ -6,10 +6,11 @@ using Math.Algebra.Structures.Rings.Members;
 using Math.ComplexLinearAlgebra;
 using Math.Exceptions;
 using Math.LinearAlgebra;
+using Math.Parsing;
 
 namespace Math.Algebra.Structures.Fields.Members
 {
-	public class Complex : FieldMember, INumerical
+	public class Complex : FieldMember, INumerical, IParsable<Complex>
 	{
 		#region Properties
 
@@ -392,7 +393,7 @@ namespace Math.Algebra.Structures.Fields.Members
 			}
 			catch (ArgumentException)
 			{
-				result = null;
+				result = new Complex();
 				return false;
 			}
 		}
@@ -452,15 +453,26 @@ namespace Math.Algebra.Structures.Fields.Members
 		public override bool Equals<T>(T other)
 		{
 			if (other is Complex c)
+			{
 				return ComplexMath.Equals(this, c);
+			}
 			return false;
 		}
 
 		public override T Inner<T>(T fieldMember)
 		{
 			if (fieldMember is Complex c)
+			{
 				return (T) (RingMember) Multiply(c.Conjugate());
+			}
 			throw new IncorrectSetException(GetType(), "inner", typeof(T));
+		}
+
+		public Complex Parse(string value)
+		{
+			TryParse(value, out Complex c);
+
+			return c;
 		}
 
 		#endregion

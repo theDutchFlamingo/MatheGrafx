@@ -304,7 +304,8 @@ namespace Math.Polynomials
 		#endregion
 
 		/**
-		 * Convert this polynomial to a string or parse a polynomial from a string
+		 * Convert this polynomial to a string or parse a polynomial from a string.
+		 * Also, this polynomial can be converted to a complex polynomial.
 		 */
 		#region Conversion
 
@@ -313,13 +314,22 @@ namespace Math.Polynomials
 			return Parse(polynomial);
 		}
 
+		public static explicit operator RealPolynomial(IntegerPolynomial polynomial)
+		{
+			
+		}
+
 		public static RealPolynomial Parse(string polynomial, string variable = "x")
 		{
 			// First check if variable name is allowed
 			if (!Regex.IsMatch(variable, VariableNamesRegex))
-				throw new ArgumentException("Variable name must start with a letter and contain only letters, numbers and underscores.");
+			{
+				throw new ArgumentException("Variable name must start with a letter and" +
+				                            "contain only letters, numbers and underscores.");
+			}
 			
-			// Split the strings on + signs, change - to +- (to be sure that all negatives are the same) and remove all spaces
+			// Split the strings on + signs, change - to +-
+			// (to be sure that all negatives are the same) and remove all spaces
 			List<string> splitStrings = polynomial.Split('+').Select(str => str.Replace("-", "+-")).
 				Select(str => str.Replace(" ", "")).ToList();
 
@@ -328,7 +338,10 @@ namespace Math.Polynomials
 			
 			foreach (var str in splitStrings)
 			{
-				if (str == "") continue;
+				if (str == "")
+				{
+					continue;
+				}
 
 				// Remove double negatives and format all minuses as +- for simplicity
 				string newStr = str.Replace("--", "+").Replace("-", "+-");
@@ -336,13 +349,24 @@ namespace Math.Polynomials
 				// Continue with the string without double negatives
 				foreach (var clean in newStr.Split('+'))
 				{
-					if (str == "") continue;
-					
-					if (clean.Contains('-') && clean.Split('-')[0] == "") result -= ParseMonomial(clean.Split('-')[1], variable);
+					if (str == "")
+					{
+						continue;
+					}
+
+					if (clean.Contains('-') && clean.Split('-')[0] == "")
+					{
+						result -= ParseMonomial(clean.Split('-')[1], variable);
+					}
 					else if (clean.Contains('-'))
+					{
 						result += ParseMonomial(clean.Split('-')[0], variable)
 							- ParseMonomial(clean.Split('-')[1], variable);
-					else result += ParseMonomial(clean, variable);
+					}
+					else
+					{
+						result += ParseMonomial(clean, variable);
+					}
 				}
 			}
 			
@@ -362,12 +386,18 @@ namespace Math.Polynomials
 			
 			// First try matching it with the linear (x^1) term
 			Match linear = Regex.Match(monomial, LinearRegex(variable));
-			
-			if (linear.Success) return new RealPolynomial(new Real[]{Double.Parse(linear.Groups[1].ToString()), 0});
+
+			if (linear.Success)
+			{
+				return new RealPolynomial(new Real[]{Double.Parse(linear.Groups[1].ToString()), 0});
+			}
 			
 			Match mono = Regex.Match(monomial, MonomialRegex(variable));
-			
-			if (!mono.Success) return new RealPolynomial(new []{(Real) 0});
+
+			if (!mono.Success)
+			{
+				return new RealPolynomial(new []{(Real) 0});
+			}
 
 			uint exp = UInt32.Parse(mono.Groups[2].ToString());
 
@@ -389,8 +419,10 @@ namespace Math.Polynomials
 		{
 			// First check if variable name is allowed
 			if (!Regex.IsMatch(variable, VariableNamesRegex))
+			{
 				throw new ArgumentException("Variable name must start with a letter and contain only" +
 				                            "letters, numbers and underscores.");
+			}
 			
 			string result = "";
 
@@ -398,7 +430,10 @@ namespace Math.Polynomials
 			{
 				double coef = Coefficients[i];
 				if (!coef.CloseTo(0))
-					result += (coef.CloseTo(1) ? "" : $"{Coefficients[i]}") + $"{variable}" + (i != 1 ? $"^{i}" : "") + " + ";
+				{
+					result += (coef.CloseTo(1) ? "" : $"{Coefficients[i]}") +
+					          $"{variable}" + (i != 1 ? $"^{i}" : "") + " + ";
+				}
 			}
 
 			result += $"{Coefficients[0]}";

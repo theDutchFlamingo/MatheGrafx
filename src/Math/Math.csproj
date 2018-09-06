@@ -87,7 +87,7 @@
     <Compile Include="Rationals\Fraction.cs" />
     <Compile Include="Algebra.Structures\Fields\Members\Real.cs" />
     <Compile Include="Algebra.Structures\Fields\RealNumbers.cs" />
-    <Compile Include="Algebra.Structures\Fields\Vector.cs" />
+    <Compile Include="LinearAlgebra\Vector.cs" />
     <Compile Include="Algebra.Structures\Groups\Members\GroupMember.cs" />
     <Compile Include="Algebra.Structures\Groups\INegatable.cs" />
     <Compile Include="Algebra.Structures\Fields\IInvertible.cs" />
@@ -111,11 +111,11 @@
     <Compile Include="LinearAlgebra\LinearMath.cs" />
     <Compile Include="Exceptions\Operations\InvalidRowOperationException.cs" />
     <Compile Include="Exceptions\Operations\InvalidRowOperationType.cs" />
-    <Compile Include="RealMatrix.cs" />
+    <Compile Include="LinearAlgebra\RealMatrix.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VectorSpaces\VectorSpace.cs" />
-    <Compile Include="RealVector.cs" />
+    <Compile Include="LinearAlgebra\RealVector.cs" />
     <Compile Include="VectorType.cs" />
   </ItemGroup>
   <ItemGroup>

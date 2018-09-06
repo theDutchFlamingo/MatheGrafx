@@ -1,4 +1,6 @@
-﻿namespace Math.VectorSpaces
+﻿using Math.LinearAlgebra;
+
+namespace Math.VectorSpaces
 {
 	public class Basis
 	{

@@ -9,6 +9,7 @@ using Math.Algebra.Structures.Rings.Members;
 using Math.ComplexLinearAlgebra;
 using Math.Exceptions;
 using Math.Exceptions.Operations;
+using Math.LinearAlgebra;
 using Math.Settings;
 
 namespace Math.Algebra.Structures.Fields.Members

@@ -184,15 +184,8 @@ namespace Math.Polynomials
 		    {
 			    throw new FactorTypeException();
 		    }
-		    
-		    List<T1> result = new List<T1>();
 
-			foreach (var factor in Factors<Polynomial<T>>(false))
-			{
-				result.Add((T1) (IFactorable) factor);
-			}
-			
-			return result.ToArray();
+		    return Factors<Polynomial<T>>(false).Select(factor => (T1) (IFactorable) factor).ToArray();
 	    }
 
 	    public T1[] Factors<T1>(bool allowComplex) where T1 : Polynomial<T>

@@ -1,9 +1,8 @@
 ﻿using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
-using Math.Exceptions;
 using Math.Exceptions.Operations;
 
-namespace Math
+namespace Math.LinearAlgebra
 {
 	/// <summary>
 	/// Specific implementation of VectorBase&lt;Real&gt; because real vectors are by far the most common ones
