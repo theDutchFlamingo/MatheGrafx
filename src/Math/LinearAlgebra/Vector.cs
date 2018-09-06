@@ -2,14 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Rings.Members;
-using Math.Exceptions;
 using Math.Exceptions.Operations;
-using Math.LinearAlgebra;
 using Math.Settings;
 
-namespace Math.Algebra.Structures.Fields
+namespace Math.LinearAlgebra
 {
 	public class Vector<T> : IEnumerable<T> where T : RingMember, new()
 	{

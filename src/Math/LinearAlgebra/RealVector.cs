@@ -1,5 +1,7 @@
-﻿using Math.Algebra.Structures.Fields;
+﻿using System.Linq;
+using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
+using Math.Algebra.Structures.Rings.Members;
 using Math.Exceptions.Operations;
 
 namespace Math.LinearAlgebra
@@ -193,5 +195,14 @@ namespace Math.LinearAlgebra
 		}
 
 		#endregion
+
+	    #region Conversion
+
+	    public static explicit operator RealVector(Vector<Integer> vector)
+	    {
+		    return new RealVector(vector.Select(i => new Real(i)).ToArray());
+	    }
+
+	    #endregion
 	}
 }

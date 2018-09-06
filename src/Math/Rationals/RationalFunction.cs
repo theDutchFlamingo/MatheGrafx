@@ -1,6 +1,7 @@
 ﻿using System;
 using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Rings.Members;
+using Math.LinearAlgebra;
 using Math.Polynomials;
 
 namespace Math.Rationals

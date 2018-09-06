@@ -7,6 +7,7 @@ using Math.Algebra.Structures.Groups;
 using Math.Algebra.Structures.Monoids.Members;
 using Math.Algebra.Structures.Rings.Members;
 using Math.Exceptions;
+using Math.LinearAlgebra;
 using Math.Polynomials;
 
 namespace Math.Rationals

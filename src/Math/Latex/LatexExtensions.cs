@@ -6,6 +6,7 @@ using Math.Algebra.Expressions;
 using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Rings.Members;
+using Math.LinearAlgebra;
 using Math.Parsing;
 using Math.Polynomials;
 using Math.Rationals;

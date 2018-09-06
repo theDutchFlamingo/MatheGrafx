@@ -3,6 +3,7 @@ using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Exceptions;
 using Math.Exceptions.Operations;
+using Math.LinearAlgebra;
 
 namespace Math.ComplexLinearAlgebra
 {
@@ -189,6 +190,20 @@ namespace Math.ComplexLinearAlgebra
 		public static ComplexVector operator /(ComplexVector left, double right)
 		{
 			return left * (1 / right);
+		}
+
+		#endregion
+
+		#region Conversion
+
+		public static explicit operator ComplexVector(RealVector vector)
+		{
+			return new ComplexVector(vector.Select(i => new Complex(i, 0)).ToArray());
+		}
+
+		public static explicit operator ComplexVector(Vector<Real> vector)
+		{
+			return new ComplexVector(vector.Select(i => new Complex(i, 0)).ToArray());
 		}
 
 		#endregion

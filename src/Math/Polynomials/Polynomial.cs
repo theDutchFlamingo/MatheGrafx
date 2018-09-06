@@ -9,6 +9,7 @@ using Math.Algebra.Structures.Groups.Members;
 using Math.Algebra.Structures.Monoids.Members;
 using Math.Algebra.Structures.Rings.Members;
 using Math.Exceptions;
+using Math.LinearAlgebra;
 using Math.Parsing;
 using Math.Rationals;
 

@@ -316,7 +316,7 @@ namespace Math.Polynomials
 
 		public static explicit operator RealPolynomial(IntegerPolynomial polynomial)
 		{
-			
+			return new RealPolynomial((RealVector) polynomial.Coefficients);
 		}
 
 		public static RealPolynomial Parse(string polynomial, string variable = "x")
