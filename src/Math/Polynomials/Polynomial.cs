@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Math.Algebra.Expressions;
-using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Groups;
 using Math.Algebra.Structures.Groups.Members;
 using Math.Algebra.Structures.Monoids.Members;
@@ -394,7 +393,7 @@ namespace Math.Polynomials
 		{
 			try
 			{
-				return new Polynomial<T>(new T().Parse(monomial));
+				return new Polynomial<T>(new T().FromString(monomial));
 			}
 			catch (FormatException)
 			{
@@ -408,7 +407,7 @@ namespace Math.Polynomials
 			{
 				return new Polynomial<T>(new []
 				{
-					new T().Parse(linear.Groups[1].ToString()), new T()
+					new T().FromString(linear.Groups[1].ToString()), new T()
 				});
 			}
 			

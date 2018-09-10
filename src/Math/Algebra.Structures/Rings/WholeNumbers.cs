@@ -1,4 +1,5 @@
 ﻿using System;
+using Math.Algebra.Structures.Groups.Members;
 using Math.Algebra.Structures.Rings.Members;
 
 namespace Math.Algebra.Structures.Rings
@@ -27,6 +28,18 @@ namespace Math.Algebra.Structures.Rings
 		public override Integer Null()
 		{
 			return new Integer(0);
+		}
+
+		public override bool Contains<T>(T element)
+		{
+			switch (element)
+			{
+				case Integer _:
+				case Natural _:
+					return true;
+			}
+
+			return false;
 		}
 	}
 }

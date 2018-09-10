@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Globalization;
+using System.Text.RegularExpressions;
 using Math.Algebra.Structures.Groups;
 using Math.Algebra.Structures.Groups.Members;
 using Math.Algebra.Structures.Monoids.Members;
@@ -9,6 +9,7 @@ using Math.Exceptions;
 using Math.LinearAlgebra;
 using Math.Parsing;
 using Math.Rationals;
+using static System.Math;
 
 namespace Math.Algebra.Structures.Fields.Members
 {
@@ -21,8 +22,10 @@ namespace Math.Algebra.Structures.Fields.Members
 		 * Contains the double value of this real number
 		 */
 		#region Properties
-
-		private double Value { get; }
+		
+		
+		private Integer Offset { get; }
+		private Integer Value { get; }
 		
 		#endregion
 
@@ -33,9 +36,86 @@ namespace Math.Algebra.Structures.Fields.Members
 			
 		}
 
-		public Real(double value)
+		public Real(Fraction value)
+		{
+
+		}
+
+		public Real(Integer value)
 		{
 			Value = value;
+			Offset = 0;
+		}
+
+		public Real(double value)
+		{
+			// TODO convert double to integer with correct offset
+			bool positive = value >= 0;
+			int offset = 0;
+			value = Abs(value);
+
+			if (value > 1)
+			{
+				for (var i = 0;; i++)
+				{
+					if (value / 10 < 1)
+					{
+						break;
+					}
+
+					value /= 10;
+					offset++;
+				}
+			}
+			else if (value.CloseTo(0))
+			{
+				Value = new Integer(0);
+			}
+			else
+			{
+				offset--;
+				for (var i = 0;; i++)
+				{
+					if (System.Math.Round(value).CloseTo(value))
+					{
+						break;
+					}
+
+					value *= 10;
+					offset--;
+				}
+			}
+
+			// TODO
+
+			Value = new Integer(new Natural((int) (value * Pow(10, -offset))), positive);
+		}
+
+		public Real(string value, bool hex = false)
+		{
+			if (!hex && !Regex.IsMatch(value, @"^-?[0-9]*(\.[0-9]+)?$") ||
+			    hex && !Regex.IsMatch(value, @"^-?[0-9a-fA-F]*(\.[0-9a-fA-F]+)?$") ||
+			    value == "")
+			{
+				throw new ArgumentException("String is not in correct format.");
+			}
+
+			bool positive = value.StartsWith("-");
+
+			if (value.Contains("."))
+			{
+				string before, after;
+				(before, after) = (value.Split('.')[0], value.Split('.')[1]);
+
+				if (before == "")
+				{
+					Value = Integer.Parse(after, positive);
+				}
+			}
+
+			
+
+			Offset = value.Contains(".") ? value.IndexOf('.') : 0;
 		}
 		
 		#endregion
@@ -59,7 +139,9 @@ namespace Math.Algebra.Structures.Fields.Members
 		internal override T Multiply<T>(T other)
 		{
 			if (other is Real c)
+			{
 				return (T)(RingMember)new Real(Value * c.Value);
+			}
 			throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
 		}
 
@@ -72,7 +154,7 @@ namespace Math.Algebra.Structures.Fields.Members
 		{
 			if (typeof(T) == GetType())
 			{
-				return (T)(MonoidMember) new Real(0);
+				return (T)(MonoidMember) new Real((Integer)0);
 			}
 			throw new IncorrectSetException(this, "null", typeof(T));
 		}
@@ -81,14 +163,14 @@ namespace Math.Algebra.Structures.Fields.Members
 		{
 			if (typeof(T) == GetType())
 			{
-				return (T)(GroupMember)new Real(1);
+				return (T)(GroupMember)new Real((Integer)1);
 			}
 			throw new IncorrectSetException(this, "unit", typeof(T));
 		}
 
-		public override bool IsNull() => Value.CloseTo(0);
+		public override bool IsNull() => Value.Equals(0);
 
-		public override bool IsUnit() => Value.CloseTo(1);
+		public override bool IsUnit() => Value.Equals(1);
 
 		public bool GreaterThan<T>(T other) where T : ITotallyOrdered
 		{
@@ -142,7 +224,7 @@ namespace Math.Algebra.Structures.Fields.Members
 
 		public INumerical Round()
 		{
-			return new Real(System.Math.Round(Value));
+			return Value - Value % (Integer) Pow(10, Offset);
 		}
 
 		public INumerical Log10()
@@ -155,7 +237,7 @@ namespace Math.Algebra.Structures.Fields.Members
 			return this;
 		}
 
-		public Real Parse(string value)
+		public Real FromString(string value)
 		{
 			return Set.Reals.Create(value);
 		}
@@ -283,24 +365,9 @@ namespace Math.Algebra.Structures.Fields.Members
 			return new Real(r);
 		}
 
-		public static implicit operator Real(int i)
-		{
-			return new Real(i);
-		}
-
-		public static implicit operator Real(long l)
-		{
-			return new Real(l);
-		}
-
-		public static implicit operator Real(float f)
-		{
-			return new Real(f);
-		}
-
 		public override string ToString()
 		{
-			return Value.ToString(CultureInfo.InvariantCulture);
+			return Value.ToString().Insert(Value.ToString().Length - Offset, ".");
 		}
 
 		public string ToString(string format)

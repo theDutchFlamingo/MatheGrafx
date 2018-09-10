@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static System.Math;
 
 namespace Math.Bytes
@@ -79,34 +76,37 @@ namespace Math.Bytes
 				return new byte[] { 0 };
 			}
 
+			left = left.Minimize();
+			right = right.Minimize();
 			int length = left.Length + right.Length;
+			int scooch = 1;
 
 			if (left.First() * right.First() <= Byte.MaxValue)
 			{
 				length--;
+				scooch = 0;
 			}
 
-			left = left.Minimize();
-			right = right.Minimize();
 			byte[] result = new byte[length];
 
 			for (int i = left.Length - 1; i >= 0; i--)
 			{
-				byte[] temp = {0};
+				byte[] temp = new byte[length];
 
 				for (int j = right.Length - 1; j >= 0; j--)
 				{
 					byte l = left[i];
 					byte r = right[j];
 
-					if (l * r + result[i + j] > Byte.MaxValue)
+					if (l * r + temp[i + j] > Byte.MaxValue)
 					{
-						result[i + j] = (byte)(l * r + result[i + j]);
-						result[i + j - 1] = 1;
+						byte remainder = (byte) (l * r + temp[i + j]);
+						temp[i + j] = (byte)((l * r + temp[i + j] - remainder) / byte.MaxValue);
+						temp[i + j + 1] = remainder;
 					}
 					else
 					{
-						result[i] += (byte)(l + r);
+						temp[i + j + scooch] += (byte)(l * r);
 					}
 				}
 
@@ -114,6 +114,93 @@ namespace Math.Bytes
 			}
 
 			return result;
+		}
+
+		/// <summary>
+		/// Subtract the right byte array from the left, the result should be positive
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static byte[] Subtract(this byte[] left, byte[] right)
+		{
+			if (right == null)
+			{
+				return left;
+			}
+
+			if (!left.GreaterThan(right))
+			{
+				throw new ArgumentException("Result must be positive in order to compute difference.");
+			}
+
+			int length = Max(left.Length, right.Length);
+
+			left = left.Extend(length);
+			right = right.Extend(length);
+			byte[] result = new byte[length];
+
+			for (int i = result.Length - 1; i >= 0; i--)
+			{
+				byte l = left[i];
+				byte r = right[i];
+
+				if (l < r)
+				{
+					int remainder = 0;
+					int j = i - 1;
+					for (; j >= 0; j--)
+					{
+						if (left[j] == 0)
+						{
+							continue;
+						}
+
+						left[j]--;
+						byte digit = (byte) (Pow(0x100, i - j) + l - r);
+						remainder = (int) (Pow(0x100, i - j) + l - r - digit) / 0x100;
+
+						result[i] = digit;
+						break;
+					}
+
+					for (j = i - 1; j >= 0 && remainder > 0; j--)
+					{
+						left[j] = (byte) (remainder % 0x100);
+						remainder = (remainder - left[j]) / 0x100;
+					}
+
+					continue;
+				}
+
+				result[i] = (byte) (l - r);
+			}
+
+			return result.Minimize();
+		}
+
+		/// <summary>
+		/// Whether the left byte array is greater than the right one
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static bool GreaterThan(this byte[] left, byte[] right)
+		{
+			left = left.Minimize();
+			right = right.Minimize();
+
+			if (left.Length > right.Length)
+			{
+				return true;
+			}
+
+			if (left.Length < right.Length)
+			{
+				return false;
+			}
+
+			return left.First() > right.First();
 		}
 
 		/// <summary>
@@ -169,6 +256,29 @@ namespace Math.Bytes
 			}
 
 			return result;
+		}
+
+		/// <summary>
+		/// Turn a set of two characters into a single byte
+		/// </summary>
+		/// <param name="c1"></param>
+		/// <param name="c2"></param>
+		/// <returns></returns>
+		public static byte SingleByte(char c1, char c2)
+		{
+			// First convert c1
+			return (byte) (ToByte(c1) * 16 + ToByte(c2));
+		}
+
+		internal static byte ToByte(char c)
+		{
+			if (Char.IsDigit(c))
+			{
+				return (byte)(c - 48);
+			}
+
+			return (byte) (Char.ToUpper(c) - 65 + 10);
+			// 65 Is the character 'A', and it has value 10
 		}
 	}
 }

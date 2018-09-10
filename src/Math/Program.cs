@@ -1,10 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
-using Math.Algebra.Expressions.Definitions;
-using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
+using Math.Algebra.Structures.Groups.Members;
 using Math.Algebra.Structures.Rings.Members;
 using Math.Bytes;
 using Math.ComplexLinearAlgebra;
@@ -27,15 +25,68 @@ namespace Math
 			//ComplexLinAlg();
 			//BasicTest();
 			//Polynomials();
-//	        Pascal();
+			//Pascal();
+			//Integers();
+	        //AddMany();
 
-			byte[] l = {0, 0, 0,1, 255, 255};
-	        byte[] r = {0, 0, 0, 254, 255, 255};
+			Real l = new Real("122222222222222222222222222222222222222222222222222");
+			Real r = new Real("13.003033030030330300303303");
 
-	        byte[] sum = l.Add(r);
-
-	        Console.WriteLine(String.Join(", ", sum));
+			Console.WriteLine(l + r);
         }
+
+	    public static void AddMany()
+	    {
+		    List<int> times = new List<int>(10);
+
+		    for (int n = 0; n < 10; n++)
+		    {
+			    DateTime before = DateTime.Now;
+
+			    AddSet();
+
+			    TimeSpan span = DateTime.Now.Subtract(before);
+
+			    times.Add((int)span.TotalMilliseconds);
+
+			    Console.WriteLine($"Conversion took {span.Seconds}.{span.Milliseconds} seconds");
+		    }
+
+		    Console.WriteLine($"Average addition time is {times.Average() / 1000} seconds");
+		}
+
+		public static void AddSet()
+	    {
+			Random r = new Random(0);
+		    const int width = 120;
+		    int dot = 0;
+
+		    for (int n = 100; n < 10000000; n++)
+		    {
+				int op1 = r.Next(n);
+				int op2 = r.Next(n);
+
+				string mySum = op1.ToString().AddDecimal(op2.ToString());
+				string myEfficientSum = op1.ToString().AddEfficiently(op2.ToString());
+				//int normSum = op1 + op2;
+
+				if ((double)n / 10000000 * width > dot)
+			    {
+				    dot++;
+				    Console.Write(".");
+			    }
+		    }
+		}
+
+	    public static void Integers()
+	    {
+		    Natural n1 = 5;
+		    Integer n2 = -10;
+
+		    Integer itg = n1 - (int)n2;
+
+			Console.WriteLine(itg);
+	    }
 
 	    public static void Latex()
 	    {
@@ -90,7 +141,7 @@ namespace Math
 				(Integer)7/8				
 				);
 
-			Console.WriteLine(new Fraction().Parse("12/5/20/1"));
+			Console.WriteLine(new Fraction().FromString("12/5/20/1"));
 
 			Console.WriteLine(f^20);
 		}
@@ -187,8 +238,10 @@ namespace Math
 		    {
 			    Console.WriteLine();
 
-				for (int i = 0; i < 10; i++) 
-					Console.WriteLine(c ^ i);
+			    for (int i = 0; i < 10; i++)
+			    {
+				    Console.WriteLine(c ^ i);
+			    }
 		    }
 	    }
 

@@ -1,15 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
+using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Monoids.Members;
+using Math.Algebra.Structures.Ordering;
 using Math.Algebra.Structures.Rings.Members;
+using Math.Bytes;
 using Math.Exceptions;
+using Math.Parsing;
+using Math.Rationals;
 using static System.BitConverter;
 
 namespace Math.Algebra.Structures.Groups.Members
 {
-	public class Natural : MonoidMember
+	public class Natural : MonoidMember, ITotallyOrdered, IParsable<Natural>
 	{
 		private byte[] _value = {0};
 
@@ -23,7 +26,7 @@ namespace Math.Algebra.Structures.Groups.Members
 				TryConvert(_value, out long result);
 				return result;
 			}
-			set => _value = GetBytes(value);
+			set => _value = BitConverter.GetBytes(value);
 		}
 
 		public Natural()
@@ -54,23 +57,54 @@ namespace Math.Algebra.Structures.Groups.Members
 			}
 		}
 
+		public Natural(byte[] value)
+		{
+			_value = value;
+		}
+
 		public Natural(string value, bool hex = true)
 		{
-
+			_value = hex ? Hexadecimal.FromHexadecimal(value) : Hexadecimal.FromDecimal(value);
 		}
+
+		#region Operators
+
+		public static Natural operator +(Natural left, Natural right)
+		{
+			return left.Add(right);
+		}
+
+		public static Integer operator -(Natural left, Natural right)
+		{
+			return new Integer(left.Difference(right), left > right);
+		}
+
+		public static Natural operator *(Natural left, Natural right)
+		{
+			return new Natural(left._value.Multiply(right._value));
+		}
+
+		public static bool operator >(Natural left, Natural right)
+		{
+			return left.GreaterThan(right);
+		}
+
+		public static bool operator <(Natural left, Natural right)
+		{
+			return left.LessThan(right);
+		}
+
+		#endregion
 
 		#region Overrides
 
 		internal override T Add<T>(T other)
 		{
-			if (other is Natural n)
-			{
-				return (T) (MonoidMember) new Natural(n.Value + Value);
-			}
-
-			if (other is Integer i && i >= 0)
-			{
-				return (T) (MonoidMember) new Natural(i.Value + Value);
+			switch (other) {
+				case Natural n:
+					return (T) (MonoidMember) new Natural(n._value.Add(_value));
+				case Integer i when i >= 0:
+					return (T) (MonoidMember) new Natural(i.Value + Value);
 			}
 
 			throw new IncorrectSetException(GetType(), "added", other.GetType());
@@ -79,7 +113,9 @@ namespace Math.Algebra.Structures.Groups.Members
 		public override T Null<T>()
 		{
 			if (typeof(T) == GetType())
+			{
 				return (T)(MonoidMember) new Natural(0);
+			}
 			throw new IncorrectSetException(this, "null", typeof(T));
 		}
 
@@ -101,16 +137,69 @@ namespace Math.Algebra.Structures.Groups.Members
 			return false;
 		}
 
+		public bool GreaterThan<T>(T other) where T : ITotallyOrdered
+		{
+			switch (other) {
+				case Natural n:
+					return _value.GreaterThan(n._value);
+				case Fraction f:
+					return this * f.Den > f.Num;
+				case Real r:
+					return (double)(Fraction)this > (double)r;
+				//TODO re-implement this when Real has a better Value
+			}
+
+
+			return false;
+		}
+
+		public bool LessThan<T>(T other) where T : ITotallyOrdered
+		{
+			switch (other)
+			{
+				case Natural n:
+					return n._value.GreaterThan(_value);
+				case Fraction f:
+					return this * f.Den < f.Num;
+				case Real r:
+					return (double)(Fraction)this > (double)r;
+				//TODO re-implement this when Real has a better *Value* type
+			}
+
+
+			return false;
+		}
+
+		public Natural FromString(string value)
+		{
+			return new Natural(value);
+		}
+
+		public Natural FromString(string value, bool hex)
+		{
+			return new Natural(value, hex);
+		}
+
 		#endregion
 
 		#region Conversion
 
-		public static implicit operator Natural(int i)
+		public static explicit operator Natural(int i)
 		{
 			return new Natural(i);
 		}
 
-		public static implicit operator Natural(long l)
+		public static explicit operator Natural(long l)
+		{
+			return new Natural(l);
+		}
+
+		public static implicit operator Natural(uint i)
+		{
+			return new Natural(i);
+		}
+
+		public static implicit operator Natural(ulong l)
 		{
 			return new Natural(l);
 		}
@@ -130,9 +219,37 @@ namespace Math.Algebra.Structures.Groups.Members
 			return n.Value;
 		}
 
+		public static implicit operator Integer(Natural n)
+		{
+			return new Integer(n);
+		}
+
+		public static implicit operator Fraction(Natural n)
+		{
+			return new Fraction(n);
+		}
+
 		#endregion
 
 		#region Bytes and Conversion
+
+		/// <summary>
+		/// Gets the absolute difference between these two natural numbers.
+		/// So left - right is always the same as right - left.
+		/// </summary>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public Natural Difference(Natural right)
+		{
+			return new Natural(this > right
+				? _value.Subtract(right._value)
+				: right._value.Subtract(_value));
+		}
+
+		public byte[] GetBytes()
+		{
+			return _value;
+		}
 
 		private static bool TryConvert(byte[] value, out int result)
 		{
@@ -176,38 +293,24 @@ namespace Math.Algebra.Structures.Groups.Members
 			}
 		}
 
-		public string ToHexString()
+		public override string ToString()
 		{
-			try
-			{
-				return BitConverter.ToString(_value);
-			}
-			catch (ArgumentOutOfRangeException)
-			{
-				return "";
-			}
+			throw new NotImplementedException();
 		}
 
-		public static byte[] FromHexString(string value)
+		public string ToHexString()
 		{
-			if (!Regex.IsMatch(value, @"^[0-9a-fA-F]+$"))
+			return _value.ToHexString();
+		}
+
+		public static Natural Parse(string value)
+		{
+			if (!Regex.IsMatch(value, @"^[0-9]+$"))
 			{
-				throw new ArgumentException("Hexadecimal string must contain only numbers, " +
-				                            "and letters A to F");
+				throw new ArgumentException("String was not in a valid number format.");
 			}
 
-			List<char> digits = value.Reverse().ToList();
-			List<byte> result = new List<byte>();
-
-			for (int i = 0; i < digits.Count; i += 2)
-			{
-				if (digits.Count >= i + 2)
-				{
-					byte b = 0;
-				}
-			}
-
-			return result.ToArray();
+			return new Natural(Hexadecimal.FromDecimal(value));
 		}
 
 		#endregion

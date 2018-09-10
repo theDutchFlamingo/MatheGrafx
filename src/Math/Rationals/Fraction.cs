@@ -31,6 +31,21 @@ namespace Math.Rationals
             
         }
 
+	    public Fraction(Natural num) : base(num, 1)
+	    {
+
+	    }
+
+	    public Fraction(Natural num, Natural den) : base(num, den)
+	    {
+
+	    }
+
+		public Fraction(Integer num) : base(num, 1)
+	    {
+
+	    }
+
         public Fraction(Integer num, Integer den) : base(num, den)
         {
             
@@ -98,12 +113,12 @@ namespace Math.Rationals
 	    {
 		    if (other is Fraction f)
 		    {
-			    return (double) this > (double) f;
+			    return Num * f.Den > f.Num * Den;
 		    }
 
 		    if (other is Integer i)
 		    {
-			    return (double) this > i;
+			    return this > i;
 		    }
 
 		    return false;
@@ -113,18 +128,18 @@ namespace Math.Rationals
 		{
 		    if (other is Fraction f)
 		    {
-				return (double) this < (double) f;
+				return Num * f.Den < f.Num * Den;
 		    }
 
 		    if (other is Integer d)
 		    {
-			    return (double) this < d;
+			    return this < d;
 		    }
 
 		    return false;
 		}
 
-	    public Fraction Parse(string value)
+	    public Fraction FromString(string value)
 	    {
 		    TryParse(Regex.Match(value, @"(\d+)/").Groups[1].Value, out int num);
 		    if (!TryParse(Regex.Match(value, @"/(\d+)").Groups[1].Value, out int den))
@@ -137,8 +152,31 @@ namespace Math.Rationals
 
 		public INumerical Round()
         {
-	        // ReSharper disable once PossibleLossOfFraction
-	        return new Real(System.Math.Round((double) ((int) Num / (int) Den)));
+			// TODO implement better
+	        if (GreaterThan(new Integer(0)))
+	        {
+		        if (LessThan((Integer) 1 / 2))
+		        {
+			        return new Integer(0);
+				}
+
+		        
+	        }
+	        else
+	        {
+				if (GreaterThan((Integer)(-1) / 2))
+		        {
+					return new Integer(0);
+		        }
+
+		        if (LessThan((Integer) 1))
+		        {
+
+		        }
+	        }
+
+			int i = (int)Num / (int)Den;
+			return new Integer((int)System.Math.Round((double)i));
         }
 
         public INumerical Log10()
@@ -269,7 +307,7 @@ namespace Math.Rationals
             return new Fraction(whole * den + num, den);
         }
 
-	    public static implicit operator Fraction(int i)
+	    public static explicit operator Fraction(int i)
 	    {
 			return new Fraction(i);
 	    }

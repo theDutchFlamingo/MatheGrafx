@@ -468,7 +468,7 @@ namespace Math.Algebra.Structures.Fields.Members
 			throw new IncorrectSetException(GetType(), "inner", typeof(T));
 		}
 
-		public Complex Parse(string value)
+		public Complex FromString(string value)
 		{
 			TryParse(value, out Complex c);
 

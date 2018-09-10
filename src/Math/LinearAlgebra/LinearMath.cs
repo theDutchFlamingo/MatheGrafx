@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
 using Math.ComplexLinearAlgebra;
 using Math.Exceptions.Operations;

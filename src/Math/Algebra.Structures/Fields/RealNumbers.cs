@@ -1,6 +1,9 @@
 ﻿using System;
 using Math.Algebra.Structures.Fields.Members;
+using Math.Algebra.Structures.Groups.Members;
 using Math.Algebra.Structures.Ordering;
+using Math.Algebra.Structures.Rings.Members;
+using Math.Rationals;
 
 namespace Math.Algebra.Structures.Fields
 {
@@ -34,6 +37,20 @@ namespace Math.Algebra.Structures.Fields
 		public override Real Unit()
 		{
 			return Create(1);
+		}
+
+		public override bool Contains<T>(T element)
+		{
+			switch (element)
+			{
+				case Real _:
+				case Fraction _:
+				case Integer _:
+				case Natural _:
+					return true;
+			}
+
+			return false;
 		}
 	}
 }

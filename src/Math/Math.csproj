@@ -42,6 +42,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -53,9 +54,11 @@
     <Compile Include="Algebra.Expressions\ExpressionConversions.cs" />
     <Compile Include="Algebra.Expressions\InvalidExpressionType.cs" />
     <Compile Include="Algebra.Expressions\NotationType.cs" />
+    <Compile Include="Algebra.Structures\Element.cs" />
     <Compile Include="Algebra.Structures\Fields\RationalNumbers.cs" />
     <Compile Include="Algebra.Structures\Groups\Group.cs" />
     <Compile Include="Algebra.Structures\Groups\Members\Natural.cs" />
+    <Compile Include="Algebra.Structures\Groups\NaturalNumbers.cs" />
     <Compile Include="Algebra.Structures\Monoids\Members\MonoidMember.cs" />
     <Compile Include="Algebra.Structures\Monoids\Monoid.cs" />
     <Compile Include="Algebra.Structures\Ordering\ITotallyOrdered.cs" />
@@ -63,6 +66,7 @@
     <Compile Include="Algebra.Structures\Rings\WholeNumbers.cs" />
     <Compile Include="Algebra.Structures\Set.cs" />
     <Compile Include="Bytes\ByteExtensions.cs" />
+    <Compile Include="Bytes\Hexadecimal.cs" />
     <Compile Include="ComplexLinearAlgebra\ComplexNumbers.cs" />
     <Compile Include="Exceptions\FactorTypeException.cs" />
     <Compile Include="Exceptions\ImpossibleEchelonForm.cs" />

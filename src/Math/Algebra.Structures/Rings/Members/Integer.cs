@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Math.Algebra.Structures.Fields;
@@ -11,10 +9,8 @@ using Math.Algebra.Structures.Groups.Members;
 using Math.Algebra.Structures.Monoids.Members;
 using Math.Algebra.Structures.Ordering;
 using Math.Exceptions;
-using Math.LinearAlgebra;
 using Math.NumberTheory;
 using Math.Rationals;
-using static System.BitConverter;
 
 namespace Math.Algebra.Structures.Rings.Members
 {
@@ -35,18 +31,30 @@ namespace Math.Algebra.Structures.Rings.Members
 
         public Integer(int i)
         {
-            _value = i;
-
+            _value = (uint)System.Math.Abs(i);
+	        Positive = i >= 0;
         }
 
         public Integer(Integer i)
         {
-            _value = i.Value;
+            _value = i._value;
+	        Positive = i.Positive;
         }
+
+	    public Integer(Natural n) : this(n, true)
+	    {
+		    
+	    }
+
+	    public Integer(Natural n, bool positive)
+	    {
+			_value = n;
+		    Positive = positive;
+	    }
 
 	    private Integer(byte[] value)
 	    {
-
+			_value = new Natural(value);
 	    }
 
 	    public Integer(string value, bool hex = true)
@@ -160,38 +168,54 @@ namespace Math.Algebra.Structures.Rings.Members
 		#region Operations
 
 		internal override T Add<T>(T other)
-        {
-            if (other is Integer r)
-            {
-                return (T)(MonoidMember)new Integer(_value + r._value);
-            }
-            throw new IncorrectSetException(GetType(), "added", other.GetType());
-        }
+		{
+			switch (other) {
+				case Integer r:
+					if (Positive && r.Positive ||
+					    !Positive && !r.Positive)
+					{
+						return (T) (MonoidMember) new Integer(_value + r._value, Positive);
+					}
+
+					return (T) (MonoidMember) (Positive ? _value - r._value : r._value - _value);
+			}
+
+			throw new IncorrectSetException(GetType(), "added", other.GetType());
+		}
 
         public override T Negative<T>()
         {
-            return (T)(INegatable)new Integer(-_value);
+            return (T)(INegatable)new Integer(_value, !Positive);
         }
 
         internal override T Multiply<T>(T other)
         {
-            if (other is Integer c)
-                return (T)(GroupMember)new Integer(_value * c._value);
-            throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
+	        if (other is Integer c)
+	        {
+		        return (T)(GroupMember)new Integer(_value * c._value);
+	        }
+
+	        throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
         }
 
         public override T Null<T>()
         {
-            if (typeof(T) == GetType())
-                return (T)(MonoidMember) new Integer(0);
-            throw new IncorrectSetException(this, "null", typeof(T));
+	        if (typeof(T) == GetType())
+	        {
+		        return (T)(MonoidMember) new Integer(0);
+	        }
+
+	        throw new IncorrectSetException(this, "null", typeof(T));
         }
 
         public override T Unit<T>()
         {
-            if (typeof(T) == GetType())
-                return (T)(GroupMember)new Integer(1);
-            throw new IncorrectSetException(this, "unit", typeof(T));
+	        if (typeof(T) == GetType())
+	        {
+		        return (T)(GroupMember)new Integer(1);
+	        }
+
+	        throw new IncorrectSetException(this, "unit", typeof(T));
         }
 
         public override bool IsNull() => _value.Equals(0);
@@ -289,11 +313,11 @@ namespace Math.Algebra.Structures.Rings.Members
         /// <summary>
         /// Negative of this ringmember
         /// </summary>
-        /// <param name="ringMember"></param>
+        /// <param name="integer"></param>
         /// <returns></returns>
-        public static Integer operator -(Integer ringMember)
+        public static Integer operator -(Integer integer)
         {
-            return ringMember.Negative<Integer>();
+            return integer.Negative<Integer>();
         }
 
         /// <summary>
@@ -307,13 +331,35 @@ namespace Math.Algebra.Structures.Rings.Members
             return left + -right;
         }
 
-        /// <summary>
-        /// Multiply the two together
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        public static Integer operator *(Integer left, Integer right)
+	    /// <summary>
+	    /// Subtract right from left
+	    /// </summary>
+	    /// <param name="left"></param>
+	    /// <param name="right"></param>
+	    /// <returns></returns>
+	    public static Integer operator -(Natural left, Integer right)
+	    {
+		    return left + -right;
+	    }
+
+	    /// <summary>
+	    /// Subtract right from left
+	    /// </summary>
+	    /// <param name="left"></param>
+	    /// <param name="right"></param>
+	    /// <returns></returns>
+	    public static Integer operator -(Integer left, Natural right)
+	    {
+		    return left + -(Integer)right;
+	    }
+
+		/// <summary>
+		/// Multiply the two together
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static Integer operator *(Integer left, Integer right)
         {
             return left.Multiply(right);
         }
@@ -328,6 +374,11 @@ namespace Math.Algebra.Structures.Rings.Members
         {
             return new Fraction(left, right);
         }
+
+	    public static Integer operator %(Integer left, Integer right)
+	    {
+		    return (Integer) (left / right).Round();
+	    }
 
 	    public static bool operator <(Integer left, Integer right)
 	    {
@@ -383,6 +434,11 @@ namespace Math.Algebra.Structures.Rings.Members
 
 		#region Conversion
 
+	    public byte[] GetBytes()
+	    {
+		    return _value.GetBytes();
+	    }
+
 		public static implicit operator int(Integer r)
         {
 	        if (r.Positive)
@@ -400,7 +456,7 @@ namespace Math.Algebra.Structures.Rings.Members
 
         public override string ToString()
         {
-	        throw new NotImplementedException();
+	        return (Positive ? "" : "+") + _value;
         }
 
 	    public string ToString(string format)
@@ -409,5 +465,24 @@ namespace Math.Algebra.Structures.Rings.Members
 		}
 
 		#endregion
+
+	    #region Static
+
+	    public static Integer Parse(string value, bool positive = true)
+	    {
+		    if (!Regex.IsMatch(value, @"^-?[0-9]+$"))
+		    {
+			    throw new ArgumentException($"String was not in correct format: {value}.");
+		    }
+			
+		    if (value.StartsWith("-"))
+		    {
+			    positive = false;
+		    }
+
+			return new Integer(Natural.Parse(value), positive);
+	    }
+
+	    #endregion
 	}
 }
