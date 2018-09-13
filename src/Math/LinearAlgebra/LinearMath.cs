@@ -58,7 +58,7 @@ namespace Math.LinearAlgebra
 			return null;
 		}
 
-		public static bool LinearlyDependent(RealVector[] vectors)
+		public static bool LinearlyDependent(Vector<Real>[] vectors)
 		{
 			if (vectors.Select(v => v.Dimension).Distinct().Count() > 1)
 			{

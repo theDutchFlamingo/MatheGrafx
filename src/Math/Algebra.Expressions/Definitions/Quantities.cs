@@ -10,8 +10,9 @@ namespace Math.Algebra.Expressions.Definitions
 	{
 		public static readonly Dictionary<string, object> Constants = new Dictionary<string, object>
 		{
-			{ "e", new Real(2.718281828459045235360287471352662497757247093699959574966967627724076630353) },
-			{ "pi", new Real(3.141592653589793238462643383279502884197169399375105820974944592307816406286) },
+			{ "e", new Real("2.718281828459045235360287471352662497757247093699959574966967627724076630353") },
+			{ "pi", new Real("3.141592653589793238462643383279502884197169399375105820974944592307816406286") },
+			{ "phi", new Real("1.618033988749894848204586834365638117720309179805762862135448622705260462818") }
 		};
 
 		public static Dictionary<string, object> Variables = new Dictionary<string, object>();
@@ -24,6 +25,12 @@ namespace Math.Algebra.Expressions.Definitions
 		/// <returns>The object that was previously assigned to the variable name.</returns>
 		public static object SetValue(this string variable, object value)
 		{
+			if (Constants.ContainsKey(variable) || Functions.DefaultRealFunctions.ContainsKey(variable) ||
+			    Functions.NamedFunctions.ContainsKey(variable))
+			{
+
+			}
+
 			if (Variables.ContainsKey(variable))
 			{
 				object prev = Variables[variable];

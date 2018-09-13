@@ -17,7 +17,21 @@ namespace Math.Algebra.Structures
         public static Field<Fraction> Fractions = new RationalNumbers();
         public static Field<Real> Reals = new RealNumbers();
         public static Field<Complex> ComplexNumbers = new ComplexNumbers();
+		/// <summary>
+		/// Set of all 2x2 matrices
+		/// </summary>
+	    public static Field<Matrix<Real>> RealMatrices2 = new RealMatrices(2);
+		/// <summary>
+		/// Set of all 3x3 matrices
+		/// </summary>
+	    public static Field<Matrix<Real>> RealMatrices3 = new RealMatrices(3);
 
-	    public abstract bool Contains<T>(T element) where T : Element;
+		/// <summary>
+		/// Whether this set contains given element T.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="element"></param>
+		/// <returns></returns>
+		public abstract bool Contains<T>(T element) where T : Element;
     }
 }

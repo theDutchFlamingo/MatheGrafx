@@ -248,7 +248,7 @@ namespace Math.Bytes
 
 		private static string Minimize(this string str)
 		{
-			return str.TrimStart('0');
+			return str.TrimStart('0') == "" ? "0" : str.TrimStart('0');
 		}
 
 		private static string Extend(this string str, int length)

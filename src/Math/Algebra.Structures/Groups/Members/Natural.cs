@@ -74,6 +74,11 @@ namespace Math.Algebra.Structures.Groups.Members
 			return left.Add(right);
 		}
 
+		public static Integer operator -(Natural n)
+		{
+			return new Integer(n, false);
+		}
+
 		public static Integer operator -(Natural left, Natural right)
 		{
 			return new Integer(left.Difference(right), left > right);
@@ -139,18 +144,21 @@ namespace Math.Algebra.Structures.Groups.Members
 
 		public bool GreaterThan<T>(T other) where T : ITotallyOrdered
 		{
-			switch (other) {
+			switch (other)
+			{
 				case Natural n:
 					return _value.GreaterThan(n._value);
+				case Integer i:
+					return i >= 0 && _value.GreaterThan(i.Absolute._value);
 				case Fraction f:
 					return this * f.Den > f.Num;
 				case Real r:
 					return (double)(Fraction)this > (double)r;
-				//TODO re-implement this when Real has a better Value
+					//TODO re-implement this when Real has a better Value
 			}
 
 
-			return false;
+			throw new IncorrectSetException(GetType(), "compared", typeof(T));
 		}
 
 		public bool LessThan<T>(T other) where T : ITotallyOrdered
@@ -159,15 +167,17 @@ namespace Math.Algebra.Structures.Groups.Members
 			{
 				case Natural n:
 					return n._value.GreaterThan(_value);
+				case Integer i:
+					return i >= 0 && i.Absolute._value.GreaterThan(_value);
 				case Fraction f:
 					return this * f.Den < f.Num;
 				case Real r:
 					return (double)(Fraction)this > (double)r;
-				//TODO re-implement this when Real has a better *Value* type
+					//TODO re-implement this when Real has a better *Value* type
 			}
 
 
-			return false;
+			throw new IncorrectSetException(GetType(), "compared", typeof(T));
 		}
 
 		public Natural FromString(string value)
@@ -295,6 +305,11 @@ namespace Math.Algebra.Structures.Groups.Members
 
 		public override string ToString()
 		{
+			return _value.ToHexString().ToDecimal();
+		}
+
+		public string ToString(string format)
+		{
 			throw new NotImplementedException();
 		}
 
@@ -303,14 +318,29 @@ namespace Math.Algebra.Structures.Groups.Members
 			return _value.ToHexString();
 		}
 
-		public static Natural Parse(string value)
+		public static Natural Parse(string value, bool hex = false)
 		{
-			if (!Regex.IsMatch(value, @"^[0-9]+$"))
+			if (!hex && !Regex.IsMatch(value, @"^[0-9]+$") ||
+			    hex && !Regex.IsMatch(value, @"^[0-9a-fA-F]+$"))
 			{
 				throw new ArgumentException("String was not in a valid number format.");
 			}
 
 			return new Natural(Hexadecimal.FromDecimal(value));
+		}
+
+		public static bool TryParse(string value, out Natural result, bool hex = false)
+		{
+			try
+			{
+				result = Parse(value, hex);
+				return true;
+			}
+			catch (FormatException)
+			{
+				result = 0;
+				return false;
+			}
 		}
 
 		#endregion

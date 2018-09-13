@@ -18,9 +18,9 @@ namespace Math.Algebra.Structures.Rings.Members
     {
 	    private bool Positive { get; } = true;
 
-        private readonly Natural _value = new Natural();
+		public Natural Absolute { get; } = new Natural();
 
-	    public long Value => _value;
+		public long Value => Positive ? Absolute : -Absolute;
 
 	    #region Constructors
 
@@ -31,13 +31,13 @@ namespace Math.Algebra.Structures.Rings.Members
 
         public Integer(int i)
         {
-            _value = (uint)System.Math.Abs(i);
+            Absolute = (uint)System.Math.Abs(i);
 	        Positive = i >= 0;
         }
 
         public Integer(Integer i)
         {
-            _value = i._value;
+            Absolute = i.Absolute;
 	        Positive = i.Positive;
         }
 
@@ -48,13 +48,13 @@ namespace Math.Algebra.Structures.Rings.Members
 
 	    public Integer(Natural n, bool positive)
 	    {
-			_value = n;
+			Absolute = n;
 		    Positive = positive;
 	    }
 
 	    private Integer(byte[] value)
 	    {
-			_value = new Natural(value);
+			Absolute = new Natural(value);
 	    }
 
 	    public Integer(string value, bool hex = true)
@@ -65,7 +65,7 @@ namespace Math.Algebra.Structures.Rings.Members
 			    value = value.Substring(1);
 		    }
 
-		    _value = new Natural(value, hex);
+		    Absolute = new Natural(value, hex);
 	    }
 
 		#endregion
@@ -174,10 +174,10 @@ namespace Math.Algebra.Structures.Rings.Members
 					if (Positive && r.Positive ||
 					    !Positive && !r.Positive)
 					{
-						return (T) (MonoidMember) new Integer(_value + r._value, Positive);
+						return (T) (MonoidMember) new Integer(Absolute + r.Absolute, Positive);
 					}
 
-					return (T) (MonoidMember) (Positive ? _value - r._value : r._value - _value);
+					return (T) (MonoidMember) (Positive ? Absolute - r.Absolute : r.Absolute - Absolute);
 			}
 
 			throw new IncorrectSetException(GetType(), "added", other.GetType());
@@ -185,14 +185,14 @@ namespace Math.Algebra.Structures.Rings.Members
 
         public override T Negative<T>()
         {
-            return (T)(INegatable)new Integer(_value, !Positive);
+            return (T)(INegatable)new Integer(Absolute, !Positive);
         }
 
         internal override T Multiply<T>(T other)
         {
 	        if (other is Integer c)
 	        {
-		        return (T)(GroupMember)new Integer(_value * c._value);
+		        return (T)(GroupMember)new Integer(Absolute * c.Absolute);
 	        }
 
 	        throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
@@ -218,9 +218,9 @@ namespace Math.Algebra.Structures.Rings.Members
 	        throw new IncorrectSetException(this, "unit", typeof(T));
         }
 
-        public override bool IsNull() => _value.Equals(0);
+        public override bool IsNull() => Absolute.Equals(0);
 
-        public override bool IsUnit() => _value.Equals(1);
+        public override bool IsUnit() => Absolute.Equals(1);
 
 	    [Obsolete]
         public override double ToDouble()
@@ -231,8 +231,25 @@ namespace Math.Algebra.Structures.Rings.Members
 	    public bool LessThan<T>(T other) where T : ITotallyOrdered
 	    {
 		    switch (other) {
+				case Natural n:
+					return !Positive || Absolute.LessThan(n);
 			    case Integer i:
-				    return (int)this < (int)i;
+				    if (i.Positive && Positive)
+				    {
+					    return i.Absolute > Absolute;
+				    }
+
+				    if (i.Positive && !Positive)
+				    {
+					    return true;
+				    }
+
+				    if (!i.Positive && Positive)
+				    {
+					    return false;
+				    }
+
+				    return i.Absolute < Absolute;
 			    case Fraction f:
 				    return this < (double)f;
 				case Real r:
@@ -245,8 +262,26 @@ namespace Math.Algebra.Structures.Rings.Members
 	    public bool GreaterThan<T>(T other) where T : ITotallyOrdered
 		{
 			switch (other) {
-				case Integer integer:
-					return (int)this > (int)integer;
+				case Natural n:
+					return Positive && n.LessThan(Absolute);
+				case Integer i:
+					if (i.Positive && Positive)
+					{
+						return i.Absolute < Absolute;
+					}
+
+					if (i.Positive && !Positive)
+					{
+						return true;
+					}
+
+					if (!i.Positive && Positive)
+					{
+						return false;
+					}
+
+					// Else: both are negative
+					return i.Absolute > Absolute;
 				case Fraction f:
 					return this > (double)f;
 				case Real r:
@@ -260,9 +295,9 @@ namespace Math.Algebra.Structures.Rings.Members
 		{
             switch (other) {
 	            case Integer r:
-		            return _value == r;
+		            return Absolute == r;
 	            case int i:
-		            return _value == i;
+		            return Absolute == i;
             }
 
 			return false;
@@ -277,12 +312,12 @@ namespace Math.Algebra.Structures.Rings.Members
 
 		public INumerical Round()
 	    {
-		    return new Integer(_value);
+		    return new Integer(Absolute);
 	    }
 
 	    public INumerical Log10()
 	    {
-		    return new Real(System.Math.Log10(_value));
+		    return new Real(System.Math.Log10(Absolute));
 	    }
 
 	    public INumerical LongestValue()
@@ -390,7 +425,27 @@ namespace Math.Algebra.Structures.Rings.Members
 		    return left.GreaterThan(right);
 	    }
 
-	    public static bool operator <(Integer left, int right)
+	    public static bool operator <(Integer left, Natural right)
+	    {
+		    return left.LessThan(right);
+	    }
+
+	    public static bool operator >(Integer left, Natural right)
+	    {
+		    return left.GreaterThan(right);
+	    }
+
+	    public static bool operator <(Natural left, Integer right)
+	    {
+		    return left.LessThan(right);
+	    }
+
+	    public static bool operator >(Natural left, Integer right)
+	    {
+		    return left.GreaterThan(right);
+	    }
+
+		public static bool operator <(Integer left, int right)
 	    {
 		    return (int) left < right;
 	    }
@@ -436,18 +491,13 @@ namespace Math.Algebra.Structures.Rings.Members
 
 	    public byte[] GetBytes()
 	    {
-		    return _value.GetBytes();
+		    return Absolute.GetBytes();
 	    }
 
 		public static implicit operator int(Integer r)
-        {
-	        if (r.Positive)
-	        {
-		        return r._value;
-	        }
-
-			return -r._value;
-        }
+		{
+			return r.Positive ? r.Absolute : -(int) r.Absolute;
+		}
 
         public static implicit operator Integer(int r)
         {
@@ -456,21 +506,44 @@ namespace Math.Algebra.Structures.Rings.Members
 
         public override string ToString()
         {
-	        return (Positive ? "" : "+") + _value;
+	        return (Positive ? "" : "-") + Absolute;
         }
 
 	    public string ToString(string format)
         {
-			throw new NotImplementedException();
+	        return (Positive ? "" : "-") + Absolute.ToString(format);
 		}
 
 		#endregion
 
 	    #region Static
 
-	    public static Integer Parse(string value, bool positive = true)
+	    public static Integer Pow(Integer b, Natural exp)
 	    {
-		    if (!Regex.IsMatch(value, @"^-?[0-9]+$"))
+		    Integer result = 1;
+
+		    for (Integer i = 0; i < exp; i++)
+		    {
+			    result *= b;
+		    }
+
+		    return result;
+	    }
+
+	    public static Integer Min(Integer left, Integer right)
+	    {
+		    return left > right ? right : left;
+	    }
+
+	    public static Integer Max(Integer left, Integer right)
+	    {
+		    return left > right ? left : right;
+	    }
+
+	    public static Integer Parse(string value, bool positive = true, bool hex = false)
+	    {
+		    if (!hex && !Regex.IsMatch(value, @"^-?[0-9]+$") ||
+		        hex && !Regex.IsMatch(value, @"^-?[0-9a-fA-F]+$"))
 		    {
 			    throw new ArgumentException($"String was not in correct format: {value}.");
 		    }
@@ -478,9 +551,24 @@ namespace Math.Algebra.Structures.Rings.Members
 		    if (value.StartsWith("-"))
 		    {
 			    positive = false;
+			    value = value.Substring(1);
 		    }
 
 			return new Integer(Natural.Parse(value), positive);
+	    }
+
+	    public static bool TryParse(string value, out Integer result, bool positive = true, bool hex = false)
+	    {
+		    try
+		    {
+			    result = Parse(value, positive, hex);
+			    return true;
+		    }
+		    catch (FormatException)
+		    {
+			    result = 0;
+			    return false;
+		    }
 	    }
 
 	    #endregion

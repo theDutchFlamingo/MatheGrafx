@@ -84,7 +84,7 @@ namespace Math.Algebra.Expressions
 			return !(IsNumber(test) || test == '.' || test == ',');
 		}
 
-		private static bool IsInfixExpression(this string expression)
+		public static bool IsInfixExpression(this string expression)
 		{
 			// If there are more closing delimiters than opening delimiters,
 			// the expression cannot be evaluated.
@@ -177,7 +177,7 @@ namespace Math.Algebra.Expressions
 				recentNumber = false;
 			}
 
-			throw new NotImplementedException();
+			return true;
 		}
 
 		private static bool IsPrefixExpression(this string expression)

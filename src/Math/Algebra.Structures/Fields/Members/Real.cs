@@ -23,9 +23,13 @@ namespace Math.Algebra.Structures.Fields.Members
 		 */
 		#region Properties
 		
-		
+		///<summary>
+		/// The value of this Real number is calculated as Value * 10^Offset
+		/// </summary>
 		private Integer Offset { get; }
 		private Integer Value { get; }
+
+		public Real Absolute => new Real(Value.Absolute, Offset);
 		
 		#endregion
 
@@ -47,11 +51,17 @@ namespace Math.Algebra.Structures.Fields.Members
 			Offset = 0;
 		}
 
+		public Real(Integer value, Integer offset)
+		{
+			Value = value;
+			Offset = offset;
+		}
+
 		public Real(double value)
 		{
 			// TODO convert double to integer with correct offset
 			bool positive = value >= 0;
-			int offset = 0;
+			Integer offset = 0;
 			value = Abs(value);
 
 			if (value > 1)
@@ -89,6 +99,7 @@ namespace Math.Algebra.Structures.Fields.Members
 			// TODO
 
 			Value = new Integer(new Natural((int) (value * Pow(10, -offset))), positive);
+			Offset = offset;
 		}
 
 		public Real(string value, bool hex = false)
@@ -100,35 +111,62 @@ namespace Math.Algebra.Structures.Fields.Members
 				throw new ArgumentException("String is not in correct format.");
 			}
 
-			bool positive = value.StartsWith("-");
+			bool positive = !value.StartsWith("-");
 
 			if (value.Contains("."))
 			{
 				string before, after;
 				(before, after) = (value.Split('.')[0], value.Split('.')[1]);
 
+				int offset = value.Length - value.IndexOf('.');
+				Offset = value.Length - value.IndexOf('.');
+
 				if (before == "")
 				{
 					Value = Integer.Parse(after, positive);
 				}
+				else
+				{
+					Value = Integer.Parse(before, positive) * new Integer(10) ^ Offset;
+				}
 			}
-
-			
-
-			Offset = value.Contains(".") ? value.IndexOf('.') : 0;
+			else
+			{
+				int offset = Regex.Match(value, @"^.*?(0*)$").Groups[1].Length;
+				Value = Integer.Parse(value.TrimEnd('0'), positive);
+				Offset = Value == 0 ? 0 : offset;
+			}
 		}
-		
+
+		#endregion
+
+		#region Tests
+
+		public bool IsInteger()
+		{
+			return Offset > 0;
+		}
+
 		#endregion
 
 		#region Override Methods
 
 		internal override T Add<T>(T other)
 		{
-			if (other is Real r)
+			if (!(other is Real r))
 			{
-				return (T)(MonoidMember)new Real(Value + r.Value);
+				throw new IncorrectSetException(GetType(), "added", other.GetType());
 			}
-			throw new IncorrectSetException(GetType(), "added", other.GetType());
+
+			Integer min = Min(Offset, r.Offset);
+			Natural diff = (Offset - r.Offset).Absolute;
+
+			if (this > r)
+			{
+				return (T)(MonoidMember)new Real(Value + r.Value * Integer.Pow(10, diff), min);
+			}
+
+			return (T)(MonoidMember)new Real(Value * Integer.Pow(10, diff) + r.Value, min);
 		}
 
 		public override T Negative<T>()
@@ -306,12 +344,12 @@ namespace Math.Algebra.Structures.Fields.Members
 
 		public static bool operator >(Real left, Real right)
 		{
-			return left.LessThan(right);
+			return left.GreaterThan(right);
 		}
 
 		public static bool operator <(Real left, Real right)
 		{
-			return left.GreaterThan(right);
+			return left.LessThan(right);
 		}
 
 		public static bool operator ==(Real left, Real right)
@@ -355,9 +393,14 @@ namespace Math.Algebra.Structures.Fields.Members
 
 		#region Conversions
 
+		/// <summary>
+		/// Explicit because not all Reals can be converted to double
+		/// </summary>
+		/// <param name="r"></param>
 		public static implicit operator double(Real r)
 		{
-			return r.Value;
+			string intr = r.Value.ToString();
+			return Double.Parse(intr.Length > 16 ? intr.Remove(16) : intr);
 		}
 
 		public static implicit operator Real(double r)
@@ -367,7 +410,12 @@ namespace Math.Algebra.Structures.Fields.Members
 
 		public override string ToString()
 		{
-			return Value.ToString().Insert(Value.ToString().Length - Offset, ".");
+			if (IsInteger())
+			{
+				return Value.ToString().Insert(Value.ToString().Length - Offset, ".");
+			}
+
+			return Value.ToString();
 		}
 
 		public string ToString(string format)

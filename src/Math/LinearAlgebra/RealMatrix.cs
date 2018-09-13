@@ -2,6 +2,7 @@
 using Math.Algebra.Structures.Fields.Members;
 using Math.Exceptions.Operations;
 using Math.Settings;
+// ReSharper disable CoVariantArrayConversion
 
 namespace Math.LinearAlgebra
 {
@@ -91,7 +92,28 @@ namespace Math.LinearAlgebra
 		/// <param name="type">Determines whether the vectors are columns or rows</param>
 		public RealMatrix(RealVector[] vectors, VectorType type) : base(vectors, type)
 		{
-			
+
+		}
+
+		/// <summary>
+		/// Matrix constructor with an array of vectors,
+		/// can be columns or rows based on type
+		/// </summary>
+		/// <param name="vectors"></param>
+		public RealMatrix(Vector<Real>[] vectors) : this(vectors, ConversionSettings.DefaultVectorType)
+		{
+
+		}
+
+		/// <summary>
+		/// Matrix constructor with an array of vectors,
+		/// can be columns or rows based on type
+		/// </summary>
+		/// <param name="vectors"></param>
+		/// <param name="type"></param>
+		public RealMatrix(Vector<Real>[] vectors, VectorType type) : base(vectors, type)
+		{
+
 		}
 
 		/// <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Groups.Members;
 using Math.Algebra.Structures.Rings.Members;
@@ -15,6 +16,8 @@ namespace Math
 {
     public static class Program
     {
+	    public const double d = 1.7976931348623158079372897140530341507993413271003782693617e308;
+	    
 	    private static readonly Complex i = Complex.I;
 
 	    static void Main()
@@ -27,11 +30,20 @@ namespace Math
 			//Polynomials();
 			//Pascal();
 			//Integers();
-	        //AddMany();
+			//AddMany();
 
-			Real l = new Real("122222222222222222222222222222222222222222222222222");
+
+	        string s = "".Substring(2);
+
+	        GroupCollection groups = Regex.Match("1344324000", @"^.*?(0*)$").Groups;
+
+			int offset = groups[1].Length;
+
+			Real l = new Real("12222222222222222222222222000000000000000000");
 			Real r = new Real("13.003033030030330300303303");
 
+			Console.WriteLine(l);
+			Console.WriteLine(r);
 			Console.WriteLine(l + r);
         }
 

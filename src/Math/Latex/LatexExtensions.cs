@@ -15,6 +15,35 @@ namespace Math.Latex
 {
 	public static class LatexExtensions
 	{
+		#region Regex
+
+		public static string Fractions = @"^\\frac{[0-9]+}{[0-9]+}$";
+
+		public static string RealMatrices = @"\";
+
+		#endregion
+
+		#region From Latex
+
+		public static Fraction ParseFraction(string value)
+		{
+			if (!Regex.IsMatch(value, Fractions))
+			{
+				throw new FormatException();
+			}
+
+			throw new NotImplementedException();
+		}
+
+		public static Matrix<T> ParseMatrix<T>(string value) where T : RingMember, IParsable<T>, new()
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
+
+		#region To Latex
+
 		public static string ToLatex<T>(this Rational<T> r) where T : RingMember, IFactorable, new()
 		{
 			return r.ToLatex(t => t.ToString());
@@ -168,5 +197,7 @@ namespace Math.Latex
 		{
 			return v.ToMatrix(ConversionSettings.DefaultVectorType).ToLatex(delimiter);
 		}
+		
+		#endregion
 	}
 }

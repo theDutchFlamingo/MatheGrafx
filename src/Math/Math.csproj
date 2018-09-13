@@ -49,13 +49,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algebra.Expressions\Declaration.cs" />
+    <Compile Include="Algebra.Expressions\Definitions\Functions.cs" />
     <Compile Include="Algebra.Expressions\Definitions\Quantities.cs" />
     <Compile Include="Algebra.Expressions\Expression.cs" />
     <Compile Include="Algebra.Expressions\ExpressionConversions.cs" />
+    <Compile Include="Algebra.Expressions\Functions\Function.cs" />
     <Compile Include="Algebra.Expressions\InvalidExpressionType.cs" />
     <Compile Include="Algebra.Expressions\NotationType.cs" />
     <Compile Include="Algebra.Structures\Element.cs" />
     <Compile Include="Algebra.Structures\Fields\RationalNumbers.cs" />
+    <Compile Include="Algebra.Structures\Fields\RealMatrices.cs" />
     <Compile Include="Algebra.Structures\Groups\Group.cs" />
     <Compile Include="Algebra.Structures\Groups\Members\Natural.cs" />
     <Compile Include="Algebra.Structures\Groups\NaturalNumbers.cs" />
@@ -84,6 +88,7 @@
     <Compile Include="LinearAlgebra\Diagonalization.cs" />
     <Compile Include="NumberTheory\IntegerMath.cs" />
     <Compile Include="Parsing\IParsable.cs" />
+    <Compile Include="Parsing\Parser.cs" />
     <Compile Include="Polynomials\ComplexPolynomial.cs" />
     <Compile Include="Polynomials\Polynomial.cs" />
     <Compile Include="Rationals\Fraction - Copy.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Math.Algebra.Expressions
 {
@@ -17,6 +18,17 @@ namespace Math.Algebra.Expressions
 		{
 			Prefix = expression.ConvertTo(NotationType.Prefix);
 			Variables = expression.ParseVariables();
+		}
+
+		public Expression(Expression expression)
+		{
+			Prefix = expression.Prefix;
+			Variables = expression.Variables;
+		}
+
+		public Expression Evaluate(params Expression[] declarations)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
