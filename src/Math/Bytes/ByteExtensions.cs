@@ -1,11 +1,22 @@
 ﻿using System;
 using System.Linq;
+using Math.Algebra.Structures.Groups.Members;
 using static System.Math;
 
 namespace Math.Bytes
 {
 	public static class ByteExtensions
 	{
+		public static Natural Add(this Natural left, Natural right)
+		{
+			return new Natural(left.ToString().Add(right.ToString()));
+		}
+
+		public static Natural Multiply(this Natural left, Natural right)
+		{
+			return new Natural(left.ToString().Multiply(right.ToString()));
+		}
+
 		/// <summary>
 		/// My own adder for byte arrays
 		/// </summary>
@@ -88,6 +99,7 @@ namespace Math.Bytes
 			}
 
 			byte[] result = new byte[length];
+			string strResult = result.ToHexString();
 
 			for (int i = left.Length - 1; i >= 0; i--)
 			{
@@ -100,9 +112,121 @@ namespace Math.Bytes
 
 					if (l * r + temp[i + j] > Byte.MaxValue)
 					{
-						byte remainder = (byte) (l * r + temp[i + j]);
-						temp[i + j] = (byte)((l * r + temp[i + j] - remainder) / byte.MaxValue);
-						temp[i + j + 1] = remainder;
+						byte remainder = (byte) (l * r + temp[i + j + scooch]);
+						temp[i + j - 1 + scooch] = (byte)((l * r + temp[i + j + scooch] - remainder) / 256);
+						temp[i + j + scooch] = remainder;
+					}
+					else
+					{
+						temp[i + j + scooch] += (byte)(l * r);
+					}
+				}
+
+				result = result.Add(temp);
+				strResult = result.ToHexString();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// My own adder for byte arrays
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static byte[] AddLittleEndian(this byte[] left, byte[] right)
+		{
+			if (left == null && right == null)
+			{
+				return new byte[] { 0 };
+			}
+
+			if (left == null || right == null)
+			{
+				return left ?? right;
+			}
+
+			if (left.Length == 0 || left.Length == 0)
+			{
+				return left.Length == 0 ? right.Length == 0 ? new byte[] { 0 } : right : left;
+			}
+
+			int length = Max(left.Minimize().Length, right.Minimize().Length);
+
+			// Convert to little endian
+			left = left.Minimize().Extend(length).Reverse().ToArray();
+			right = right.Minimize().Extend(length).Reverse().ToArray();
+			byte[] result = new byte[length];
+
+			for (int i = result.Length - 1; i >= 0; i--)
+			{
+				byte l = left[i];
+				byte r = right[i];
+
+				if (l + r + result[i] > Byte.MaxValue)
+				{
+					result[i] = (byte)(l + r + result[i]);
+
+					if (i == 0)
+					{
+						result = result.Extend(length + 1);
+						result[0] = 1;
+					}
+					else
+					{
+						result[i - 1] = 1;
+					}
+				}
+				else
+				{
+					result[i] += (byte)(l + r);
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// My own multiplier for byte arrays
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static byte[] MultiplyLittleEndian(this byte[] left, byte[] right)
+		{
+			if (left == null || right == null || left.Length == 0 || right.Length == 0)
+			{
+				return new byte[] { 0 };
+			}
+
+			left = left.Minimize();
+			right = right.Minimize();
+			int length = left.Length + right.Length;
+			int scooch = 1;
+
+			if (left.First() * right.First() <= Byte.MaxValue)
+			{
+				length--;
+				scooch = 0;
+			}
+
+			byte[] result = new byte[length];
+
+			for (int i = left.Length - 1; i >= 0; i--)
+			{
+				byte[] temp = new byte[length];
+
+				for (int j = right.Length - 1; j >= 0; j--)
+				{
+					byte l = left[i];
+					byte r = right[j];
+
+					if (l * r + temp[i + j] > Byte.MaxValue)
+					{
+						byte remainder = (byte)(l * r + temp[i + j]);
+						temp[i + j - 1] = (byte)((l * r + temp[i + j] - remainder) / 256);
+						temp[i + j] = remainder;
 					}
 					else
 					{
@@ -129,7 +253,12 @@ namespace Math.Bytes
 				return left;
 			}
 
-			if (!left.GreaterThan(right))
+			if (left.Equals(right))
+			{
+				return new byte[]{0};
+			}
+
+			if (right.GreaterThan(left))
 			{
 				throw new ArgumentException("Result must be positive in order to compute difference.");
 			}

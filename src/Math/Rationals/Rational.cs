@@ -8,10 +8,11 @@ using Math.Algebra.Structures.Groups.Members;
 using Math.Algebra.Structures.Monoids.Members;
 using Math.Algebra.Structures.Rings.Members;
 using Math.Exceptions;
+using Math.Settings;
 
 namespace Math.Rationals
 {
-    public class Rational<T> : FieldMember where T : RingMember, INegatable, IFactorable, new()
+    public class Rational<T> : FieldMember where T : RingMember, IFactorable, new()
     {
         public T Num { get; } = new T();
         public T Den { get; } = new T().Unit<T>();
@@ -34,7 +35,9 @@ namespace Math.Rationals
 		public Rational(T num, T den)
 		{
 			if (den.IsNull())
+			{
 				throw new DivideByZeroException("Denominator of a rational can't be the zero member");
+			}
 			
 			Num = num;
 			Den = den;
@@ -63,7 +66,7 @@ namespace Math.Rationals
 			return factored.EqualsExactly(this);
 		}
 
-	    public Rational<T> Factor()
+	    public virtual Rational<T> Factor()
 	    {
 		    List<T> matchedFactors = Num.Factors<T>().Intersect(Den.Factors<T>()).ToList();
 
@@ -85,12 +88,16 @@ namespace Math.Rationals
 
 		internal override T1 Add<T1>(T1 other)
         {
-            if (other is Rational<T> r)
-            {
-                return (T1)(MonoidMember)
-	                new Rational<T>(r.Num.Multiply(Den).Add(r.Den.Multiply(Num)), r.Den.Multiply(Den));
-            }
-            throw new IncorrectSetException(GetType(), "added", other.GetType());
+	        if (!(other is Rational<T> r))
+	        {
+		        throw new IncorrectSetException(GetType(), "added", other.GetType());
+	        }
+
+			T num = r.Num.Multiply(Den).Add(r.Den.Multiply(Num));
+			T den = r.Den.Multiply(Den);
+
+			return (T1)(MonoidMember)
+		        (NumberSettings.FactorFractions ? new Rational<T>(num, den).Factor() : new Rational<T>(num, den));
         }
 
         public override T1 Negative<T1>()
@@ -100,9 +107,17 @@ namespace Math.Rationals
 
         internal override T1 Multiply<T1>(T1 other)
         {
-            if (other is Rational<T> c)
-                return (T1)(GroupMember)new Rational<T>(Num.Multiply(c.Num), Den.Multiply(c.Den));
-            throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
+	        if (!(other is Rational<T> c))
+	        {
+		        throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
+	        }
+
+	        T num = Num.Multiply(c.Num);
+	        T den = Den.Multiply(c.Den);
+
+	        return (T1)(GroupMember)
+		        (NumberSettings.FactorFractions ? new Rational<T>(num, den).Factor() : new Rational<T>(num, den));
+
         }
 
         public override T1 Inverse<T1>()
@@ -112,15 +127,21 @@ namespace Math.Rationals
 
         public override T1 Null<T1>()
         {
-            if (typeof(T1) == GetType())
-                return (T1)(MonoidMember) new Rational<T>(new T());
+	        if (typeof(T1).IsSubclassOfGeneric(GetType()))
+	        {
+		        return (T1)(MonoidMember) new Rational<T>(new T());
+	        }
+
             throw new IncorrectSetException(this, "null", typeof(T1));
         }
 
         public override T1 Unit<T1>()
         {
-            if (typeof(T1) == GetType())
-                return (T1)(GroupMember)new Rational<T>(new T().Unit<T>());
+	        if (typeof(T1).IsSubclassOfGeneric(GetType()))
+	        {
+		        return (T1)(GroupMember)new Rational<T>(new T().Unit<T>());
+	        }
+
             throw new IncorrectSetException(this, "unit", typeof(T1));
         }
 

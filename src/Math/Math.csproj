@@ -39,6 +39,9 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -110,6 +113,7 @@
     <Compile Include="Algebra.Structures\Rings\Members\RingMember.cs" />
     <Compile Include="Algebra.Structures\Rings\Ring.cs" />
     <Compile Include="Settings\ConversionSettings.cs" />
+    <Compile Include="Settings\NumberSettings.cs" />
     <Compile Include="SubclassCheck.cs" />
     <Compile Include="VectorSpaces\Basis.cs" />
     <Compile Include="LinearAlgebra\GaussElimination.cs" />

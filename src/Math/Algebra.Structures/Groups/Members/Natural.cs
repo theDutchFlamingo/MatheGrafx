@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Monoids.Members;
@@ -26,7 +27,7 @@ namespace Math.Algebra.Structures.Groups.Members
 				TryConvert(_value, out long result);
 				return result;
 			}
-			set => _value = BitConverter.GetBytes(value);
+			set => _value = Hexadecimal.FromDecimal(value.ToString());
 		}
 
 		public Natural()
@@ -62,7 +63,7 @@ namespace Math.Algebra.Structures.Groups.Members
 			_value = value;
 		}
 
-		public Natural(string value, bool hex = true)
+		public Natural(string value, bool hex = false)
 		{
 			_value = hex ? Hexadecimal.FromHexadecimal(value) : Hexadecimal.FromDecimal(value);
 		}
@@ -71,7 +72,13 @@ namespace Math.Algebra.Structures.Groups.Members
 
 		public static Natural operator +(Natural left, Natural right)
 		{
+			return ByteExtensions.Add(left, right);
 			return left.Add(right);
+		}
+
+		public static Natural operator ^(Natural left, Natural right)
+		{
+			return Pow(left, right);
 		}
 
 		public static Integer operator -(Natural n)
@@ -86,6 +93,7 @@ namespace Math.Algebra.Structures.Groups.Members
 
 		public static Natural operator *(Natural left, Natural right)
 		{
+			return left.Multiply(right);
 			return new Natural(left._value.Multiply(right._value));
 		}
 
@@ -279,7 +287,7 @@ namespace Math.Algebra.Structures.Groups.Members
 		{
 			try
 			{
-				result = ToInt64(value, 0);
+				result = ToInt64(value.Extend(8).Reverse().ToArray(), 0);
 				return true;
 			}
 			catch (ArgumentOutOfRangeException)
@@ -310,7 +318,15 @@ namespace Math.Algebra.Structures.Groups.Members
 
 		public string ToString(string format)
 		{
-			throw new NotImplementedException();
+			// TODO long complicated set of statements to figure out what the user wants
+			// TODO use a regex
+			switch (format.ToLower().Substring(0, 1))
+			{
+				case "g":
+					return ToString(); //TODO improve this
+			}
+
+			return ToString(); // TODO for now return string in order to test other parts of the program
 		}
 
 		public string ToHexString()
@@ -341,6 +357,22 @@ namespace Math.Algebra.Structures.Groups.Members
 				result = 0;
 				return false;
 			}
+		}
+
+		#endregion
+
+		#region Static
+
+		public static Natural Pow(Natural b, Natural exp)
+		{
+			Natural result = 1;
+
+			for (Natural i = 0; i < exp; i += 1)
+			{
+				result *= b;
+			}
+
+			return result;
 		}
 
 		#endregion

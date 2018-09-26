@@ -1,4 +1,7 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Math.Algebra.Structures.Fields;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Groups;
@@ -8,12 +11,18 @@ using Math.Algebra.Structures.Ordering;
 using Math.Algebra.Structures.Rings.Members;
 using Math.Exceptions;
 using Math.Parsing;
+using Math.Settings;
 using static System.Int32;
 
 namespace Math.Rationals
 {
     public class Fraction : Rational<Integer>, INumerical, ITotallyOrdered, IParsable<Fraction>
     {
+		/// <summary>
+		/// The amount of digits that will be used when changing a fraction into a real number
+		/// </summary>
+	    public static Integer Digits = new Integer();
+
         #region Constructors
 
         public Fraction()
@@ -60,15 +69,35 @@ namespace Math.Rationals
 
 		#region Overrides
 
+	    public new Fraction Factor()
+	    {
+		    List<Integer> matchedFactors = Num.Factors<Integer>().Intersect(Den.Factors<Integer>()).ToList();
+
+		    Integer num = Num;
+		    Integer den = Den;
+
+		    foreach (var t in matchedFactors)
+		    {
+			    num = num.Without(t);
+			    den = den.Without(t);
+		    }
+
+		    return new Fraction(num, den);
+	    }
+
 		internal override T1 Add<T1>(T1 other)
 	    {
-		    if (other is Fraction r)
+			if (!(other is Fraction r))
 		    {
-			    return (T1)(MonoidMember)
-				    new Fraction(r.Num.Multiply(Den).Add(r.Den.Multiply(Num)), r.Den.Multiply(Den));
+			    throw new IncorrectSetException(GetType(), "added", other.GetType());
 		    }
-		    throw new IncorrectSetException(GetType(), "added", other.GetType());
-	    }
+
+		    Integer num = r.Num.Multiply(Den).Add(r.Den.Multiply(Num));
+		    Integer den = r.Den.Multiply(Den);
+
+		    return (T1)(MonoidMember)
+			    (NumberSettings.FactorFractions ? new Fraction(num, den).Factor() : new Fraction(num, den));
+		}
 
 	    public override T1 Negative<T1>()
 	    {
@@ -77,9 +106,17 @@ namespace Math.Rationals
 
 	    internal override T1 Multiply<T1>(T1 other)
 	    {
-		    if (other is Fraction c)
-			    return (T1)(GroupMember)new Fraction(Num.Multiply(c.Num), Den.Multiply(c.Den));
-		    throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
+		    if (!(other is Fraction r))
+		    {
+			    throw new IncorrectSetException(GetType(), "multiplied", other.GetType());
+		    }
+
+		    Integer num = r.Num.Multiply(Num);
+		    Integer den = r.Den.Multiply(Den);
+
+		    return (T1)(GroupMember)
+			    (NumberSettings.FactorFractions ? new Fraction(num, den).Factor() : new Fraction(num, den));
+
 	    }
 
 	    public override T1 Inverse<T1>()
@@ -111,14 +148,11 @@ namespace Math.Rationals
 
 	    public bool GreaterThan<T>(T other) where T : ITotallyOrdered
 	    {
-		    if (other is Fraction f)
-		    {
-			    return Num * f.Den > f.Num * Den;
-		    }
-
-		    if (other is Integer i)
-		    {
-			    return this > i;
+		    switch (other) {
+			    case Fraction f:
+				    return Num * f.Den > f.Num * Den;
+			    case Integer i:
+				    return Num > i * Den;
 		    }
 
 		    return false;
@@ -126,17 +160,14 @@ namespace Math.Rationals
 
 	    public bool LessThan<T>(T other) where T : ITotallyOrdered
 		{
-		    if (other is Fraction f)
-		    {
-				return Num * f.Den < f.Num * Den;
+		    switch (other) {
+			    case Fraction f:
+				    return Num * f.Den < f.Num * Den;
+			    case Integer d:
+				    return Num < d * Den;
 		    }
 
-		    if (other is Integer d)
-		    {
-			    return this < d;
-		    }
-
-		    return false;
+			return false;
 		}
 
 	    public Fraction FromString(string value)
@@ -181,8 +212,7 @@ namespace Math.Rationals
 
         public INumerical Log10()
         {
-	        // ReSharper disable once PossibleLossOfFraction
-	        return new Real(System.Math.Log10((int) Num / (int) Den));
+	        return new Real(System.Math.Log10((double)(int) Num / Den));
         }
 
         public INumerical LongestValue()
@@ -211,11 +241,11 @@ namespace Math.Rationals
         /// <summary>
         /// Negative of this FieldMember
         /// </summary>
-        /// <param name="fieldMember"></param>
+        /// <param name="f"></param>
         /// <returns></returns>
-        public static Fraction operator -(Fraction fieldMember)
+        public static Fraction operator -(Fraction f)
         {
-            return fieldMember.Negative<Fraction>();
+            return f.Negative<Fraction>();
         }
 
         /// <summary>
@@ -289,13 +319,28 @@ namespace Math.Rationals
 		    return left * ((Fraction) 1 / right);
 	    }
 
+	    public static bool operator ==(Fraction left, Fraction right)
+	    {
+		    return left?.Equals(right) ?? right?.Den == null;
+	    }
+	    
+	    public static bool operator !=(Fraction left, Fraction right)
+	    {
+		    return !(left?.Equals(right) ?? right == null);
+	    }
+
 		#endregion
 
 		#region Conversion
 
-		public static explicit operator double(Fraction r)
+	    public static explicit operator Real(Fraction f)
+	    {
+		    throw new NotImplementedException();
+	    }
+
+		public static explicit operator double(Fraction f)
         {
-            return (double)(int)r.Num / r.Den;
+            return (double)(int)f.Num / f.Den;
         }
 
         public static explicit operator Fraction(double r)
@@ -303,6 +348,8 @@ namespace Math.Rationals
             int whole = (int) (r > 0 ? System.Math.Floor(r) : System.Math.Ceiling(r));
 
             int den = 0, num = 0;
+
+			// TODO finish this
             
             return new Fraction(whole * den + num, den);
         }

@@ -41,6 +41,8 @@ namespace Math.Exceptions.Operations
 					return "The two matrices could not be added because their dimensions were unequal.";
 				case MatrixOperationType.Determinant:
 					return "The determinant of a non-square matrix does not exist.";
+				case MatrixOperationType.Division:
+					return "A matrix cannot be divided by the zero element of its field.";
 				case MatrixOperationType.Eigenvalue:
 					return "Only square matrices have eigenvalues.";
 				case MatrixOperationType.Eigenvector:

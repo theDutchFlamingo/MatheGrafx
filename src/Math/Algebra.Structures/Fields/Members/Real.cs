@@ -192,7 +192,7 @@ namespace Math.Algebra.Structures.Fields.Members
 		{
 			if (typeof(T) == GetType())
 			{
-				return (T)(MonoidMember) new Real((Integer)0);
+				return (T)(MonoidMember) new Real(0);
 			}
 			throw new IncorrectSetException(this, "null", typeof(T));
 		}
@@ -201,7 +201,7 @@ namespace Math.Algebra.Structures.Fields.Members
 		{
 			if (typeof(T) == GetType())
 			{
-				return (T)(GroupMember)new Real((Integer)1);
+				return (T)(GroupMember) new Real(1);
 			}
 			throw new IncorrectSetException(this, "unit", typeof(T));
 		}
@@ -219,7 +219,7 @@ namespace Math.Algebra.Structures.Fields.Members
 					return Value > i;
 				case Fraction r:
 					return Value > (double)r;
-			}
+			}// TODO improve these comparisons
 
 			throw new IncorrectSetException(GetType(), "compared", typeof(T));
 		}
@@ -233,7 +233,7 @@ namespace Math.Algebra.Structures.Fields.Members
 					return Value < i;
 				case Fraction r:
 					return Value < (double) r;
-			}
+			}// TODO improve these comparisons
 
 			throw new IncorrectSetException(GetType(), "compared", typeof(T));
 		}

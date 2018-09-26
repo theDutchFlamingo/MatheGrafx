@@ -117,14 +117,11 @@ namespace Math.Algebra.Structures.Rings.Members
 			    }
 		    }
 
+			list.Add((T)(IFactorable)this);
+
 		    factors = list.ToArray();
 
-		    if (factors.Length != 0)
-		    {
-			    return true;
-		    }
-
-		    throw new FactorTypeException();
+		    return factors.Length != 0;
 	    }
 
 	    public T Without<T>(T factor) where T : IFactorable
@@ -294,10 +291,10 @@ namespace Math.Algebra.Structures.Rings.Members
 	    public override bool Equals<T>(T other)
 		{
             switch (other) {
-	            case Integer r:
-		            return Absolute == r;
 	            case int i:
 		            return Absolute == i;
+	            case Integer r:
+		            return Absolute == r;
             }
 
 			return false;
@@ -547,14 +544,8 @@ namespace Math.Algebra.Structures.Rings.Members
 		    {
 			    throw new ArgumentException($"String was not in correct format: {value}.");
 		    }
-			
-		    if (value.StartsWith("-"))
-		    {
-			    positive = false;
-			    value = value.Substring(1);
-		    }
 
-			return new Integer(Natural.Parse(value), positive);
+		    return value.StartsWith("-") ? new Integer(Natural.Parse(value.Substring(1)), false) : new Integer(Natural.Parse(value), positive);
 	    }
 
 	    public static bool TryParse(string value, out Integer result, bool positive = true, bool hex = false)

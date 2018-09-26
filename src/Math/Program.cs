@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using Math.Algebra.Structures.Fields.Members;
 using Math.Algebra.Structures.Groups.Members;
@@ -11,12 +13,13 @@ using Math.Latex;
 using Math.LinearAlgebra;
 using Math.Polynomials;
 using Math.Rationals;
+using Complex = Math.Algebra.Structures.Fields.Members.Complex;
 
 namespace Math
 {
     public static class Program
     {
-	    public const double d = 1.7976931348623158079372897140530341507993413271003782693617e308;
+	    public const double D = 1.79769313486231580793728971405303415079934132710037826936173778980444968292764750946649017977587207096e308;
 	    
 	    private static readonly Complex i = Complex.I;
 
@@ -32,20 +35,72 @@ namespace Math
 			//Integers();
 			//AddMany();
 
+	        Fraction f1 = (Integer) 5 / 11;
+	        Fraction f2 = (Integer) 3 / 11;
+	        
+	        Console.WriteLine(f1 + f2);
 
-	        string s = "".Substring(2);
+			Matrix<Fraction> m = new Matrix<Fraction>
+			{
+				Indices = new [,]
+				{
+					{(Fraction)1, (Fraction)2, (Fraction)0 },
+					{(Fraction)1, (Fraction)3, (Fraction)(-1) },
+					{(Fraction)0, (Fraction)1, (Fraction)(-2) }
+				}
+			};
+	        
+	        Console.WriteLine(m.Determinant());
 
-	        GroupCollection groups = Regex.Match("1344324000", @"^.*?(0*)$").Groups;
-
-			int offset = groups[1].Length;
-
-			Real l = new Real("12222222222222222222222222000000000000000000");
-			Real r = new Real("13.003033030030330300303303");
-
-			Console.WriteLine(l);
-			Console.WriteLine(r);
-			Console.WriteLine(l + r);
+			Console.WriteLine(m.Inverse().ToTable(3));
         }
+
+	    public static unsafe byte[] Add(byte[] left, byte[] right)
+	    {
+		    byte[] result = new byte[System.Math.Max(left.Length, right.Length) + 1];
+
+		    fixed (byte* lPt = left.Reverse().ToArray(), rPt = right.Reverse().ToArray(), resPt = result)
+		    {
+			    // ReSharper disable once LocalVariableHidesMember because it annoys me
+			    for (int i = 0; i < left.Length; i++)
+			    {
+				    for (int j = 0; j < right.Length; j++)
+				    {
+					    int tot = *(lPt + i) + *(rPt + j);
+
+					    byte rem = (byte)tot;
+					    *(resPt + i + j) = rem;
+						*(resPt + i + j + 1) = (byte) (tot > rem ? 1 : 0);
+				    }
+			    }
+		    }
+
+		    return result.Reverse().ToArray();
+	    }
+
+		public static unsafe byte[] Multiply(byte[] left, byte[] right)
+	    {
+			byte[] result = new byte[left.Length + right.Length];
+			byte[] temp = new byte[result.Length];
+
+		    fixed (byte* lPt = left.Reverse().ToArray(), rPt = right.Reverse().ToArray(), resPt = result, tempPt = temp)
+		    {
+			    for (int i = 0; i < left.Length; i++)
+			    {
+				    for (int j = 0; j < right.Length; j++)
+				    {
+					    int tot = *(lPt + i) * *(rPt + j);
+
+						byte rem = (byte) tot;
+						(*(tempPt + i + j), *(tempPt + i + j + 1)) = (rem, (byte)((tot - rem) / 0x100));
+				    }
+
+				    result = result.Reverse().ToArray().Add(temp.Reverse().ToArray());
+			    }
+		    }
+
+		    return result;
+	    }
 
 	    public static void AddMany()
 	    {
@@ -72,17 +127,22 @@ namespace Math
 			Random r = new Random(0);
 		    const int width = 120;
 		    int dot = 0;
+		    int max = 100000;
 
-		    for (int n = 100; n < 10000000; n++)
+		    for (int n = 100; n < max; n++)
 		    {
 				int op1 = r.Next(n);
 				int op2 = r.Next(n);
 
-				string mySum = op1.ToString().AddDecimal(op2.ToString());
-				string myEfficientSum = op1.ToString().AddEfficiently(op2.ToString());
+			    Fraction i1 = (Fraction)op1;
+			    Fraction i2 = (Fraction)op2;
+
+//			    Console.WriteLine($"{op1} + {op2} = {op1 + op2} and according to me {i1 + i2}");
+
+				//string mySum = op1.ToString().Add(op2.ToString());
 				//int normSum = op1 + op2;
 
-				if ((double)n / 10000000 * width > dot)
+				if ((double)n / max * width > dot)
 			    {
 				    dot++;
 				    Console.Write(".");

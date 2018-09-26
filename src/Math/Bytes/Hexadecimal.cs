@@ -81,9 +81,41 @@ namespace Math.Bytes
 			return b.ToString("X");
 		}
 
-		public static string AddEfficiently(this string left, string right)
+		/// <summary>
+		/// The preferred adder method for strings, as this will call the currently favored adding implementation
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static string Add(this string left, string right)
 		{
-			// TODO add an adder which partially uses the default addition of longs and partially the split addition
+			return left.AddBig(right);
+		}
+
+		/// <summary>
+		/// The preferred multiplication method for strings, as this will call the currently favored multiplication implementation
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static string Multiply(this string left, string right)
+		{
+			return left.MultiplyBig(right);
+		}
+
+		private static string AddBig(this string left, string right)
+		{
+			return (BigInteger.Parse(left) + BigInteger.Parse(right)).ToString();
+		}
+
+		private static string MultiplyBig(this string left, string right)
+		{
+			return (BigInteger.Parse(left) * BigInteger.Parse(right)).ToString();
+		}
+
+		private static string AddEfficiently(this string left, string right)
+		{
+			// TODO I think I did do
 			const int maxLength = 17; // The max where 2 times a string of digits is guaranteed to be parsable to long
 
 			if (left.Length < maxLength && right.Length < maxLength)
@@ -139,13 +171,19 @@ namespace Math.Bytes
 			return string.Join("", result);
 		}
 
+		private static string MultiplyEfficiently(this string left, string right)
+		{
+			// TODO add a multiplier which splits string and multiplies the pieces as longs
+			return "";
+		}
+
 		/// <summary>
 		/// Add two decimal strings together
 		/// </summary>
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static string AddDecimal(this string left, string right)
+		private static string AddDecimal(this string left, string right)
 		{
 			int length = Max(left.Minimize().Length, right.Minimize().Length);
 
@@ -188,7 +226,7 @@ namespace Math.Bytes
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static string MultiplyDecimal(this string left, string right)
+		private static string MultiplyDecimal(this string left, string right)
 		{
 			left = left.Minimize();
 			right = right.Minimize();
@@ -201,7 +239,7 @@ namespace Math.Bytes
 				scooch = 0;
 			}
 
-			string result = new String('0', length);
+			string result = new string('0', length);
 
 			for (int i = left.Length - 1; i >= 0; i--)
 			{
@@ -214,7 +252,7 @@ namespace Math.Bytes
 
 					if ((l - 48) * (r - 48) + result[i+ j] - 48 > 9)
 					{
-						// This should hopefully replace the two lines below
+						// TODO This doesn't fix everything
 						result = result.AddDecimal(MultiplyChar(l, r).PadRight(length - i - j, '0'));
 						result = result.Extend(length);
 
@@ -233,12 +271,7 @@ namespace Math.Bytes
 				//result = result.AddDecimal(new string(temp.Select(t => $"{t}"[0]).ToArray()));
 			}
 
-			return result;
-		}
-
-		private static StringBuilder Minimize(this StringBuilder str)
-		{
-			return new StringBuilder(str.ToString().TrimStart('0'));
+			return result.Minimize();
 		}
 
 		private static StringBuilder Extend(this StringBuilder str, int length)

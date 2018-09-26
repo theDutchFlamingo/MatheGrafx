@@ -266,11 +266,9 @@ namespace Math.LinearAlgebra
 		/// <returns></returns>
 		protected internal int Padding(int maxPrecision)
 		{
-			int wanted;
-
 			if (new T() is INumerical)
 			{
-				wanted = this.Select(d => ((INumerical) d).ToString("g").Length).Max();
+				int wanted = this.Select(d => ((INumerical) d).ToString("g").Length).Max();
 				return wanted > maxPrecision ? maxPrecision : wanted;
 			}
 			
